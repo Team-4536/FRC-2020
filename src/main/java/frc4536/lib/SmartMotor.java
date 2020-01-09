@@ -42,13 +42,6 @@ public class SmartMotor implements SpeedController {
         m_motor.stopMotor();
     }
 
-    // This had to be overwritten to implement SpeedController but should not be used.
-    @Override
-    public void pidWrite(double output) {
-        //m_motor.pidWrite(output);
-        throw new UnsupportedOperationException("This is a deprecated operation, and is not implemented.");
-    }
-
     public Encoder getEncoder() {
         return m_encoder;
     }
