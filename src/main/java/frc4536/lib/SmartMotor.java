@@ -1,4 +1,4 @@
-package frc4536.robot.hardware;
+package frc4536.lib;
 
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Encoder;
