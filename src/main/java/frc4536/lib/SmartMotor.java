@@ -53,4 +53,9 @@ public class SmartMotor implements SpeedController {
     public double getRate() {
         return m_encoder.getRate();
     }
+
+    @Override
+    public void pidWrite(double output) {
+        throw new UnsupportedOperationException("This method is deprecated, use the 2020 system");
+    }
 }

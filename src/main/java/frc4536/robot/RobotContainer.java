@@ -10,6 +10,8 @@ package frc4536.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc4536.robot.commands.ExampleCommand;
+import frc4536.robot.hardware.RobotFrame;
+import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -25,6 +27,7 @@ public class RobotContainer {
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
+  public final RobotFrame m_robot_hardware = new Trenchy();
 
 
   /**
