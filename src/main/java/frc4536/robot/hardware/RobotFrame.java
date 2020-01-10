@@ -13,6 +13,6 @@ public interface RobotFrame {
     SpeedController getBeltMotor();
     Encoder getDrivetrainRightEncoder();
     Encoder getDrivetrainLeftEncoder();
-    AHRS getNavX();
+    AHRS getDrivetrainNavX();
 }
 

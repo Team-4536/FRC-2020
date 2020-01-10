@@ -57,7 +57,7 @@ public class Trenchy implements RobotFrame {
     }
     
     @Override
-    public AHRS getNavX() {
+    public AHRS getDrivetrainNavX() {
         return m_navX;
     }
 }
