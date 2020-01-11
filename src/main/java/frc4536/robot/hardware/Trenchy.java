@@ -1,63 +1,74 @@
 package frc4536.robot.hardware;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Spark;
+import frc4536.lib.VirtualMotor;
 
 public class Trenchy implements RobotFrame {
-    private SpeedController m_leftMotor = new SpeedControllerGroup(new Spark(0),
-    new Spark(1));
-    private SpeedController m_rightMotor = new SpeedControllerGroup(new Spark(2),
-    new Spark(3));
-    private SpeedController m_flywheelMotor = new Spark(4);
-    private SpeedController m_intakeMotor = new Spark(5);
-    private SpeedController m_beltMotor = new Spark(6);
-    private Encoder m_leftEncoder = new Encoder(0,1);
-    private Encoder m_rightEncoder = new Encoder(2,3);
+    CANSparkMax leftmotor1 = new CANSparkMax(0, MotorType.kBrushless);
+    CANSparkMax leftmotor2 = new CANSparkMax(1, MotorType.kBrushless);
+    CANSparkMax rightmotor1 = new CANSparkMax(2, MotorType.kBrushless);
+    CANSparkMax rightmotor2 = new CANSparkMax(3, MotorType.kBrushless);
+    SpeedControllerGroup leftmotors = new SpeedControllerGroup(leftmotor1, leftmotor2);
+    SpeedControllerGroup rightmotors = new SpeedControllerGroup(rightmotor1, rightmotor2);
+    VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
+    VirtualMotor fakeintakemotor = new VirtualMotor(5);
+    VirtualMotor fakebeltmotor = new VirtualMotor(6);
+    Encoder leftencoder = new Encoder(0, 1);
+    Encoder rightencoder = new Encoder(2, 3);
+    AHRS navx = new AHRS();
 
-    private AHRS m_navX = new AHRS(SPI.Port.kMXP);
+    @Override
+    public SpeedController getDrivetrainRightMotor() {
+        // TODO Auto-generated method stub
+        return rightmotors;
+    }
 
     @Override
     public SpeedController getDrivetrainLeftMotor() {
-        return m_leftMotor;
+        // TODO Auto-generated method stub
+        return leftmotors;
     }
-    
-    @Override
-    public SpeedController getDrivetrainRightMotor() {
-        return m_rightMotor;
-    }
-    
+
     @Override
     public SpeedController getShooterFlywheelMotor() {
-        return m_flywheelMotor;
+        // TODO Auto-generated method stub
+        return fakeflywheelmotor;
     }
-    
+
     @Override
     public SpeedController getIntakeMotor() {
-        return m_intakeMotor;
+        // TODO Auto-generated method stub
+        return fakeintakemotor;
     }
-    
+
     @Override
     public SpeedController getBeltMotor() {
-        return m_beltMotor;
+        // TODO Auto-generated method stub
+        return fakebeltmotor;
     }
-    
-    @Override
-    public Encoder getDrivetrainLeftEncoder() {
-        return m_leftEncoder;
-    }
-    
+
     @Override
     public Encoder getDrivetrainRightEncoder() {
-        return m_rightEncoder;
+        // TODO Auto-generated method stub
+        return rightencoder;
     }
-    
+
+    @Override
+    public Encoder getDrivetrainLeftEncoder() {
+        // TODO Auto-generated method stub
+        return leftencoder;
+    }
+
     @Override
     public AHRS getDrivetrainNavX() {
-        return m_navX;
+        // TODO Auto-generated method stub
+        return navx;
     }
+
 }
