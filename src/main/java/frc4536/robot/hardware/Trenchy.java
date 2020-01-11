@@ -1,6 +1,7 @@
 package frc4536.robot.hardware;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -19,8 +20,6 @@ public class Trenchy implements RobotFrame {
     VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
     VirtualMotor fakeintakemotor = new VirtualMotor(5);
     VirtualMotor fakebeltmotor = new VirtualMotor(6);
-    Encoder leftencoder = new Encoder(0, 1);
-    Encoder rightencoder = new Encoder(2, 3);
     AHRS navx = new AHRS();
 
     @Override
