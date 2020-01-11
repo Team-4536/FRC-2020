@@ -8,6 +8,7 @@
 package frc4536.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -66,6 +67,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    Trajectory left_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".left");
+    Trajectory right_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".right");
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
