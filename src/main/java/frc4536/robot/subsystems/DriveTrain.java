@@ -5,6 +5,9 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrain extends SubsystemBase {
@@ -21,7 +24,16 @@ public class DriveTrain extends SubsystemBase {
         m_rightEncoder = rightEncoder;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+            
     }
+
+    public void periodic(){
+        ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
+            motorBasicTab.add("Tank Drive", m_drive);
+            motorBasicTab.add("Distance Travelled", getDistance());
+            motorBasicTab.add("Heading", getHeading());
+    }
+    
     // TODO: Add shuffleboard logging!
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
