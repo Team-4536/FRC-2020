@@ -73,12 +73,16 @@ public class DriveTrain extends SubsystemBase {
         m_drive.setMaxOutput(maxOutput);
       }
     
-    public void curvatureDrive(final double speed, final double rotation, final boolean quickTurn) {
+    public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
         m_drive.curvatureDrive(speed, rotation, quickTurn);
     }
 
-    public void tankDrive(final double leftSpeed, final double rightSpeed) {
+    public void tankDrive(double leftSpeed, double rightSpeed) {
        m_drive.tankDrive(leftSpeed, rightSpeed, false); 
+    }
+
+    public void arcadeDrive(double speed, double rotation) {
+        m_drive.arcadeDrive(speed, rotation, false);
     }
 
     public double getHeading() {

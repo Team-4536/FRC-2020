@@ -15,4 +15,3 @@ public interface RobotFrame {
     Encoder getDrivetrainLeftEncoder();
     AHRS getDrivetrainNavX();
 }
-
