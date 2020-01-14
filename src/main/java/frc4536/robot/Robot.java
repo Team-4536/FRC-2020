@@ -67,8 +67,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    Trajectory left_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".left");
-    Trajectory right_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".right");
+    //Trajectory left_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".left");
+    //Trajectory right_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".right");
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
