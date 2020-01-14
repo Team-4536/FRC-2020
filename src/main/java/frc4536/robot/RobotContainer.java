@@ -32,7 +32,7 @@ public class RobotContainer {
                                                          m_robotHardware.getDrivetrainNavX());
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
+  private final XboxController m_driveController = new XboxController(0);
 
 
   /**
@@ -41,6 +41,11 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    
+    m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft), 
+                                                        () -> m_driveController.getX(GenericHID.Hand.kLeft), 
+                                                        m_driveTrain));
+  
   }
 
   /**
