@@ -11,8 +11,8 @@ public interface RobotFrame {
     SpeedController getShooterFlywheelMotor();
     SpeedController getIntakeMotor();
     SpeedController getBeltMotor();
-    Encoder getDrivetrainRightEncoder();
-    Encoder getDrivetrainLeftEncoder();
+    //Encoder getDrivetrainRightEncoder();
+    //Encoder getDrivetrainLeftEncoder();
     AHRS getDrivetrainNavX();
 }
 

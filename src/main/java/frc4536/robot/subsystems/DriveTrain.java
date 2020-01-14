@@ -10,15 +10,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveTrain extends SubsystemBase {
     private SpeedController m_leftMotor, m_rightMotor; 
     private DifferentialDrive m_drive; 
-    private Encoder m_leftEncoder, m_rightEncoder;
+    // private Encoder m_leftEncoder, m_rightEncoder;
     private final AHRS m_navx;
 
-    public DriveTrain(SpeedController leftMotor, SpeedController rightMotor, Encoder leftEncoder, Encoder rightEncoder, AHRS navx) {
+    public DriveTrain(SpeedController leftMotor, SpeedController rightMotor, //Encoder leftEncoder, Encoder rightEncoder, 
+    AHRS navx) {
         super();
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
-        m_leftEncoder = leftEncoder;
-        m_rightEncoder = rightEncoder;
+        // m_leftEncoder = leftEncoder;
+        // m_rightEncoder = rightEncoder;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     }
@@ -36,12 +37,12 @@ public class DriveTrain extends SubsystemBase {
         return m_navx.getYaw(); 
     }
 
-    public void reset() {
-        m_leftEncoder.reset();
-        m_rightEncoder.reset();
-    }
+    // public void reset() {
+    //     m_leftEncoder.reset();
+    //     m_rightEncoder.reset();
+    // }
 
-    public double getDistance() {
-        return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance())/2;
-    }
+    // public double getDistance() {
+    //     return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance())/2;
+    // }
 }

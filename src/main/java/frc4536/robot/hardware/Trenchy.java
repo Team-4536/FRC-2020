@@ -16,8 +16,8 @@ public class Trenchy implements RobotFrame {
     private SpeedController m_flywheelMotor = new Spark(4);
     private SpeedController m_intakeMotor = new Spark(5);
     private SpeedController m_beltMotor = new Spark(6);
-    private Encoder m_leftEncoder = new Encoder(0,1);
-    private Encoder m_rightEncoder = new Encoder(2,3);
+    //private Encoder m_leftEncoder = new Encoder(0,1);
+    //private Encoder m_rightEncoder = new Encoder(2,3);
 
     private AHRS m_navX = new AHRS(SPI.Port.kMXP);
 
@@ -46,15 +46,15 @@ public class Trenchy implements RobotFrame {
         return m_beltMotor;
     }
     
-    @Override
-    public Encoder getDrivetrainLeftEncoder() {
-        return m_leftEncoder;
-    }
+    //@Override
+    //public Encoder getDrivetrainLeftEncoder() {
+        //return m_leftEncoder;
+    //}
     
-    @Override
-    public Encoder getDrivetrainRightEncoder() {
-        return m_rightEncoder;
-    }
+    //@Override
+    //public Encoder getDrivetrainRightEncoder() {
+        //return m_rightEncoder;
+    //}
     
     @Override
     public AHRS getDrivetrainNavX() {
