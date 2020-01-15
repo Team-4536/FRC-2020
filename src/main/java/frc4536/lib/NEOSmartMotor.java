@@ -87,5 +87,11 @@ public NEOSmartMotor(double[] constants, int...deviceID){
         return setpoint;
     }
 
+    @Override
+    public void resetEncoder() {
+        encoder.setPosition(0);
+
+    }
+
 
 }

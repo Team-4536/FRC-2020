@@ -83,5 +83,11 @@ public class SmartMotor implements ISmartMotor {
         return controller.getSetpoint();
     }
 
+    @Override
+    public void resetEncoder() {
+       m_encoder.reset();
+
+    }
+
 
 }

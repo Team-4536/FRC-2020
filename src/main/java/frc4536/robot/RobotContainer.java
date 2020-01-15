@@ -29,8 +29,6 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(), 
                                                          m_robotHardware.getDrivetrainRightMotor(), 
-                                                         m_robotHardware.getDrivetrainLeftEncoder(), 
-                                                         m_robotHardware.getDrivetrainRightEncoder(), 
                                                          m_robotHardware.getDrivetrainNavX());
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);

@@ -8,4 +8,5 @@ public interface ISmartMotor extends SpeedController{
     double getSpeed();
     double getDistance();
     double getSetpoint();
+    void resetEncoder();
 }
