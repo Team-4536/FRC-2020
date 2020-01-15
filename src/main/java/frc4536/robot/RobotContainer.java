@@ -10,6 +10,7 @@ package frc4536.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc4536.robot.commands.ExampleCommand;
+import frc4536.robot.commands.TankDriveCommand;
 import frc4536.robot.hardware.RobotFrame;
 import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.DriveTrain;
@@ -32,7 +33,7 @@ public class RobotContainer {
                                                          m_robotHardware.getDrivetrainNavX());
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
+  private final XboxController m_driveController = new XboxController(0);
 
 
   /**
@@ -41,6 +42,11 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    
+    m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft), 
+                                                        () -> m_driveController.getX(GenericHID.Hand.kLeft), 
+                                                        m_driveTrain));
+  
   }
 
   /**

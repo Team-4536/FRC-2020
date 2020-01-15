@@ -7,6 +7,7 @@ import frc4536.lib.NEOSmartMotor;
 import frc4536.lib.VirtualMotor;
 
 public class Trenchy implements RobotFrame {
+
     VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
     VirtualMotor fakeintakemotor = new VirtualMotor(5);
     VirtualMotor fakebeltmotor = new VirtualMotor(6);
@@ -15,7 +16,6 @@ public class Trenchy implements RobotFrame {
         0,1);
     NEOSmartMotor rightmotors = new NEOSmartMotor(new double[]{5e-5, 1e-6,0,0},
         2,3);
-
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
@@ -46,7 +46,7 @@ public class Trenchy implements RobotFrame {
         // TODO Auto-generated method stub
         return fakebeltmotor;
     }
-
+  
     @Override
     public AHRS getDrivetrainNavX() {
         // TODO Auto-generated method stub

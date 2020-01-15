@@ -10,7 +10,6 @@ public interface RobotFrame {
     SpeedController getShooterFlywheelMotor();
     SpeedController getIntakeMotor();
     SpeedController getBeltMotor();
-    
     AHRS getDrivetrainNavX();
 }
 
