@@ -2,26 +2,24 @@ package frc4536.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc4536.lib.ISmartMotor;
 
 public class DriveTrain extends SubsystemBase {
-    private SpeedController m_leftMotor, m_rightMotor; 
-    private DifferentialDrive m_drive; 
-    private Encoder m_leftEncoder, m_rightEncoder;
+    private final ISmartMotor m_leftMotor, m_rightMotor; 
+    private final DifferentialDrive m_drive; 
     private final AHRS m_navx;
 
-    public DriveTrain(SpeedController leftMotor, SpeedController rightMotor, Encoder leftEncoder, Encoder rightEncoder, AHRS navx) {
+    public DriveTrain(ISmartMotor leftMotor, ISmartMotor rightMotor, AHRS navx) {
         super();
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
-        m_leftEncoder = leftEncoder;
-        m_rightEncoder = rightEncoder;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     }
+
     // TODO: Add shuffleboard logging!
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
@@ -37,11 +35,11 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void reset() {
-        m_leftEncoder.reset();
-        m_rightEncoder.reset();
+        m_leftMotor.resetEncoder();
+        m_rightMotor.resetEncoder();
     }
 
     public double getDistance() {
-        return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance())/2;
+        return (m_leftMotor.getDistance() + m_rightMotor.getDistance())/2;
     }
 }
