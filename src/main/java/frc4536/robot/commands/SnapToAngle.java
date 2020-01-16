@@ -46,7 +46,7 @@ public class SnapToAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveTrain.arcadeDrive(0, m_controller.calculate(m_driveTrain.getHeading()));
+    m_driveTrain.arcadeDrive(0.0, m_controller.calculate(m_driveTrain.getHeading()));
   }
 
   // Called once the command ends or is interrupted.

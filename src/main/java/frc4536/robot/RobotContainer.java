@@ -9,13 +9,17 @@ package frc4536.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import frc4536.robot.commands.ExampleCommand;
+import frc4536.robot.commands.SnapToAngle;
 import frc4536.robot.commands.TankDriveCommand;
 import frc4536.robot.hardware.RobotFrame;
 import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -56,6 +60,14 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(m_driveController, Button.kY.value)
+      .whenPressed(new SnapToAngle(m_driveTrain, 0));
+    new JoystickButton(m_driveController, Button.kB.value)
+      .whenPressed(new SnapToAngle(m_driveTrain, 90));
+    new JoystickButton(m_driveController, Button.kA.value)
+      .whenPressed(new SnapToAngle(m_driveTrain, 180));
+    new JoystickButton(m_driveController, Button.kX.value)
+      .whenPressed(new SnapToAngle(m_driveTrain, -90));
   }
 
 
