@@ -8,18 +8,17 @@
 package frc4536.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
+import frc4536.lib.SmartMotor;
 
 public class Shooter extends SubsystemBase {
-    //private SmartMotor shooterTop;
-    //private SmartMotor shooterBottom;
+    private SmartMotor shooterTop;
+    private SmartMotor shooterBottom;
   /**
    * Creates a new Shooter.
    */
-  public Shooter() {
-    //shooterTop = new SmartMotor();
-    //shooterBottom = new SmartMotor();
+  public Shooter(SmartMotor top, SmartMotor bottom) {
+    shooterTop = top;
+    shooterBottom = bottom;
   }
 
   @Override
@@ -29,7 +28,7 @@ public class Shooter extends SubsystemBase {
   }
 
   
-  private void eject(double speed){
+  public void eject(double speed){
     
   }
 
