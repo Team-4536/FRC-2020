@@ -15,14 +15,16 @@ public class Conveyor extends SubsystemBase {
     * Creates a new ExampleSubsystem.
     */
     public SmartMotor m_topMotor, m_bottomMotor;
+    public double k_topSpeed, k_bottomSpeed;
     /*public Piston m_piston*/
 
-    public Conveyor(SmartMotor topMotor, SmartMotor bottomMotor /*, Piston piston*/) {
+    public Conveyor(SmartMotor topMotor, SmartMotor bottomMotor, double topSpeed, double bottomSpeed /*, Piston piston*/) {
         super();
         m_topMotor = topMotor;
         m_bottomMotor = bottomMotor;
+        k_topSpeed = topSpeed;
+        k_bottomSpeed = bottomSpeed;
         /*m_piston = piston;*/
-
     }
 
     @Override
@@ -46,7 +48,9 @@ public class Conveyor extends SubsystemBase {
         */
     }
 
-    public void moveConveyor(){
-        
+    public void moveConveyor(double topSpeed, double bottomSpeed){
+        m_topMotor.set(topSpeed);
+        m_bottomMotor.set(bottomSpeed);
     }
+    
 }
