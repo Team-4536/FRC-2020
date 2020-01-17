@@ -8,43 +8,43 @@ import frc4536.lib.VirtualMotor;
 
 public class Trenchy implements RobotFrame {
 
-    VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
-    VirtualMotor fakeintakemotor = new VirtualMotor(5);
-    VirtualMotor fakebeltmotor = new VirtualMotor(6);
+    VirtualMotor fakeFlywheelMotor = new VirtualMotor(4);
+    VirtualMotor fakeIntakeMotor = new VirtualMotor(5);
+    VirtualMotor fakeBeltMotor = new VirtualMotor(6);
     AHRS navx = new AHRS();
-    NEOSmartMotor leftmotors = new NEOSmartMotor(new double[]{5e-5, 1e-6,0,0},
+    NEOSmartMotor leftMotors = new NEOSmartMotor(new double[]{5e-5, 1e-6,0,0},
         0,1);
-    NEOSmartMotor rightmotors = new NEOSmartMotor(new double[]{5e-5, 1e-6,0,0},
+    NEOSmartMotor rightMotors = new NEOSmartMotor(new double[]{5e-5, 1e-6,0,0},
         2,3);
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
         // TODO Auto-generated method stub
-        return rightmotors;
+        return rightMotors;
     }
 
     @Override
     public ISmartMotor getDrivetrainLeftMotor() {
         // TODO Auto-generated method stub
-        return leftmotors;
+        return leftMotors;
     }
 
     @Override
     public SpeedController getShooterFlywheelMotor() {
         // TODO Auto-generated method stub
-        return fakeflywheelmotor;
+        return fakeFlywheelMotor;
     }
 
     @Override
     public SpeedController getIntakeMotor() {
         // TODO Auto-generated method stub
-        return fakeintakemotor;
+        return fakeIntakeMotor;
     }
 
     @Override
     public SpeedController getBeltMotor() {
         // TODO Auto-generated method stub
-        return fakebeltmotor;
+        return fakeBeltMotor;
     }
   
     @Override
