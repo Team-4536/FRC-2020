@@ -14,17 +14,19 @@ private CANEncoder encoder;
 private CANPIDController pid;
 private double setpoint;
 
-public NEOSmartMotor(double[] constants, int...deviceID){
+public NEOSmartMotor(PIDConstants ks, int...deviceID){
     for(int id : deviceID){
         motors.add(new CANSparkMax(id, MotorType.kBrushless));
     }
     encoder = motors.get(0).getEncoder();
     pid = motors.get(0).getPIDController();
-    if(constants.length == 1) pid.setP(constants[0]);
-    if(constants.length == 2) pid.setI(constants[1]);
-    if(constants.length == 3) pid.setD(constants[2]);
-    if(constants.length == 4) pid.setIZone(constants[3]);
-    if(constants.length == 5) pid.setFF(constants[4]);
+
+    pid.setP(ks.kP);
+    pid.setI(ks.kI);
+    pid.setD(ks.kD);
+    pid.setIZone(ks.kF);
+    pid.setFF(ks.iZone);
+
 }
     @Override
     public void set(double speed) {
