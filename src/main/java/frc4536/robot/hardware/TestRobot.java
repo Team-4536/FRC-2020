@@ -17,45 +17,40 @@ public class TestRobot implements RobotFrame {
     double kp = 10e-5;
     double ki = 1e-6;
     double kd = 0;
-    Spark leftmotor1 = new Spark(0);
-    Spark leftmotor2 = new Spark(1);
-    Spark rightmotor1 = new Spark(2);
-    Spark rightmotor2 = new Spark(3);
     Encoder leftencoder = new Encoder(0,1);
     Encoder rightencoder = new Encoder(2,3);
     PIDController pidleft = new PIDController(kp, ki, kd);
     PIDController pidright = new PIDController(kp, ki, kd);
-    VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
-    VirtualMotor fakeintakemotor = new VirtualMotor(5);
+    VirtualMotor m_flywheelMotor = new VirtualMotor(4);
+    VirtualMotor m_intakeMotor = new VirtualMotor(5);
     VirtualMotor fakebeltmotor = new VirtualMotor(6);
     AHRS navx = new AHRS();
-    SpeedController motors[] = {};
-    SmartMotor rightmotors = new SmartMotor(rightencoder, pidright, motors );
-    SmartMotor leftmotors = new SmartMotor(leftencoder, pidleft, motors);
+    SmartMotor m_rightMotors = new SmartMotor(rightencoder, pidright, new SpeedControllerGroup(new Spark(2), new Spark(3)));
+    SmartMotor m_leftMotors = new SmartMotor(leftencoder, pidleft, new SpeedControllerGroup(new Spark(0), new Spark(1)));
     
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
         // TODO Auto-generated method stub
-        return rightmotors;
+        return m_rightMotors;
     }
 
     @Override
     public ISmartMotor getDrivetrainLeftMotor() {
         // TODO Auto-generated method stub
-        return leftmotors;
+        return m_leftMotors;
     }
 
     @Override
     public SpeedController getShooterFlywheelMotor() {
         // TODO Auto-generated method stub
-        return fakeflywheelmotor;
+        return m_flywheelMotor;
     }
 
     @Override
     public SpeedController getIntakeMotor() {
         // TODO Auto-generated method stub
-        return fakeintakemotor;
+        return m_intakeMotor;
     }
 
     @Override
