@@ -5,17 +5,20 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 
 public class DriveTrain extends SubsystemBase {
-    private SpeedController m_leftMotor, m_rightMotor; 
-    private DifferentialDrive m_drive; 
+    private SpeedController m_leftMotor, m_rightMotor;
+    private DifferentialDrive m_drive;
     private Encoder m_leftEncoder, m_rightEncoder;
     private final AHRS m_navx;
 
-    public DriveTrain(SpeedController leftMotor, SpeedController rightMotor, Encoder leftEncoder, Encoder rightEncoder, AHRS navx) {
+    public DriveTrain(SpeedController leftMotor, SpeedController rightMotor, Encoder leftEncoder, Encoder rightEncoder,
+            AHRS navx) {
         super();
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
@@ -23,16 +26,19 @@ public class DriveTrain extends SubsystemBase {
         m_rightEncoder = rightEncoder;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
-            
+
     }
 
-    public void periodic(){
-        ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
-            motorBasicTab.add("Tank Drive", m_drive);
-            motorBasicTab.add("Distance Travelled", getDistance());
-            motorBasicTab.add("Heading", getHeading());
+    ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
+
+    public void periodic() {
+        motorBasicTab.add("Distance Travelled", getDistance());
+        motorBasicTab.add("Heading", getHeading());
     }
 
+    ComplexWidget tankDriveTab = Shuffleboard.getTab("Tank Drive Data")
+        .add("Tank Drive", m_drive);
+        
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
         m_drive.curvatureDrive(speed, rotation, quickTurn);
     }
