@@ -1,5 +1,7 @@
 package frc4536.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -16,6 +18,7 @@ public class Robot extends TimedRobot {
     new SpeedControllerGroup(new Spark(2), new Spark(3))
   );
 
+  AHRS navx = new AHRS();
   Encoder left = new Encoder(0,1), right = new Encoder(2,3);
 
   Joystick j = new Joystick(0);
@@ -29,5 +32,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     drive.arcadeDrive(-j.getY(), j.getX());
+    SmartDashboard.putNumber("Heading", navx.getYaw());
   }
 }
