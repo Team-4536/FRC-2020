@@ -17,16 +17,16 @@ public class TestRobot implements RobotFrame {
     double kp = 10e-5;
     double ki = 1e-6;
     double kd = 0;
-    Encoder leftencoder = new Encoder(0,1);
-    Encoder rightencoder = new Encoder(2,3);
-    PIDController pidleft = new PIDController(kp, ki, kd);
-    PIDController pidright = new PIDController(kp, ki, kd);
+    Encoder m_leftEncoder = new Encoder(0,1);
+    Encoder m_rightEncoder = new Encoder(2,3);
+    PIDController m_PIDLeft = new PIDController(kp, ki, kd);
+    PIDController m_PIDRight = new PIDController(kp, ki, kd);
     VirtualMotor m_flywheelMotor = new VirtualMotor(4);
     VirtualMotor m_intakeMotor = new VirtualMotor(5);
-    VirtualMotor fakebeltmotor = new VirtualMotor(6);
-    AHRS navx = new AHRS();
-    SmartMotor m_rightMotors = new SmartMotor(rightencoder, pidright, new SpeedControllerGroup(new Spark(2), new Spark(3)));
-    SmartMotor m_leftMotors = new SmartMotor(leftencoder, pidleft, new SpeedControllerGroup(new Spark(0), new Spark(1)));
+    VirtualMotor m_beltMotor = new VirtualMotor(6);
+    AHRS m_navx = new AHRS();
+    SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)));
+    SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)));
     
 
     @Override
@@ -56,13 +56,13 @@ public class TestRobot implements RobotFrame {
     @Override
     public SpeedController getBeltMotor() {
         // TODO Auto-generated method stub
-        return fakebeltmotor;
+        return m_beltMotor;
     }
 
     @Override
     public AHRS getDrivetrainNavX() {
         // TODO Auto-generated method stub
-        return navx;
+        return m_navx;
     }
 
 }
