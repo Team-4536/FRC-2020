@@ -24,6 +24,7 @@ public class SmartMotor implements ISmartMotor {
     @Override
     public void setInverted(boolean inverted) {
         motors.forEach(m -> m.setInverted(inverted));
+        m_encoder.setReverseDirection(inverted);
     }
 
     @Override
