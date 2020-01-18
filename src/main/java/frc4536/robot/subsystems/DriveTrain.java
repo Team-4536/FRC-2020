@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrain extends SubsystemBase {
@@ -33,8 +32,6 @@ public class DriveTrain extends SubsystemBase {
             motorBasicTab.add("Distance Travelled", getDistance());
             motorBasicTab.add("Heading", getHeading());
     }
-    
-    // TODO: Add shuffleboard logging!
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
         m_drive.curvatureDrive(speed, rotation, quickTurn);

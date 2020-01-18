@@ -51,7 +51,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
+  public static final XboxController xController = new XboxController(0);
+  public static final Joystick jStick = new Joystick(0);
   private void configureButtonBindings() {
+      if(getAxisCount(0)) == 1){
+
+      }
+      else{
+        
+      }
   }
 
 
