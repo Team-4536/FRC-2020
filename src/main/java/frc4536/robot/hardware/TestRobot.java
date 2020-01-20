@@ -1,7 +1,5 @@
 package frc4536.robot.hardware;
 
-import java.util.ArrayList;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -14,13 +12,13 @@ import frc4536.lib.SmartMotor;
 import frc4536.lib.VirtualMotor;
 
 public class TestRobot implements RobotFrame {
-    double kp = 10e-5;
-    double ki = 1e-6;
-    double kd = 0;
+    double kP = 10e-5;
+    double kI = 1e-6;
+    double kD = 0;
     Encoder m_leftEncoder = new Encoder(0,1);
     Encoder m_rightEncoder = new Encoder(2,3);
-    PIDController m_PIDLeft = new PIDController(kp, ki, kd);
-    PIDController m_PIDRight = new PIDController(kp, ki, kd);
+    PIDController m_PIDLeft = new PIDController(kP, kI, kD);
+    PIDController m_PIDRight = new PIDController(kP, kI, kD);
     VirtualMotor m_flywheelMotor = new VirtualMotor(4);
     VirtualMotor m_intakeMotor = new VirtualMotor(5);
     VirtualMotor m_beltMotor = new VirtualMotor(6);
@@ -31,37 +29,31 @@ public class TestRobot implements RobotFrame {
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
-        // TODO Auto-generated method stub
         return m_rightMotors;
     }
 
     @Override
     public ISmartMotor getDrivetrainLeftMotor() {
-        // TODO Auto-generated method stub
         return m_leftMotors;
     }
 
     @Override
     public SpeedController getShooterFlywheelMotor() {
-        // TODO Auto-generated method stub
         return m_flywheelMotor;
     }
 
     @Override
     public SpeedController getIntakeMotor() {
-        // TODO Auto-generated method stub
         return m_intakeMotor;
     }
 
     @Override
     public SpeedController getBeltMotor() {
-        // TODO Auto-generated method stub
         return m_beltMotor;
     }
 
     @Override
     public AHRS getDrivetrainNavX() {
-        // TODO Auto-generated method stub
         return m_navx;
     }
 

@@ -9,48 +9,42 @@ import frc4536.lib.VirtualMotor;
 
 public class Trenchy implements RobotFrame {
 
-    VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
-    VirtualMotor fakeintakemotor = new VirtualMotor(5);
-    VirtualMotor fakebeltmotor = new VirtualMotor(6);
-    AHRS navx = new AHRS();
-    PIDConstants driveConstants = new PIDConstants(5e-5, 1e-6,0,0);
-    NEOSmartMotor leftmotors = new NEOSmartMotor(driveConstants,0,1);
-    NEOSmartMotor rightmotors = new NEOSmartMotor(driveConstants,2,3);
+    VirtualMotor m_flywheelMotor = new VirtualMotor(4);
+    VirtualMotor m_intakeMotor = new VirtualMotor(5);
+    VirtualMotor m_beltMotor = new VirtualMotor(6);
+    AHRS m_navx = new AHRS();
+    final PIDConstants kDriveConstants = new PIDConstants(5e-5, 1e-6,0,0);
+    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,0,1);
+    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,2,3);
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
-        // TODO Auto-generated method stub
-        return rightmotors;
+        return m_rightMotors;
     }
 
     @Override
     public ISmartMotor getDrivetrainLeftMotor() {
-        // TODO Auto-generated method stub
-        return leftmotors;
+        return m_leftMotors;
     }
 
     @Override
     public SpeedController getShooterFlywheelMotor() {
-        // TODO Auto-generated method stub
-        return fakeflywheelmotor;
+        return m_flywheelMotor;
     }
 
     @Override
     public SpeedController getIntakeMotor() {
-        // TODO Auto-generated method stub
-        return fakeintakemotor;
+        return m_intakeMotor;
     }
 
     @Override
     public SpeedController getBeltMotor() {
-        // TODO Auto-generated method stub
-        return fakebeltmotor;
+        return m_beltMotor;
     }
   
     @Override
     public AHRS getDrivetrainNavX() {
-        // TODO Auto-generated method stub
-        return navx;
+        return m_navx;
     }
 
 }
