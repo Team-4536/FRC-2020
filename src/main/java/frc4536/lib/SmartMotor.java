@@ -10,12 +10,12 @@ public class SmartMotor implements ISmartMotor {
     //private final ArrayList<SpeedController> motors = new ArrayList<>();
     private final SpeedControllerGroup m_motors;
     private final Encoder m_encoder;
-    private final PIDController controller;
+    private final PIDController m_controller;
 
-    public SmartMotor(Encoder encoder, PIDController control, SpeedControllerGroup motors) {
+    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors) {
         m_motors = motors;
         m_encoder = encoder;
-        controller = control;
+        m_controller = controller;
 
     }
 
@@ -63,7 +63,7 @@ public class SmartMotor implements ISmartMotor {
 
     @Override
     public void setSpeed(double i) {
-        setVolt(controller.calculate(m_encoder.getRate(), i));
+        setVolt(m_controller.calculate(m_encoder.getRate(), i));
 
     }
 
@@ -79,7 +79,7 @@ public class SmartMotor implements ISmartMotor {
 
     @Override
     public double getSetpoint() {
-        return controller.getSetpoint();
+        return m_controller.getSetpoint();
     }
 
     @Override
