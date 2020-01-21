@@ -38,9 +38,11 @@ public class DriveTrain extends SubsystemBase {
         return m_odometry.update(new Rotation2d(getHeading()), m_leftMotor.getSpeed(), m_rightMotor.getSpeed());
     }
 
-    public void closedLoopDrive(double left, double right){ 
-        m_leftMotor.setSpeed(left); //TODO: The smartMotors take in angular velocity but we are inputted linear velocities.
-        m_rightMotor.setSpeed(right);
+    public void closedLoopDrive(double linLeft, double linRight){ 
+        double angLeft = (linLeft*4.572)/(Math.PI);  //Converts the linear velocity inputed to angular velocity
+        double angRight = (linRight*4.572)/(Math.PI); //w=30vr/pi
+        m_leftMotor.setSpeed(angLeft);
+        m_rightMotor.setSpeed(angRight);
     }
 
     public double getHeading() {
