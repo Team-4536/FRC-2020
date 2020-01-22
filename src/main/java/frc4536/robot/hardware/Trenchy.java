@@ -14,8 +14,8 @@ public class Trenchy implements RobotFrame {
     VirtualMotor m_beltMotor = new VirtualMotor(6);
     AHRS m_navx = new AHRS();
     final PIDConstants kDriveConstants = new PIDConstants(5e-5, 1e-6,0,0);
-    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,0,1);
-    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,2,3);
+    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,1.0,1.0,0,1);
+    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,1.0,1.0,2,3);
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
