@@ -8,7 +8,6 @@
 package frc4536.robot.commands;
 
 import frc4536.robot.subsystems.DriveTrain;
-import frc4536.robot.subsystems.ExampleSubsystem;
 
 import java.util.function.DoubleSupplier;
 
@@ -22,22 +21,22 @@ public class TankDriveCommand extends CommandBase {
   private final DriveTrain m_driveTrain;
   private final DoubleSupplier m_speed, m_rotation;
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * Creates a command for driving with a controller
+   * 
+   * @param speed, supplier for speed (usually getY) 
+   * @param rotation supplier for rotation (usually getX)
+   * @param drivetrain The subsystem used by this command.
    */
   public TankDriveCommand(DoubleSupplier speed, DoubleSupplier rotation, DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
     m_speed = speed;
     m_rotation = rotation;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() { }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -9,90 +9,90 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class NEOSmartMotor implements ISmartMotor {
-private ArrayList<CANSparkMax> motors = new ArrayList<>();
-private CANEncoder encoder;
-private CANPIDController pid;
-private double setpoint;
+private ArrayList<CANSparkMax> m_motors = new ArrayList<>();
+private CANEncoder m_encoder;
+private CANPIDController m_controller;
+private double m_setpoint;
 
-public NEOSmartMotor(PIDConstants ks, int...deviceID){
-    for(int id : deviceID){
-        motors.add(new CANSparkMax(id, MotorType.kBrushless));
+    public NEOSmartMotor(PIDConstants ks, int...deviceID){
+        for(int id : deviceID){
+            m_motors.add(new CANSparkMax(id, MotorType.kBrushless));
+        }
+        m_encoder = m_motors.get(0).getEncoder();
+        m_controller = m_motors.get(0).getPIDController();
+
+        m_controller.setP(ks.kP);
+        m_controller.setI(ks.kI);
+        m_controller.setD(ks.kD);
+        m_controller.setIZone(ks.kF);
+        m_controller.setFF(ks.iZone);
+
     }
-    encoder = motors.get(0).getEncoder();
-    pid = motors.get(0).getPIDController();
 
-    pid.setP(ks.kP);
-    pid.setI(ks.kI);
-    pid.setD(ks.kD);
-    pid.setIZone(ks.kF);
-    pid.setFF(ks.iZone);
-
-}
     @Override
     public void set(double speed) {
-        motors.forEach(m -> m.set(speed));
+        m_motors.forEach(m -> m.set(speed));
     }   
 
     @Override
     public double get() {
-        return motors.get(0).get();
+        return m_motors.get(0).get();
     }
 
     @Override
     public void setInverted(boolean isInverted) {
-        motors.forEach(m -> m.setInverted(isInverted));
+        m_motors.forEach(m -> m.setInverted(isInverted));
     }
 
     @Override
     public boolean getInverted() {
-        return motors.get(0).getInverted();
+        return m_motors.get(0).getInverted();
     }
 
     @Override
     public void disable() {
-        motors.forEach(m -> m.disable());
+        m_motors.forEach(m -> m.disable());
     }
 
     @Override
     public void stopMotor() {
-        motors.forEach(m -> m.stopMotor());
+        m_motors.forEach(m -> m.stopMotor());
     }
 
     @Override
     public void pidWrite(double output) {
-        motors.forEach(m -> m.pidWrite(output));
+        m_motors.forEach(m -> m.pidWrite(output));
     }
 
     @Override
     public void setVolt(double i) {
-        motors.forEach(m -> m.setVoltage(i));
+        m_motors.forEach(m -> m.setVoltage(i));
     }
 
     @Override
     public void setSpeed(double i) {
-        setpoint = i;
-        pid.setReference(setpoint, ControlType.kVelocity);
+        m_setpoint = i;
+        m_controller.setReference(m_setpoint, ControlType.kVelocity);
     }
 
     @Override
     public double getSpeed() {
-        return encoder.getVelocity();
+        return m_encoder.getVelocity();
     }
 
     @Override
     public double getDistance() {
-        return encoder.getPosition();
+        return m_encoder.getPosition();
     }
 
     @Override
     public double getSetpoint() {
-        return setpoint;
+        return m_setpoint;
     }
 
     @Override
     public void resetEncoder() {
-        encoder.setPosition(0);
-
+        m_encoder.setPosition(0);
     }
 
 
