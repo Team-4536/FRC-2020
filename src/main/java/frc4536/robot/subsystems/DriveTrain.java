@@ -39,10 +39,9 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void closedLoopDrive(double linLeft, double linRight){ 
-        double angLeft = (linLeft*4.572)/(Math.PI);  //Converts the linear velocity inputed to angular velocity
-        double angRight = (linRight*4.572)/(Math.PI); //w=30vr/pi
-        m_leftMotor.setSpeed(angLeft);
-        m_rightMotor.setSpeed(angRight);
+        double angScalar = 30/(0.1524 * Math.PI);
+        m_leftMotor.setSpeed(linLeft * angScalar);
+        m_rightMotor.setSpeed(linRight * angScalar);
     }
 
     public double getHeading() {
