@@ -14,15 +14,14 @@ private CANEncoder m_encoder;
 private CANPIDController m_controller;
 private double m_setpoint;
 
-    public NEOSmartMotor(PIDConstants ks, double velocityConversionFactor,
-        double positionConversionFactor, int...deviceID){
+    public NEOSmartMotor(PIDConstants ks, int ticks, int...deviceID){
         for(int id : deviceID){
             m_motors.add(new CANSparkMax(id, MotorType.kBrushless));
         }
         m_encoder = m_motors.get(0).getEncoder();
 
-        m_encoder.setVelocityConversionFactor(velocityConversionFactor);
-        m_encoder.setPositionConversionFactor(positionConversionFactor);
+        m_encoder.setVelocityConversionFactor(1.0 / ticks);
+        m_encoder.setPositionConversionFactor(1.0 / ticks);
 
         m_controller = m_motors.get(0).getPIDController();
 

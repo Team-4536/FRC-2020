@@ -39,7 +39,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void closedLoopDrive(double linLeft, double linRight){ 
-        double angScalar = 30/(0.1524 * Math.PI);
+        double angScalar = 1/(2 * 0.1524 * Math.PI);
         m_leftMotor.setSpeed(linLeft * angScalar);
         m_rightMotor.setSpeed(linRight * angScalar);
     }
