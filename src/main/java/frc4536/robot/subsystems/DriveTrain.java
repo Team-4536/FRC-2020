@@ -4,12 +4,14 @@ import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4536.lib.ISmartMotor;
+import frc4536.robot.Robot;
 
 public class DriveTrain extends SubsystemBase {
     private final ISmartMotor m_leftMotor, m_rightMotor; 
@@ -41,6 +43,8 @@ public class DriveTrain extends SubsystemBase {
     ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
 
     public void periodic() {
+        maxAcceleration = Math.max(maxAcceleration, getAcceleration());
+        maxVelocity = Math.max(maxVelocity, getVelocity());
     }
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
@@ -69,7 +73,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public double getAcceleration() {
-        return (getVelocity()-previousSpeed)*50;
+        return Math.hypot(m_navx.getWorldLinearAccelX(), m_navx.getWorldLinearAccelY());
     }
 
     public double getMaxAcceleration() {
