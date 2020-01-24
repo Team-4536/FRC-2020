@@ -17,15 +17,14 @@ public class DriveTrain extends SubsystemBase {
     private final DifferentialDrive m_drive; 
     private final AHRS m_navx;
     DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(0.0));
-
+    double wheelCircumference = 0.0762 * 2 * Math.PI;
     public DriveTrain(ISmartMotor leftMotor, ISmartMotor rightMotor, AHRS navx) {
-        super();
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     }
-
+    
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
         m_drive.curvatureDrive(speed, rotation, quickTurn);
     }
@@ -39,7 +38,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void closedLoopDrive(double linLeft, double linRight){ 
-        double angScalar = 1/(2 * 0.1524 * Math.PI);
+        double angScalar = 1;//1/(2 * 0.1524 * Math.PI);
         m_leftMotor.setSpeed(linLeft * angScalar);
         m_rightMotor.setSpeed(linRight * angScalar);
     }
@@ -51,5 +50,20 @@ public class DriveTrain extends SubsystemBase {
     public void reset() {
         m_leftMotor.resetEncoder();
         m_rightMotor.resetEncoder();
+        m_navx.reset();
+    }
+
+    public double getLeftSpeed() {
+        return m_leftMotor.getSpeed() * wheelCircumference;
+    }
+    public double getRightSpeed() {
+        return m_rightMotor.getSpeed() * wheelCircumference;
+    }
+
+    public double getLeftDistance() {
+        return m_leftMotor.getDistance() * wheelCircumference;
+    }
+    public double getRightDistance() {
+        return m_rightMotor.getDistance() * wheelCircumference;
     }
 }

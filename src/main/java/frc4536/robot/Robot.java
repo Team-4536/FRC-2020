@@ -8,6 +8,7 @@
 package frc4536.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -47,6 +48,9 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Left Distance", m_robotContainer.m_driveTrain.getLeftDistance());
+    SmartDashboard.putNumber("Right Distance", m_robotContainer.m_driveTrain.getRightDistance());
+    SmartDashboard.putNumber("Heading", m_robotContainer.m_driveTrain.getHeading());
   }
 
   /**
@@ -73,6 +77,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.m_driveTrain.reset();
   }
 
   /**
@@ -104,6 +110,9 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    SmartDashboard.putNumber("Left setpoint", 0);
+  
+    SmartDashboard.putNumber("Right setpoint", 0);
   }
 
   /**
@@ -111,5 +120,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    CommandScheduler.getInstance().disable();
+    m_robotContainer.m_driveTrain.closedLoopDrive(SmartDashboard.getNumber("Left setpoint", 0), SmartDashboard.getNumber("Right setpoint", 0));
   }
 }

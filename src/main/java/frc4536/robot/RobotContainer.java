@@ -41,7 +41,7 @@ public class RobotContainer {
   public final RobotFrame m_robotHardware = new TestRobot();
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
+  public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
       m_robotHardware.getDrivetrainRightMotor(), m_robotHardware.getDrivetrainNavX());
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -67,28 +67,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
   }
-
-  private RamseteCommand generateRamsete() {
-    Pose2d start = new Pose2d();
-    Pose2d end = new Pose2d();
-    TrajectoryConfig config = new TrajectoryConfig(); //TODO:Constraints
-    ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0);
-    DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(0);
-
-
-
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config);
-
-    RamseteController controller = new RamseteController();
-
-    return new RamseteCommand(trajectory, 
-    () -> m_driveTrain.getPose(),
-     controller, 
-     kinematics,
-      (left, right) -> m_driveTrain.closedLoopDrive(left, right),
-      m_driveTrain);
-}
 
 
   /**
