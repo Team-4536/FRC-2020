@@ -45,6 +45,7 @@ public class DriveTrain extends SubsystemBase {
     public void setVoltages(double left, double right) {
         m_leftMotor.setVolt(left);
         m_rightMotor.setVolt(right);
+        //TODO: May need to feed the watchdog here, Oblarg added that to the WPILIb example
     }
 
     public double getDistance() {

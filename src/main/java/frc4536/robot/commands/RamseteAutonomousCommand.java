@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc4536.robot.hardware.IRobotConstants.AutoConstants;
 import frc4536.robot.hardware.IRobotConstants.DriveConstants;
 import frc4536.robot.subsystems.DriveTrain;
@@ -22,14 +24,13 @@ import frc4536.robot.subsystems.DriveTrain;
 /**
  * An example command that uses an example subsystem.
  */
-public class RamseteAutonomousCommand extends CommandBase {
+public class RamseteAutonomousCommand extends SequentialCommandGroup {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 
   Trajectory m_trajectory;
   DriveTrain m_driveTrain;
   TrajectoryConfig m_config;
   DifferentialDriveKinematics kDriveKinematics;
-  RamseteCommand m_ramseteCommand;
 
   /**
    * Creates a new ExampleCommand.
@@ -41,47 +42,21 @@ public class RamseteAutonomousCommand extends CommandBase {
     m_driveTrain = driveTrain;
     m_config = config;
     addRequirements(m_driveTrain);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-
-      // Create config for trajectory
-
-    m_ramseteCommand = new RamseteCommand(
-        m_trajectory,
-        m_driveTrain::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                   DriveConstants.kvVoltSecondsPerMeter,
-                                   DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        m_driveTrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0), 
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        (left,right) -> m_driveTrain.setVoltages(left,right),
-        m_driveTrain
+    addCommands(
+      new RamseteCommand(
+          m_trajectory,
+          m_driveTrain::getPose,
+          new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+          new SimpleMotorFeedforward(DriveConstants.ksVolts,
+                                    DriveConstants.kvVoltSecondsPerMeter,
+                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
+          DriveConstants.kDriveKinematics,
+          m_driveTrain::getWheelSpeeds,
+          new PIDController(DriveConstants.kPDriveVel, 0, 0), 
+          new PIDController(DriveConstants.kPDriveVel, 0, 0),
+          (left,right) -> m_driveTrain.setVoltages(left,right),
+          m_driveTrain
+      ).andThen(() -> m_driveTrain.setVoltages(0, 0))
     );
-
-    // Run path following command, then stop at the end.
-    
-  }
-  
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_ramseteCommand.andThen(() -> m_driveTrain.setVoltages(0, 0));
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 }
