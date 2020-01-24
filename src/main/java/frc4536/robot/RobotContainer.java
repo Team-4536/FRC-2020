@@ -27,7 +27,6 @@ import frc4536.robot.hardware.TestRobot;
 import frc4536.robot.hardware.IRobotConstants.AutoConstants;
 import frc4536.robot.hardware.IRobotConstants.DriveConstants;
 import frc4536.robot.subsystems.DriveTrain;
-import frc4536.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -40,7 +39,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final RobotFrame m_robotHardware = new TestRobot();
   
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(), 
                                                          m_robotHardware.getDrivetrainRightMotor(), 
                                                          m_robotHardware.getDrivetrainNavX());

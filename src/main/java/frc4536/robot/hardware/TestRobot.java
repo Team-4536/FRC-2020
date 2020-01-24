@@ -16,8 +16,7 @@ public class TestRobot implements RobotFrame {
     double kP = 10e-5;
     double kI = 1e-6;
     double kD = 0;
-    // TODO: This is nonsense
-    double kTrackWidthMeters = 20;
+    double kTrackWidthMeters = 20; //TODO: This constant needs to be measured
     Encoder m_leftEncoder = new Encoder(0,1);
     Encoder m_rightEncoder = new Encoder(2,3);
     PIDController m_PIDLeft = new PIDController(kP, kI, kD);
