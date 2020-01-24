@@ -1,5 +1,7 @@
 package frc4536.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -23,8 +25,15 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor = rightMotor;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+        //DoubleSupplier distance = () -> this.getDistance();
         ComplexWidget tankDriveTab = Shuffleboard.getTab("Tank Drive Data")
         .add("Tank Drive", m_drive);
+        motorBasicTab.addNumber("Distance Travelled", () -> getDistance());
+        motorBasicTab.addNumber("Heading", () -> getHeading());
+        motorBasicTab.addNumber("Velocity", () -> getVelocity());
+        motorBasicTab.addNumber("Max Velocity", () -> getMaxVelocity());
+        motorBasicTab.addNumber("Acceleration", () -> getAcceleration());
+        motorBasicTab.addNumber("Max Acceleration", () -> getMaxAcceleration());
         maxVelocity = 0;
         maxAcceleration = 0;
         previousSpeed = 0;
@@ -32,13 +41,6 @@ public class DriveTrain extends SubsystemBase {
     ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
 
     public void periodic() {
-        motorBasicTab.add("Distance Travelled", getDistance());
-        motorBasicTab.add("Heading", getHeading());
-        motorBasicTab.add("Velocity", getVelocity());
-        motorBasicTab.add("Max Velocity", Math.max(maxVelocity, getVelocity()));
-        maxVelocity = Math.max(maxVelocity, getVelocity());
-        motorBasicTab.add("Acceleleration", Math.max(maxAcceleration, getAcceleration()));
-        maxAcceleration = Math.max(maxAcceleration, getAcceleration());
     }
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
@@ -62,8 +64,16 @@ public class DriveTrain extends SubsystemBase {
         return (m_leftMotor.getSpeed() + m_rightMotor.getSpeed())/2;
     }
 
+    public double getMaxVelocity() {
+        return maxVelocity;
+    }
+
     public double getAcceleration() {
         return (getVelocity()-previousSpeed)*50;
+    }
+
+    public double getMaxAcceleration() {
+        return maxAcceleration;
     }
 
     public double getDistance() {
