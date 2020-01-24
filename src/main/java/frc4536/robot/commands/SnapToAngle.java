@@ -7,8 +7,10 @@
 
 package frc4536.robot.commands;
 
+import frc4536.lib.Utilities;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -23,7 +25,7 @@ public class SnapToAngle extends CommandBase {
   private final double m_goalAngle;
   //TODO: Implement constants
   private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(500, 500);
-  private final ProfiledPIDController m_controller = new ProfiledPIDController(1, 0, 0.3, m_constraints);
+  private final PIDController m_controller = new PIDController(1, 0, 0.3);
   /**
    * Creates a new ExampleCommand.
    *
@@ -31,7 +33,7 @@ public class SnapToAngle extends CommandBase {
    */
   public SnapToAngle(final DriveTrain driveTrain, double goalAngle) {
     m_driveTrain = driveTrain;
-    m_goalAngle = goalAngle;
+    m_goalAngle = Utilities.angleConverter(goalAngle);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveTrain);
   }
@@ -39,8 +41,8 @@ public class SnapToAngle extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_controller.reset(m_driveTrain.getHeading());
-    m_controller.setGoal(m_goalAngle);
+    m_controller.reset();
+    m_controller.setSetpoint(m_goalAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
