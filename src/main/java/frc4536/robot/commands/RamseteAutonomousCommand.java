@@ -7,15 +7,12 @@
 
 package frc4536.robot.commands;
 
-import java.util.List;
-
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc4536.robot.hardware.IRobotConstants.AutoConstants;
@@ -63,7 +60,7 @@ public class RamseteAutonomousCommand extends CommandBase {
         m_driveTrain::getWheelSpeeds,
         new PIDController(DriveConstants.kPDriveVel, 0, 0), 
         new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        m_driveTrain::setVoltages,
+        (left,right) -> m_driveTrain.setVoltages(left,right),
         m_driveTrain
     );
 
@@ -74,7 +71,7 @@ public class RamseteAutonomousCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_ramseteCommand.andThen(() -> m_driveTrain.setVoltage(0, 0));
+    m_ramseteCommand.andThen(() -> m_driveTrain.setVoltages(0, 0));
   }
 
   // Called once the command ends or is interrupted.

@@ -42,7 +42,7 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor.resetEncoder();
     }
 
-    public void setVoltage(double left, double right) {
+    public void setVoltages(double left, double right) {
         m_leftMotor.setVolt(left);
         m_rightMotor.setVolt(right);
     }
