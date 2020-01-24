@@ -23,8 +23,6 @@ public class SnapToAngle extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain m_driveTrain;
   private final double m_goalAngle;
-  //TODO: Implement constants
-  private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(500, 500);
   private final PIDController m_controller = new PIDController(1, 0, 0.3);
   /**
    * Creates a new ExampleCommand.
