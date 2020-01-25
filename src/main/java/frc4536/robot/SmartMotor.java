@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 class SmartMotor implements SpeedController{
 

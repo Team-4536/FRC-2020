@@ -28,7 +28,6 @@ import frc4536.robot.hardware.IRobotConstants.AutoConstants;
 import frc4536.robot.hardware.IRobotConstants.DriveConstants;
 import frc4536.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

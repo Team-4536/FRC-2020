@@ -25,6 +25,7 @@ public class TestRobot implements RobotFrame {
     VirtualMotor m_intakeMotor = new VirtualMotor(5);
     VirtualMotor m_beltMotor = new VirtualMotor(6);
     AHRS m_navx = new AHRS();
+    // TODO: these need tick values!
     SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)));
     SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)));
 
