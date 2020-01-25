@@ -37,6 +37,18 @@ public class DriveTrain extends SubsystemBase {
         return m_navx.getYaw(); 
     }
 
+    /* (Sasha) I'm keeeping this because it has additional elements, probably will remove it after adding proper updates.
+    public Pose2d getPose() { //TODO: This only works properly when run in a loop.
+        return m_odometry.update(new Rotation2d(getHeading()), m_leftMotor.getSpeed(), m_rightMotor.getSpeed());
+    }
+    */
+
+    public void closedLoopDrive(double linLeft, double linRight){ 
+        double angScalar = 1/(2 * 0.1524 * Math.PI);
+        m_leftMotor.setSpeed(linLeft * angScalar);
+        m_rightMotor.setSpeed(linRight * angScalar);
+    }
+
     public void reset() {
         m_leftMotor.resetEncoder();
         m_rightMotor.resetEncoder();
