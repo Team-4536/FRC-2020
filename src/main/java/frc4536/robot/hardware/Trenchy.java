@@ -15,8 +15,9 @@ public class Trenchy implements RobotFrame {
     AHRS m_navx = new AHRS();
     final PIDConstants kDriveConstants = new PIDConstants(5e-5, 1e-6,0,0);
     double kTrackWidthMeters = 0.53; 
-    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,1.0,1.0,0,1);
-    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,1.0,1.0,2,3);
+    // TODO: tweak tick constant
+    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,32,0,1);
+    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,32,2,3);
 
 
     @Override
