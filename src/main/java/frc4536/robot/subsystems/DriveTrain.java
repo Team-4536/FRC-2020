@@ -1,22 +1,20 @@
 package frc4536.robot.subsystems;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4536.lib.ISmartMotor;
 
 public class DriveTrain extends SubsystemBase {
     private final ISmartMotor m_leftMotor, m_rightMotor; 
     private final DifferentialDrive m_drive; 
+    private final DifferentialDriveOdometry m_odometry;
     private final AHRS m_navx;
-    DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(0.0));
 
     public DriveTrain(ISmartMotor leftMotor, ISmartMotor rightMotor, AHRS navx) {
         super();
@@ -24,6 +22,7 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor = rightMotor;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
     }
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
@@ -34,9 +33,15 @@ public class DriveTrain extends SubsystemBase {
        m_drive.tankDrive(leftSpeed, rightSpeed, false); 
     }
 
+    public double getHeading() {
+        return m_navx.getYaw(); 
+    }
+
+    /* (Sasha) I'm keeeping this because it has additional elements, probably will remove it after adding proper updates.
     public Pose2d getPose() { //TODO: This only works properly when run in a loop.
         return m_odometry.update(new Rotation2d(getHeading()), m_leftMotor.getSpeed(), m_rightMotor.getSpeed());
     }
+    */
 
     public void closedLoopDrive(double linLeft, double linRight){ 
         double angScalar = 1/(2 * 0.1524 * Math.PI);
@@ -44,12 +49,26 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor.setSpeed(linRight * angScalar);
     }
 
-    public double getHeading() {
-        return m_navx.getYaw(); 
-    }
-
     public void reset() {
         m_leftMotor.resetEncoder();
         m_rightMotor.resetEncoder();
+    }
+
+    public void setVoltages(double left, double right) {
+        m_leftMotor.setVolt(left);
+        m_rightMotor.setVolt(right);
+        //TODO: May need to feed the watchdog here, Oblarg added that to the WPILIb example
+    }
+
+    public double getDistance() {
+        return (m_leftMotor.getDistance() + m_rightMotor.getDistance())/2;
+    }
+
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(m_rightMotor.getSpeed(), m_leftMotor.getSpeed());
     }
 }
