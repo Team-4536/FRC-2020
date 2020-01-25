@@ -23,9 +23,7 @@ public class SnapToAngle extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain m_driveTrain;
   private final double m_goalAngle;
-  //TODO: Implement constants
-  private final TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(500, 500);
-  private final PIDController m_controller = new PIDController(1, 0, 0.3);
+  private final PIDController m_controller = new PIDController(0.0135, 0.01296, 0.0);
   /**
    * Creates a new ExampleCommand.
    *
@@ -43,6 +41,7 @@ public class SnapToAngle extends CommandBase {
   public void initialize() {
     m_controller.reset();
     m_controller.setSetpoint(m_goalAngle);
+    m_controller.enableContinuousInput(-180, 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
