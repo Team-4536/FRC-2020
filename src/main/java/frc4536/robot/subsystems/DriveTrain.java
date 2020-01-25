@@ -89,6 +89,8 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor.setVolt(right);
         //TODO: May need to feed the watchdog here, Oblarg added that to the WPILIb example
 
+    }
+    
     public double getVelocity() {
         return (m_leftMotor.getSpeed() + m_rightMotor.getSpeed())/2;
     }
