@@ -16,7 +16,6 @@ public class TestRobot implements RobotFrame {
     double kP = 10e-5;
     double kI = 1e-6;
     double kD = 0;
-    double kTrackWidthMeters = 0.71; 
     Encoder m_leftEncoder = new Encoder(0,1);
     Encoder m_rightEncoder = new Encoder(2,3);
     PIDController m_PIDLeft = new PIDController(kP, kI, kD);
@@ -43,7 +42,7 @@ public class TestRobot implements RobotFrame {
         // Example value only - as above, this must be tuned for your drive!
         public static final double kPDriveVel = 8.5;
         // I made this up 
-        public static final double kTrackWidthMeters = 0.2;
+        public static final double kTrackWidthMeters = 0.71;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
     }
 

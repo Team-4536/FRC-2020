@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -22,8 +23,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import frc4536.robot.commands.RamseteAutonomousCommand;
 import frc4536.robot.commands.TankDriveCommand;
-import frc4536.robot.hardware.RobotFrame;
-import frc4536.robot.hardware.TestRobot;
+import frc4536.robot.hardware.*;
 import frc4536.robot.hardware.IRobotConstants.AutoConstants;
 import frc4536.robot.hardware.IRobotConstants.DriveConstants;
 import frc4536.robot.subsystems.DriveTrain;
@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final RobotFrame m_robotHardware = new TestRobot();
+  public final RobotFrame m_robotHardware = new Trenchy();
   
 
   //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -48,19 +48,22 @@ public class RobotContainer {
 
 
 
+                                                         
+  DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(DriveConstants.kTrackWidthMeters);
   // Create a voltage constraint to ensure we don't accelerate too fast
   TrajectoryConstraint autoVoltageConstraint =
       new DifferentialDriveVoltageConstraint(
           new SimpleMotorFeedforward(DriveConstants.ksVolts,
                                       DriveConstants.kvVoltSecondsPerMeter,
                                       DriveConstants.kaVoltSecondsSquaredPerMeter),
-                                      DriveConstants.kDriveKinematics,
+                                      // TODO pass from constants
+                                      m_kinematics,
                                       10);
   TrajectoryConfig m_config =
       new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                            AutoConstants.kMaxAccelerationMetersPerSecondSquared)
           // Add kinematics to ensure max speed is actually obeyed
-          .setKinematics(DriveConstants.kDriveKinematics)
+          .setKinematics(m_kinematics)
           // Apply the voltage constraint
           .addConstraint(autoVoltageConstraint);
 
