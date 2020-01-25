@@ -17,7 +17,6 @@ public class VirtualMotor implements SpeedController, Sendable {
         this.m_name = name;
         this.m_port = port;
 
-        //TODO: comtemplate moving shuffleboard interaction
         Shuffleboard.getTab("Virtual Motors")
                 .add(((this.m_name.isEmpty()) ? "Virtual Motor" : this.m_name) + " " + this.m_port, this);
     }

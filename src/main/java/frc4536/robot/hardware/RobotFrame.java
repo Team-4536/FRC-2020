@@ -4,7 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SpeedController;
 import frc4536.lib.ISmartMotor;
 
-public interface RobotFrame {
+public interface RobotFrame extends IRobotConstants {
     ISmartMotor getDrivetrainRightMotor(); 
     ISmartMotor getDrivetrainLeftMotor();
     SpeedController getShooterFlywheelMotor();
