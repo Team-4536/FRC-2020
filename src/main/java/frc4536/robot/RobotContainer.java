@@ -23,9 +23,11 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import frc4536.robot.commands.RamseteAutonomousCommand;
 import frc4536.robot.commands.TankDriveCommand;
-import frc4536.robot.hardware.*;
-import frc4536.robot.hardware.IRobotConstants.AutoConstants;
-import frc4536.robot.hardware.IRobotConstants.DriveConstants;
+import frc4536.robot.hardware.Trenchy.*;
+import frc4536.robot.hardware.RobotConstants;
+import frc4536.robot.hardware.RobotFrame;
+import frc4536.robot.hardware.TestRobot;
+import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -38,7 +40,8 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final RobotFrame m_robotHardware = new Trenchy();
+  public final RobotFrame m_robotHardware = new TestRobot();
+  public final RobotConstants m_constants = m_robotHardware.getConstants();
   
 
   //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -49,21 +52,19 @@ public class RobotContainer {
 
 
                                                          
-  DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(DriveConstants.kTrackWidthMeters);
   // Create a voltage constraint to ensure we don't accelerate too fast
   TrajectoryConstraint autoVoltageConstraint =
       new DifferentialDriveVoltageConstraint(
-          new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                      DriveConstants.kvVoltSecondsPerMeter,
-                                      DriveConstants.kaVoltSecondsSquaredPerMeter),
-                                      // TODO pass from constants
-                                      m_kinematics,
+          new SimpleMotorFeedforward(m_constants.ksVolts,
+                                      m_constants.kvVoltSecondsPerMeter,
+                                      m_constants.kaVoltSecondsSquaredPerMeter),
+                                      m_constants.kDriveKinematics,
                                       10);
   TrajectoryConfig m_config =
-      new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-                           AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+      new TrajectoryConfig(m_constants.kMaxSpeedMetersPerSecond,
+                           m_constants.kMaxAccelerationMetersPerSecondSquared)
           // Add kinematics to ensure max speed is actually obeyed
-          .setKinematics(m_kinematics)
+          .setKinematics(m_constants.kDriveKinematics)
           // Apply the voltage constraint
           .addConstraint(autoVoltageConstraint);
 
@@ -80,7 +81,7 @@ public class RobotContainer {
          // Pass config
          m_config
      );
-  private final RamseteAutonomousCommand m_autoCommand = new RamseteAutonomousCommand(m_driveTrain, m_trajectory, m_config);
+  private final RamseteAutonomousCommand m_autoCommand = new RamseteAutonomousCommand(m_driveTrain, m_trajectory, m_config, m_constants);
   private final XboxController m_driveController = new XboxController(0);
 
   /**

@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc4536.robot.hardware.IRobotConstants.AutoConstants;
-import frc4536.robot.hardware.IRobotConstants.DriveConstants;
+import frc4536.robot.hardware.RobotConstants;
 import frc4536.robot.subsystems.DriveTrain;
 
 /**
@@ -35,7 +34,7 @@ public class RamseteAutonomousCommand extends SequentialCommandGroup {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RamseteAutonomousCommand(DriveTrain driveTrain, Trajectory trajectory, TrajectoryConfig config) {
+  public RamseteAutonomousCommand(DriveTrain driveTrain, Trajectory trajectory, TrajectoryConfig config, RobotConstants constants) {
     m_trajectory = trajectory;
     m_driveTrain = driveTrain;
     m_config = config;
@@ -44,14 +43,14 @@ public class RamseteAutonomousCommand extends SequentialCommandGroup {
       new RamseteCommand(
           m_trajectory,
           m_driveTrain::getPose,
-          new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-          new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                    DriveConstants.kvVoltSecondsPerMeter,
-                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
-          DriveConstants.kDriveKinematics,
+          new RamseteController(constants.kRamseteB, constants.kRamseteZeta),
+          new SimpleMotorFeedforward(constants.ksVolts,
+                                    constants.kvVoltSecondsPerMeter,
+                                    constants.kaVoltSecondsSquaredPerMeter),
+          constants.kDriveKinematics,
           m_driveTrain::getWheelSpeeds,
-          new PIDController(DriveConstants.kPDriveVel, 0, 0), 
-          new PIDController(DriveConstants.kPDriveVel, 0, 0),
+          new PIDController(constants.kPDriveVel, 0, 0), 
+          new PIDController(constants.kPDriveVel, 0, 0),
           (left,right) -> m_driveTrain.setVoltages(left,right),
           m_driveTrain
       ).andThen(() -> m_driveTrain.setVoltages(0, 0))
