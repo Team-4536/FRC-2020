@@ -2,27 +2,24 @@ package frc4536.robot.lib;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
-
-
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.Encoder;
 
-public class SmartMotor implements ISmartMotor {
+public class SmartMotor extends PIDSubsystem implements ISmartMotor {
     //private final ArrayList<SpeedController> motors = new ArrayList<>();
     private final SpeedControllerGroup m_motors;
     private final Encoder m_encoder;
     private final PIDController m_controller;
+    private final double m_feedForward;
 
-    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors, int ticks) {
+    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors, int ticks, double maxSpeed) {
+        super(controller);
         m_motors = motors;
         m_encoder = encoder;
         m_controller = controller;
+        m_feedForward = 1.0/maxSpeed;
         m_encoder.setDistancePerPulse(1.0 / ticks);
-    }
-
-    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors) {
-        m_motors = motors;
-        m_encoder = encoder;
-        m_controller = controller;
+        super.enable();
     }
     
     @Override
@@ -64,13 +61,11 @@ public class SmartMotor implements ISmartMotor {
     @Override
     public void setVolt(double i) {
         m_motors.setVoltage(i);
-
     }
 
     @Override
     public void setSpeed(double i) {
-        setVolt(m_controller.calculate(m_encoder.getRate(), i));
-
+        setSetpoint(i);
     }
 
     @Override
@@ -93,6 +88,18 @@ public class SmartMotor implements ISmartMotor {
        m_encoder.reset();
 
     }
+
+    @Override
+    protected void useOutput(double output, double setpoint) {
+        this.setVoltage(output + m_feedForward);
+    }
+
+    @Override
+    protected double getMeasurement() {
+        return getSpeed();
+    }
+
+    
 
 
 }
