@@ -49,10 +49,11 @@ public class DriveTrain extends SubsystemBase {
     }
     ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
 
+    @Override
     public void periodic() {
         maxAcceleration = Math.max(maxAcceleration, getAcceleration());
         maxVelocity = Math.max(maxVelocity, getVelocity());
-
+        m_odometry.update(Rotation2d.fromDegrees(getHeading()), m_leftMotor.getDistance(), m_rightMotor.getDistance());
     }
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {

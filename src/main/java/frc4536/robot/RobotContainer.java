@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -23,11 +22,9 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import frc4536.robot.commands.RamseteAutonomousCommand;
 import frc4536.robot.commands.TankDriveCommand;
-import frc4536.robot.hardware.Trenchy.*;
 import frc4536.robot.hardware.RobotConstants;
 import frc4536.robot.hardware.RobotFrame;
 import frc4536.robot.hardware.TestRobot;
-import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
 
