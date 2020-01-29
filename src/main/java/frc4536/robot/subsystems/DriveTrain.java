@@ -78,6 +78,7 @@ public class DriveTrain extends SubsystemBase {
         double angScalar = 1/(2 * 0.1524 * Math.PI);
         m_leftMotor.setSpeed(linLeft * angScalar);
         m_rightMotor.setSpeed(linRight * angScalar);
+        System.out.println("left: " + m_leftMotor.getSetpoint() + "right: " + m_rightMotor.getSetpoint());
     }
 
     public void reset() {

@@ -45,7 +45,7 @@ public class RamseteAutonomousCommand extends SequentialCommandGroup {
           m_driveTrain::getPose,
           new RamseteController(constants.kRamseteB, constants.kRamseteZeta),
           constants.kDriveKinematics,
-          (left,right) -> m_driveTrain.setSpeeds(left, right),
+          (left,right) -> m_driveTrain.closedLoopDrive(left, right),
           m_driveTrain
       ).andThen(() -> m_driveTrain.setVoltages(0, 0))
     );
