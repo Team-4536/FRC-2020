@@ -25,6 +25,9 @@ public class Robot extends TimedRobot {
   AHRS navx = new AHRS();
   XboxController x = new XboxController(0);
 
+  
+
+
   @Override
   public void robotInit(){
   }
@@ -34,4 +37,10 @@ public class Robot extends TimedRobot {
     drive.arcadeDrive(-x.getY(Hand.kLeft), x.getX(Hand.kRight));
     SmartDashboard.putNumber("Heading", navx.getYaw());
   }
+
+  public void autonomousPeriodic() {
+    left.set(left.getController().calculate(left.getEncoder().getDistance(), 10));
+    right.set(right.getController().calculate(right.getEncoder().getDistance(), 10));
+  }
+
 }
