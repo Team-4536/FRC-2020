@@ -19,17 +19,17 @@ public class Robot extends TimedRobot {
   SpeedControllerGroup leftMotors = new SpeedControllerGroup(new Spark(0), new Spark(1)),
   rightMotors = new SpeedControllerGroup(new Spark(2), new Spark(3));
 
-  SmartMotor left = new SmartMotor(new Encoder(0,1), new PIDController(0.1,0,0),leftMotors, 2048,8.0);
+  SmartMotor left = new SmartMotor(new Encoder(0,1), new PIDController(0.1,0.1,0),leftMotors, 2048,8.0);
   SmartMotor right = new SmartMotor(new Encoder(2,3), new PIDController(0.1,0,0),rightMotors, 2048,8.0);
   DifferentialDrive drive = new DifferentialDrive(left,right);
   AHRS navx = new AHRS();
   XboxController x = new XboxController(0);
 
-  
-
 
   @Override
   public void robotInit(){
+    // right.setInverted(true);
+
   }
 
   @Override
@@ -39,8 +39,8 @@ public class Robot extends TimedRobot {
   }
 
   public void autonomousPeriodic() {
-    left.set(left.getController().calculate(left.getEncoder().getDistance(), 10));
-    right.set(right.getController().calculate(right.getEncoder().getDistance(), 10));
+    left.set(left.getController().calculate(left.getEncoder().getRate(), 1));
+    right.set(right.getController().calculate(right.getEncoder().getRate(), -1));
   }
 
 }

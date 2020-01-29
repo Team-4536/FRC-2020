@@ -83,11 +83,20 @@ public class SmartMotor extends PIDSubsystem implements ISmartMotor {
         return m_controller.getSetpoint();
     }
 
+    public Encoder getEncoder(){
+        return m_encoder;
+    }
+    public PIDController getController(){
+        return m_controller;
+    }
+
     @Override
     public void resetEncoder() {
        m_encoder.reset();
 
     }
+
+
 
     @Override
     protected void useOutput(double output, double setpoint) {
