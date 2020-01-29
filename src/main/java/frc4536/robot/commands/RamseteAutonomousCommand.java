@@ -44,14 +44,8 @@ public class RamseteAutonomousCommand extends SequentialCommandGroup {
           m_trajectory,
           m_driveTrain::getPose,
           new RamseteController(constants.kRamseteB, constants.kRamseteZeta),
-          new SimpleMotorFeedforward(constants.ksVolts,
-                                    constants.kvVoltSecondsPerMeter,
-                                    constants.kaVoltSecondsSquaredPerMeter),
           constants.kDriveKinematics,
-          m_driveTrain::getWheelSpeeds,
-          new PIDController(constants.kPDriveVel, 0, 0), 
-          new PIDController(constants.kPDriveVel, 0, 0),
-          (left,right) -> m_driveTrain.setVoltages(left,right),
+          (left,right) -> m_driveTrain.setSpeeds(left, right),
           m_driveTrain
       ).andThen(() -> m_driveTrain.setVoltages(0, 0))
     );
