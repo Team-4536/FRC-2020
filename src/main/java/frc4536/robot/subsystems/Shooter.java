@@ -8,15 +8,15 @@
 package frc4536.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4536.lib.SmartMotor;
+import frc4536.lib.ISmartMotor;
 
 public class Shooter extends SubsystemBase {
-    private SmartMotor shooterTop;
-    private SmartMotor shooterBottom;
+    private ISmartMotor shooterTop;
+    private ISmartMotor shooterBottom;
   /**
    * Creates a new Shooter.
    */
-  public Shooter(SmartMotor top, SmartMotor bottom) {
+  public Shooter(ISmartMotor top, ISmartMotor bottom) {
     shooterTop = top;
     shooterBottom = bottom;
   }
@@ -28,8 +28,9 @@ public class Shooter extends SubsystemBase {
   }
 
   
-  public void eject(double speed){
-    
+  public void setRPS(double speed){
+    shooterTop.setSpeed(speed);
+    shooterBottom.setSpeed(-speed);
   }
 
 }
