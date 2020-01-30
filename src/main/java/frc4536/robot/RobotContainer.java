@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc4536.robot.commands.RamseteAutonomousCommand;
 import frc4536.robot.commands.TankDriveCommand;
 import frc4536.robot.hardware.RobotConstants;
@@ -46,39 +47,6 @@ public class RobotContainer {
                                                          m_robotHardware.getDrivetrainRightMotor(), 
                                                          m_robotHardware.getDrivetrainNavX());
 
-
-
-                                                         
-  // Create a voltage constraint to ensure we don't accelerate too fast
-  TrajectoryConstraint autoVoltageConstraint =
-      new DifferentialDriveVoltageConstraint(
-          new SimpleMotorFeedforward(m_constants.ksVolts,
-                                      m_constants.kvVoltSecondsPerMeter,
-                                      m_constants.kaVoltSecondsSquaredPerMeter),
-                                      m_constants.kDriveKinematics,
-                                      10);
-  TrajectoryConfig m_config =
-      new TrajectoryConfig(m_constants.kMaxSpeedMetersPerSecond,
-                           m_constants.kMaxAccelerationMetersPerSecondSquared)
-          // Add kinematics to ensure max speed is actually obeyed
-          .setKinematics(m_constants.kDriveKinematics)
-          // Apply the voltage constraint
-          .addConstraint(autoVoltageConstraint);
-
-  private final Trajectory m_trajectory = TrajectoryGenerator.generateTrajectory(
-         // Start at the origin facing the +X direction
-         new Pose2d(0, 0, new Rotation2d(0)),
-         // Pass through these two interior waypoints, making an 's' curve path
-         List.of(
-             new Translation2d(1, 1),
-             new Translation2d(2, -1)
-         ),
-         // End 3 meters straight ahead of where we started, facing forward
-         new Pose2d(3, 0, new Rotation2d(0)),
-         // Pass config
-         m_config
-     );
-  private final RamseteAutonomousCommand m_autoCommand = new RamseteAutonomousCommand(m_driveTrain, m_trajectory, m_config, m_constants);
   private final XboxController m_driveController = new XboxController(0);
 
   /**
@@ -110,7 +78,40 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+    // Create a voltage constraint to ensure we don't accelerate too fast
+    TrajectoryConstraint autoVoltageConstraint =
+            new DifferentialDriveVoltageConstraint(
+                    new SimpleMotorFeedforward(m_constants.ksVolts,
+                            m_constants.kvVoltSecondsPerMeter,
+                            m_constants.kaVoltSecondsSquaredPerMeter),
+                    m_constants.kDriveKinematics,
+                    10);
+    TrajectoryConfig m_config =
+            new TrajectoryConfig(m_constants.kMaxSpeedMetersPerSecond,
+                    m_constants.kMaxAccelerationMetersPerSecondSquared)
+                    // Add kinematics to ensure max speed is actually obeyed
+                    .setKinematics(m_constants.kDriveKinematics)
+                    // Apply the voltage constraint
+                    .addConstraint(autoVoltageConstraint);
 
-    return m_autoCommand;
+    final Trajectory m_trajectory = TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(
+                    new Translation2d(1, 1),
+                    new Translation2d(2, -1)
+            ),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(3, 0, new Rotation2d(0)),
+            // Pass config
+            m_config
+    );
+
+    return new RamseteAutonomousCommand(m_driveTrain, m_trajectory, m_config, m_constants);
+  }
+
+  public Command testRoutine(){
+    return new FunctionalCommand()
   }
 }

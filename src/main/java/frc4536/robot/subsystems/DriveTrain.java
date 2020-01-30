@@ -1,10 +1,6 @@
 package frc4536.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -15,7 +11,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4536.lib.ISmartMotor;
-import frc4536.robot.Robot;
 
 public class DriveTrain extends SubsystemBase {
     private final ISmartMotor m_leftMotor, m_rightMotor; 
@@ -81,7 +76,7 @@ public class DriveTrain extends SubsystemBase {
         System.out.println("left: " + m_leftMotor.getSetpoint() + "right: " + m_rightMotor.getSetpoint());
     }
 
-    public void reset() {
+    public void resetEncoders() {
         m_leftMotor.resetEncoder();
         m_rightMotor.resetEncoder();
     }
@@ -90,7 +85,6 @@ public class DriveTrain extends SubsystemBase {
         m_leftMotor.setVolt(left);
         m_rightMotor.setVolt(right);
         //TODO: May need to feed the watchdog here, Oblarg added that to the WPILIb example
-
     }
     
     public double getVelocity() {
@@ -102,7 +96,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public double getAcceleration() {
-        return Math.hypot(m_navx.getWorldLinearAccelX(), m_navx.getWorldLinearAccelY());
+        return Math.hypot(m_navx.getWorldLinearAccelX() * 9.8, m_navx.getWorldLinearAccelY() * 9.8); //Acceleration is in Gs by the NavX, convert to m/s^2
     }
 
     public double getMaxAcceleration() {

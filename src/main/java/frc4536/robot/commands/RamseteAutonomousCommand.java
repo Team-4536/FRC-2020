@@ -7,12 +7,11 @@
 
 package frc4536.robot.commands;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc4536.robot.hardware.RobotConstants;
@@ -39,6 +38,7 @@ public class RamseteAutonomousCommand extends SequentialCommandGroup {
     m_driveTrain = driveTrain;
     m_config = config;
     addRequirements(m_driveTrain);
+    addCommands(new InstantCommand(driveTrain::resetEncoders));
     addCommands(
       new RamseteCommand(
           m_trajectory,
