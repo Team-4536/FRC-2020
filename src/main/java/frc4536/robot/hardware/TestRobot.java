@@ -22,6 +22,8 @@ public class TestRobot implements RobotFrame {
     VirtualMotor m_flywheelMotor = new VirtualMotor(4);
     VirtualMotor m_intakeMotor = new VirtualMotor(5);
     VirtualMotor m_beltMotor = new VirtualMotor(6);
+    VirtualMotor m_climberArmMotor = new VirtualMotor(7);
+    VirtualMotor m_liftMotor = new VirtualMotor(8);
     AHRS m_navx = new AHRS();
     SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)), 2048);
     SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)), 2048);
@@ -35,6 +37,16 @@ public class TestRobot implements RobotFrame {
     @Override
     public ISmartMotor getDrivetrainLeftMotor() {
         return m_leftMotors;
+    }
+
+    @Override
+    public SpeedController getClimberArmMotor() {
+        return m_climberArmMotor;
+    }
+
+    @Override
+    public SpeedController getLiftMotor() {
+        return m_liftMotor;
     }
 
     @Override
