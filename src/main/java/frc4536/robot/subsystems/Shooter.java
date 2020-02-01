@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4536.lib.ISmartMotor;
 
 public class Shooter extends SubsystemBase {
-    private ISmartMotor shooterTop;
-    private ISmartMotor shooterBottom;
+    private ISmartMotor m_shooterTop;
+    private ISmartMotor m_shooterBottom;
   /**
    * Creates a new Shooter.
    */
   public Shooter(ISmartMotor top, ISmartMotor bottom) {
-    shooterTop = top;
-    shooterBottom = bottom;
+    m_shooterTop = top;
+    m_shooterBottom = bottom;
   }
 
   @Override
@@ -29,8 +29,8 @@ public class Shooter extends SubsystemBase {
 
   
   public void setRPS(double speed){
-    shooterTop.setSpeed(speed);
-    shooterBottom.setSpeed(-speed);
+    m_shooterTop.setSpeed(speed);
+    m_shooterBottom.setSpeed(-speed);
   }
 
 }
