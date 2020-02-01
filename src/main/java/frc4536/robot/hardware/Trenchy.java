@@ -5,10 +5,12 @@ import edu.wpi.first.wpilibj.SpeedController;
 import frc4536.lib.ISmartMotor;
 import frc4536.lib.NEOSmartMotor;
 import frc4536.lib.VirtualMotor;
+import frc4536.lib.VirtualSmartMotor;
 
 public class Trenchy implements RobotFrame {
 
-    VirtualMotor fakeFlywheelMotor = new VirtualMotor(4);
+    VirtualSmartMotor m_topFlywheel = new VirtualSmartMotor(3);
+    VirtualSmartMotor m_bottomFlywheel = new VirtualSmartMotor(4);
     VirtualMotor fakeIntakeMotor = new VirtualMotor(5);
     VirtualMotor fakeBeltMotor = new VirtualMotor(6);
     AHRS navx = new AHRS();
@@ -30,12 +32,6 @@ public class Trenchy implements RobotFrame {
     }
 
     @Override
-    public SpeedController getShooterFlywheelMotor() {
-        // TODO Auto-generated method stub
-        return fakeFlywheelMotor;
-    }
-
-    @Override
     public SpeedController getIntakeMotor() {
         // TODO Auto-generated method stub
         return fakeIntakeMotor;
@@ -51,6 +47,16 @@ public class Trenchy implements RobotFrame {
     public AHRS getDrivetrainNavX() {
         // TODO Auto-generated method stub
         return navx;
+    }
+
+    @Override
+    public ISmartMotor getTopShooterFlywheelMotor() {
+        return m_topFlywheel;
+    }
+
+    @Override
+    public ISmartMotor getBottomShooterFlywheelMotor() {
+        return m_bottomFlywheel;
     }
 
 }

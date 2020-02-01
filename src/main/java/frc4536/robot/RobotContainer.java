@@ -15,6 +15,7 @@ import frc4536.robot.hardware.RobotFrame;
 import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.ExampleSubsystem;
+import frc4536.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -31,7 +32,8 @@ public class RobotContainer {
   private final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(), 
                                                          m_robotHardware.getDrivetrainRightMotor(), 
                                                          m_robotHardware.getDrivetrainNavX());
-
+  private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
+                                                m_robotHardware.getBottomShooterFlywheelMotor());
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final XboxController m_driveController = new XboxController(0);
 

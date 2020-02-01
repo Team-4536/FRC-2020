@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import frc4536.lib.ISmartMotor;
 import frc4536.lib.SmartMotor;
 import frc4536.lib.VirtualMotor;
+import frc4536.lib.VirtualSmartMotor;
 
 public class TestRobot implements RobotFrame {
     double kp = 10e-5;
@@ -25,7 +26,8 @@ public class TestRobot implements RobotFrame {
     Encoder rightencoder = new Encoder(2,3);
     PIDController pidleft = new PIDController(kp, ki, kd);
     PIDController pidright = new PIDController(kp, ki, kd);
-    VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
+    VirtualSmartMotor m_topFlywheel = new VirtualSmartMotor(3);
+    VirtualSmartMotor m_bottomFlywheel = new VirtualSmartMotor(4);
     VirtualMotor fakeintakemotor = new VirtualMotor(5);
     VirtualMotor fakebeltmotor = new VirtualMotor(6);
     AHRS navx = new AHRS();
@@ -47,12 +49,6 @@ public class TestRobot implements RobotFrame {
     }
 
     @Override
-    public SpeedController getShooterFlywheelMotor() {
-        // TODO Auto-generated method stub
-        return fakeflywheelmotor;
-    }
-
-    @Override
     public SpeedController getIntakeMotor() {
         // TODO Auto-generated method stub
         return fakeintakemotor;
@@ -68,6 +64,16 @@ public class TestRobot implements RobotFrame {
     public AHRS getDrivetrainNavX() {
         // TODO Auto-generated method stub
         return navx;
+    }
+
+    @Override
+    public ISmartMotor getTopShooterFlywheelMotor() {
+        return m_topFlywheel;
+    }
+
+    @Override
+    public ISmartMotor getBottomShooterFlywheelMotor() {
+        return m_bottomFlywheel;
     }
 
 }
