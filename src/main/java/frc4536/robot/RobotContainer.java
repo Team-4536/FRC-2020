@@ -10,6 +10,8 @@ package frc4536.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc4536.robot.commands.ExampleCommand;
+import frc4536.robot.commands.ManualShooterCommand;
+import frc4536.robot.commands.Shoot;
 import frc4536.robot.commands.TankDriveCommand;
 import frc4536.robot.hardware.RobotFrame;
 import frc4536.robot.hardware.Trenchy;
@@ -48,6 +50,8 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft), 
                                                         () -> m_driveController.getX(GenericHID.Hand.kLeft), 
                                                         m_driveTrain));
+
+    m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
   
   }
 

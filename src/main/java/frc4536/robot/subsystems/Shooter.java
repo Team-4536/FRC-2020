@@ -30,7 +30,12 @@ public class Shooter extends SubsystemBase {
   
   public void setRPS(double speed){
     m_shooterTop.setSpeed(speed);
-    m_shooterBottom.setSpeed(-speed);
+    m_shooterBottom.setSpeed(speed);
+  }
+
+  public void setPower(double power) {
+    m_shooterTop.setVoltage(power);
+    m_shooterBottom.setVoltage(power);
   }
 
 }
