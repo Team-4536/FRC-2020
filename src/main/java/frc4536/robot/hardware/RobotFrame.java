@@ -12,5 +12,7 @@ public interface RobotFrame {
     SpeedController getIntakeMotor();
     SpeedController getBeltMotor();
     AHRS getDrivetrainNavX();
+    SpeedController getClimberArmMotor();
+    SpeedController getLiftMotor();
 }
 

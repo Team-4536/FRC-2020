@@ -12,11 +12,11 @@ public class SmartMotor implements ISmartMotor {
     private final Encoder m_encoder;
     private final PIDController m_controller;
 
-    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors) {
+    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors, int ticks) {
         m_motors = motors;
         m_encoder = encoder;
         m_controller = controller;
-
+        m_encoder.setDistancePerPulse(1.0 / ticks);
     }
 
     @Override
