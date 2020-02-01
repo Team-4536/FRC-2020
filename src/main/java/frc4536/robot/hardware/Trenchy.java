@@ -4,49 +4,48 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SpeedController;
 import frc4536.lib.ISmartMotor;
 import frc4536.lib.NEOSmartMotor;
+import frc4536.lib.PIDConstants;
 import frc4536.lib.VirtualMotor;
 import frc4536.lib.VirtualSmartMotor;
 
 public class Trenchy implements RobotFrame {
 
-    VirtualSmartMotor m_topFlywheel = new VirtualSmartMotor(3);
-    VirtualSmartMotor m_bottomFlywheel = new VirtualSmartMotor(4);
-    VirtualMotor fakeIntakeMotor = new VirtualMotor(5);
-    VirtualMotor fakeBeltMotor = new VirtualMotor(6);
-    AHRS navx = new AHRS();
-    NEOSmartMotor leftMotors = new NEOSmartMotor(new double[]{5e-5, 1e-6,0,0},
-        0,1);
-    NEOSmartMotor rightMotors = new NEOSmartMotor(new double[]{5e-5, 1e-6,0,0},
-        2,3);
+    VirtualMotor m_flywheelMotor = new VirtualMotor(4);
+    VirtualMotor m_intakeMotor = new VirtualMotor(5);
+    VirtualMotor m_beltMotor = new VirtualMotor(6);
+    AHRS m_navx = new AHRS();
+    final PIDConstants kDriveConstants = new PIDConstants(5e-5, 1e-6,0,0);
+    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,1,2);
+    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,3,4);
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
-        // TODO Auto-generated method stub
-        return rightMotors;
+        return m_rightMotors;
     }
 
     @Override
     public ISmartMotor getDrivetrainLeftMotor() {
-        // TODO Auto-generated method stub
-        return leftMotors;
+        return m_leftMotors;
+    }
+
+    @Override
+    public SpeedController getShooterFlywheelMotor() {
+        return m_flywheelMotor;
     }
 
     @Override
     public SpeedController getIntakeMotor() {
-        // TODO Auto-generated method stub
-        return fakeIntakeMotor;
+        return m_intakeMotor;
     }
 
     @Override
     public SpeedController getBeltMotor() {
-        // TODO Auto-generated method stub
-        return fakeBeltMotor;
+        return m_beltMotor;
     }
   
     @Override
     public AHRS getDrivetrainNavX() {
-        // TODO Auto-generated method stub
-        return navx;
+        return m_navx;
     }
 
     @Override

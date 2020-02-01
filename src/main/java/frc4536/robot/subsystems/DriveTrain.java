@@ -2,7 +2,6 @@ package frc4536.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4536.lib.ISmartMotor;
@@ -19,8 +18,6 @@ public class DriveTrain extends SubsystemBase {
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     }
-
-    // TODO: Add shuffleboard logging!
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
         m_drive.curvatureDrive(speed, rotation, quickTurn);

@@ -14,6 +14,7 @@ import frc4536.robot.commands.ManualShooterCommand;
 import frc4536.robot.commands.Shoot;
 import frc4536.robot.commands.TankDriveCommand;
 import frc4536.robot.hardware.RobotFrame;
+import frc4536.robot.hardware.TestRobot;
 import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.ExampleSubsystem;
