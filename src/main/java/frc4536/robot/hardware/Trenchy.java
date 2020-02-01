@@ -8,6 +8,7 @@ import frc4536.lib.ISmartMotor;
 import frc4536.lib.NEOSmartMotor;
 import frc4536.lib.PIDConstants;
 import frc4536.lib.VirtualMotor;
+import frc4536.lib.VirtualSmartMotor;
 
 public class Trenchy implements RobotFrame {
 
@@ -18,8 +19,8 @@ public class Trenchy implements RobotFrame {
     Spark m_liftMotor = new Spark(8);
     AHRS m_navx = new AHRS();
     final PIDConstants kDriveConstants = new PIDConstants(5e-5, 1e-6,0,0);
-    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,1,0,1);
-    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,1,2,3);
+    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,1,1,2);
+    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,1,3,4);
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
@@ -59,6 +60,16 @@ public class Trenchy implements RobotFrame {
     @Override
     public AHRS getDrivetrainNavX() {
         return m_navx;
+    }
+
+    @Override
+    public ISmartMotor getTopShooterFlywheelMotor() {
+        return m_topFlywheel;
+    }
+
+    @Override
+    public ISmartMotor getBottomShooterFlywheelMotor() {
+        return m_bottomFlywheel;
     }
 
 }

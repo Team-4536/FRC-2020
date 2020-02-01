@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import frc4536.robot.commands.ExampleCommand;
+import frc4536.robot.commands.ManualShooterCommand;
+import frc4536.robot.commands.Shoot;
 import frc4536.robot.commands.TankDriveCommand;
 import frc4536.robot.commands.WinchCommand;
 import frc4536.robot.hardware.RobotFrame;
@@ -28,6 +30,7 @@ import frc4536.robot.hardware.Trenchy;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.ExampleSubsystem;
 import frc4536.robot.subsystems.Winch;
+import frc4536.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -41,15 +44,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final RobotFrame m_robotHardware = new TestRobot();
+  public final RobotFrame m_robotHardware = new Trenchy();
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
-      m_robotHardware.getDrivetrainRightMotor(), m_robotHardware.getDrivetrainNavX());
+  private final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(), 
+                                                         m_robotHardware.getDrivetrainRightMotor(), 
+                                                         m_robotHardware.getDrivetrainNavX());
+  private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
+                                                m_robotHardware.getBottomShooterFlywheelMotor());
   public final Winch m_winch = new Winch(m_robotHardware.getClimberArmMotor());
-
-
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final XboxController m_driveController = new XboxController(0);
 
   /**
@@ -61,7 +64,7 @@ public class RobotContainer {
 
     m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft),
         () -> m_driveController.getX(GenericHID.Hand.kLeft), m_driveTrain));
-    
+    m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
     m_winch.setDefaultCommand(new WinchCommand(() -> m_driveController.getXButtonPressed(), () -> m_driveController.getYButtonPressed(), m_winch));
   }
 
