@@ -29,13 +29,14 @@ public class WinchCommand extends CommandBase {
   public void execute() {
     // if button 1 is pressed turn the motor to extend the arm if button 2 is pressed and button 1 is not turn the motor the other direction
   if(m_spinWinchForwards.getAsBoolean()){
-    m_winch.turnWinch(1);
+    m_winch.turnWinch(0.5);
     armExtension++;
   }
   else if(m_spinWinchBackwards.getAsBoolean() && armExtension > 0){
-    m_winch.turnWinch(-1);
+    m_winch.turnWinch(-0.5);
     armExtension--;
   }
+  else m_winch.turnWinch(0);
 }
   // Returns true when the command should end.
   @Override
