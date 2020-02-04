@@ -24,6 +24,7 @@ public class DriveTrain extends SubsystemBase {
         .add("Tank Drive", m_drive);
     }
 
+    ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
     public void periodic() {
         motorBasicTab.add("Distance Travelled", getDistance());
         motorBasicTab.add("Heading", getHeading());
