@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc4536.robot.commands.ExampleCommand;
 import frc4536.robot.commands.ManualShooterCommand;
 import frc4536.robot.commands.Shoot;
@@ -44,10 +45,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final RobotFrame m_robotHardware = new Trenchy();
+  public final RobotFrame m_robotHardware = new TestRobot();
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(), 
+  public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
                                                          m_robotHardware.getDrivetrainRightMotor(), 
                                                          m_robotHardware.getDrivetrainNavX());
   private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
@@ -85,6 +86,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new PrintCommand("YOU ARE MISSING AN AUTONOMOUS COMMAND IN YOUR CODE!");
   }
 }

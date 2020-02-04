@@ -4,15 +4,12 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
-import frc4536.lib.ISmartMotor;
-import frc4536.lib.NEOSmartMotor;
-import frc4536.lib.PIDConstants;
-import frc4536.lib.VirtualMotor;
-import frc4536.lib.VirtualSmartMotor;
+import frc4536.lib.*;
 
 public class Trenchy implements RobotFrame {
 
-    VirtualMotor m_flywheelMotor = new VirtualMotor(4);
+    ISmartMotor m_topFlywheel = new VirtualSmartMotor(4,8.0*0.478779); //TODO: REPLACE WITH TALON
+    ISmartMotor m_bottomFlywheel = new VirtualSmartMotor(5,8.0*0.478779); //TODO: REPLACE WITH TALON
     VirtualMotor m_intakeMotor = new VirtualMotor(5);
     VirtualMotor m_beltMotor = new VirtualMotor(6);
     Spark m_climberArmMotor = new Spark(7);
@@ -40,11 +37,6 @@ public class Trenchy implements RobotFrame {
     @Override
     public SpeedController getLiftMotor() {
         return m_liftMotor;
-    }
-
-    @Override
-    public SpeedController getShooterFlywheelMotor() {
-        return m_flywheelMotor;
     }
 
     @Override

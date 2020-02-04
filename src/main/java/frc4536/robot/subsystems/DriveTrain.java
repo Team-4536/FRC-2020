@@ -1,10 +1,6 @@
 package frc4536.robot.subsystems;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;

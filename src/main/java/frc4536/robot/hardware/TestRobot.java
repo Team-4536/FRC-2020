@@ -21,7 +21,8 @@ public class TestRobot implements RobotFrame {
     Encoder m_rightEncoder = new Encoder(2,3);
     PIDController m_PIDLeft = new PIDController(kP, kI, kD);
     PIDController m_PIDRight = new PIDController(kP, kI, kD);
-    VirtualMotor m_flywheelMotor = new VirtualMotor(4);
+    ISmartMotor m_topFlywheel = new VirtualSmartMotor(4,8.0*0.478779);
+    ISmartMotor m_bottomFlywheel = new VirtualSmartMotor(5,8.0*0.478779);
     VirtualMotor m_intakeMotor = new VirtualMotor(5);
     VirtualMotor m_beltMotor = new VirtualMotor(6);
     VirtualMotor m_climberArmMotor = new VirtualMotor(7);
@@ -48,11 +49,6 @@ public class TestRobot implements RobotFrame {
     @Override
     public SpeedController getLiftMotor() {
         return m_liftMotor;
-    }
-
-    @Override
-    public SpeedController getShooterFlywheelMotor() {
-        return m_flywheelMotor;
     }
 
     @Override
