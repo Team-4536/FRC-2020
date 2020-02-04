@@ -1,7 +1,5 @@
 package frc4536.robot.hardware;
 
-import java.util.ArrayList;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -14,60 +12,49 @@ import frc4536.lib.SmartMotor;
 import frc4536.lib.VirtualMotor;
 
 public class TestRobot implements RobotFrame {
-    double kp = 10e-5;
-    double ki = 1e-6;
-    double kd = 0;
-    Spark leftmotor1 = new Spark(0);
-    Spark leftmotor2 = new Spark(1);
-    Spark rightmotor1 = new Spark(2);
-    Spark rightmotor2 = new Spark(3);
-    Encoder leftencoder = new Encoder(0,1);
-    Encoder rightencoder = new Encoder(2,3);
-    PIDController pidleft = new PIDController(kp, ki, kd);
-    PIDController pidright = new PIDController(kp, ki, kd);
-    VirtualMotor fakeflywheelmotor = new VirtualMotor(4);
-    VirtualMotor fakeintakemotor = new VirtualMotor(5);
-    VirtualMotor fakebeltmotor = new VirtualMotor(6);
-    AHRS navx = new AHRS();
-    SpeedController motors[] = {};
-    SmartMotor rightmotors = new SmartMotor(rightencoder, pidright, motors );
-    SmartMotor leftmotors = new SmartMotor(leftencoder, pidleft, motors);
+    double kP = 10e-5;
+    double kI = 1e-6;
+    double kD = 0;
+    Encoder m_leftEncoder = new Encoder(0,1);
+    Encoder m_rightEncoder = new Encoder(2,3);
+    PIDController m_PIDLeft = new PIDController(kP, kI, kD);
+    PIDController m_PIDRight = new PIDController(kP, kI, kD);
+    VirtualMotor m_flywheelMotor = new VirtualMotor(4);
+    VirtualMotor m_intakeMotor = new VirtualMotor(5);
+    VirtualMotor m_beltMotor = new VirtualMotor(6);
+    AHRS m_navx = new AHRS();
+    SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)));
+    SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)));
     
 
     @Override
     public ISmartMotor getDrivetrainRightMotor() {
-        // TODO Auto-generated method stub
-        return rightmotors;
+        return m_rightMotors;
     }
 
     @Override
     public ISmartMotor getDrivetrainLeftMotor() {
-        // TODO Auto-generated method stub
-        return leftmotors;
+        return m_leftMotors;
     }
 
     @Override
     public SpeedController getShooterFlywheelMotor() {
-        // TODO Auto-generated method stub
-        return fakeflywheelmotor;
+        return m_flywheelMotor;
     }
 
     @Override
     public SpeedController getIntakeMotor() {
-        // TODO Auto-generated method stub
-        return fakeintakemotor;
+        return m_intakeMotor;
     }
 
     @Override
     public SpeedController getBeltMotor() {
-        // TODO Auto-generated method stub
-        return fakebeltmotor;
+        return m_beltMotor;
     }
 
     @Override
     public AHRS getDrivetrainNavX() {
-        // TODO Auto-generated method stub
-        return navx;
+        return m_navx;
     }
 
 }

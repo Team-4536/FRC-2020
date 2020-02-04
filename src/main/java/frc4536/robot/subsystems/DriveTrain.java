@@ -2,7 +2,6 @@ package frc4536.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -24,14 +23,11 @@ public class DriveTrain extends SubsystemBase {
         ComplexWidget tankDriveTab = Shuffleboard.getTab("Tank Drive Data")
         .add("Tank Drive", m_drive);
     }
-    ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
 
     public void periodic() {
         motorBasicTab.add("Distance Travelled", getDistance());
         motorBasicTab.add("Heading", getHeading());
     }
-
-    
 
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
         m_drive.curvatureDrive(speed, rotation, quickTurn);
