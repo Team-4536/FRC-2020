@@ -7,7 +7,6 @@ public class WinchCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Winch m_winch;
   private final BooleanSupplier m_spinWinchForwards, m_spinWinchBackwards;
-  private int armExtension = 0;
   /**
    * Creates a command for driving with a controller
    */
@@ -21,7 +20,6 @@ public class WinchCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() { 
-    armExtension = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,11 +28,10 @@ public class WinchCommand extends CommandBase {
     // if button 1 is pressed turn the motor to extend the arm if button 2 is pressed and button 1 is not turn the motor the other direction
   if(m_spinWinchForwards.getAsBoolean()){
     m_winch.turnWinch(0.5);
-    armExtension++;
+    
   }
-  else if(m_spinWinchBackwards.getAsBoolean() && armExtension > 0){
+  else if(m_spinWinchBackwards.getAsBoolean()){
     m_winch.turnWinch(-0.5);
-    armExtension--;
   }
   else m_winch.turnWinch(0);
 }
