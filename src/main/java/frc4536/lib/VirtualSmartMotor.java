@@ -12,8 +12,8 @@ public class VirtualSmartMotor extends SubsystemBase implements ISmartMotor, Sen
     private double m_distance, m_prevTime;
     private final double m_maxSpeed;
 
-    public VirtualSmartMotor(int port, double maxSpeed) {
-        m_motor = new VirtualMotor(port);
+    public VirtualSmartMotor(String name, double maxSpeed) {
+        m_motor = new VirtualMotor(name);
         m_maxSpeed = maxSpeed;
         m_timer.reset();
         m_timer.start();

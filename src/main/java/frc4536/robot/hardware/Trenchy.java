@@ -8,10 +8,10 @@ import frc4536.lib.*;
 
 public class Trenchy implements RobotFrame {
 
-    ISmartMotor m_topFlywheel = new VirtualSmartMotor(4,8.0*0.478779); //TODO: REPLACE WITH TALON
-    ISmartMotor m_bottomFlywheel = new VirtualSmartMotor(5,8.0*0.478779); //TODO: REPLACE WITH TALON
-    VirtualMotor m_intakeMotor = new VirtualMotor(5);
-    VirtualMotor m_beltMotor = new VirtualMotor(6);
+    ISmartMotor m_topFlywheel = new VirtualSmartMotor("Top Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
+    ISmartMotor m_bottomFlywheel = new VirtualSmartMotor("Bottom Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
+    VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
+    VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
     Spark m_climberArmMotor = new Spark(7);
     Spark m_liftMotor = new Spark(8);
     AHRS m_navx = new AHRS();

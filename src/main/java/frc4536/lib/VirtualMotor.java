@@ -6,24 +6,16 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 public class VirtualMotor implements SpeedController, Sendable {
-
-    private int m_port;
     private double m_speed = 0;
     private boolean m_inverted = false;
     private String m_name;
 
-    public VirtualMotor(String name, int port){
-        System.out.println("Virtual motor " + name + " at port " + port + " created");
+    public VirtualMotor(String name){
+        System.out.println("Virtual motor " + name + " created");
         this.m_name = name;
-        this.m_port = port;
 
         //TODO: comtemplate moving shuffleboard interaction
-        Shuffleboard.getTab("Virtual Motors")
-                .add(((this.m_name.isEmpty()) ? "Virtual Motor" : this.m_name) + " " + this.m_port, this);
-    }
-
-    public VirtualMotor(int port){
-        this("Virtual Motor " + port, port);
+        Shuffleboard.getTab("Virtual Motors").add(this.m_name, this);
     }
 
     @Override
