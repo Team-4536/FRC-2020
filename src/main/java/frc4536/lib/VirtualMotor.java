@@ -13,8 +13,6 @@ public class VirtualMotor implements SpeedController, Sendable {
     public VirtualMotor(String name){
         System.out.println("Virtual motor " + name + " created");
         this.m_name = name;
-
-        //TODO: comtemplate moving shuffleboard interaction
         Shuffleboard.getTab("Virtual Motors").add("Virtual Motor " + this.m_name, this);
     }
 
