@@ -20,16 +20,16 @@ public class DriveTrain extends SubsystemBase {
     private double maxVelocity;
     private double maxAcceleration;
     private double previousSpeed;
-
+    double wheelCircumference = 0.0762 * 2 * Math.PI;
+  
     public DriveTrain(ISmartMotor leftMotor, ISmartMotor rightMotor, AHRS navx) {
-        super();
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
-
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
-        //DoubleSupplier distance = () -> this.getDistance();
+        ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
+      
         ComplexWidget tankDriveTab = Shuffleboard.getTab("Tank Drive Data")
         .add("Tank Drive", m_drive);
         motorBasicTab.addNumber("Distance Travelled", () -> getDistance());
@@ -42,15 +42,18 @@ public class DriveTrain extends SubsystemBase {
         maxAcceleration = 0;
         previousSpeed = 0;
     }
-    ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
 
     @Override
     public void periodic() {
         maxAcceleration = Math.max(maxAcceleration, getAcceleration());
         maxVelocity = Math.max(maxVelocity, getVelocity());
         m_odometry.update(Rotation2d.fromDegrees(getHeading()), m_leftMotor.getDistance(), m_rightMotor.getDistance());
+        ComplexWidget tankDriveTab = Shuffleboard.getTab("Tank Drive Data")
+        .add("Tank Drive", m_drive);
+        motorBasicTab.add("Distance Travelled", getDistance());
+        motorBasicTab.add("Heading", getHeading());
     }
-
+    
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
         m_drive.curvatureDrive(speed, rotation, quickTurn);
     }
@@ -70,7 +73,7 @@ public class DriveTrain extends SubsystemBase {
     */
 
     public void closedLoopDrive(double linLeft, double linRight){ 
-        double angScalar = 1/(2 * 0.1524 * Math.PI);
+        double angScalar = 1;//1/(2 * 0.1524 * Math.PI);
         m_leftMotor.setSpeed(linLeft * angScalar);
         m_rightMotor.setSpeed(linRight * angScalar);
         System.out.println("left: " + m_leftMotor.getSetpoint() + "right: " + m_rightMotor.getSetpoint());
@@ -79,8 +82,23 @@ public class DriveTrain extends SubsystemBase {
     public void resetEncoders() {
         m_leftMotor.resetEncoder();
         m_rightMotor.resetEncoder();
+        m_navx.reset();
     }
 
+    public double getLeftSpeed() {
+        return m_leftMotor.getSpeed() * wheelCircumference;
+    }
+    public double getRightSpeed() {
+        return m_rightMotor.getSpeed() * wheelCircumference;
+    }
+
+    public double getLeftDistance() {
+        return m_leftMotor.getDistance() * wheelCircumference;
+    }
+    public double getRightDistance() {
+        return m_rightMotor.getDistance() * wheelCircumference;
+    }
+  
     public void setVoltages(double left, double right) {
         m_leftMotor.setVolt(left);
         m_rightMotor.setVolt(right);

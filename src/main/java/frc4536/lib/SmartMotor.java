@@ -1,6 +1,6 @@
 package frc4536.lib;
 
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 
 
@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.Encoder;
 
 public class SmartMotor implements ISmartMotor {
     //private final ArrayList<SpeedController> motors = new ArrayList<>();
-    private final SpeedControllerGroup m_motors;
+    private final SpeedController m_motors;
     private final Encoder m_encoder;
     private final PIDController m_controller;
 
-    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors, int ticks) {
+    public SmartMotor(Encoder encoder, PIDController controller, SpeedController motors, int ticks) {
         m_motors = motors;
         m_encoder = encoder;
         m_controller = controller;

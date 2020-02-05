@@ -12,27 +12,10 @@ import frc4536.lib.LegacySmartMotor;
 import frc4536.lib.PIDConstants;
 import frc4536.lib.SmartMotor;
 import frc4536.lib.VirtualMotor;
+import frc4536.lib.VirtualSmartMotor;
 
 public class TestRobot implements RobotFrame {
-    PIDConstants m_pidConstants = new PIDConstants(0.01,0,0);
-    Encoder m_leftEncoder = new Encoder(0,1);
-    Encoder m_rightEncoder = new Encoder(2,3);
-    VirtualMotor m_flywheelMotor = new VirtualMotor(4);
-    VirtualMotor m_intakeMotor = new VirtualMotor(5);
-    VirtualMotor m_beltMotor = new VirtualMotor(6);
-    AHRS m_navx = new AHRS();
     // TODO: these need tick values!
-    LegacySmartMotor m_rightMotors = new LegacySmartMotor(m_rightEncoder, 
-    m_pidConstants, 
-    new SpeedControllerGroup(new Spark(2), new Spark(3)),
-    2048,
-    8.0);
-    LegacySmartMotor m_leftMotors = new LegacySmartMotor(m_leftEncoder, 
-    m_pidConstants, 
-    new SpeedControllerGroup(new Spark(0), new Spark(1)),
-    2048,
-    8.0);
-
     // TODO: all of these values are sinful    
     private final double ksVolts = 2;
     private final double kvVoltSecondsPerMeter = 0.353;
@@ -43,7 +26,6 @@ public class TestRobot implements RobotFrame {
     private final double kMaxAccelerationMetersPerSecondSquared = 3;
     private final double kRamseteB = 2;
     private final double kRamseteZeta = 0.7;
-
     public RobotConstants m_constants = new RobotConstants(ksVolts, 
                                                            kvVoltSecondsPerMeter, 
                                                            kaVoltSecondsSquaredPerMeter, 
@@ -53,7 +35,22 @@ public class TestRobot implements RobotFrame {
                                                            kMaxAccelerationMetersPerSecondSquared, 
                                                            kRamseteB, 
                                                            kRamseteZeta); 
-
+  
+    Encoder m_leftEncoder = new Encoder(0,1);
+    Encoder m_rightEncoder = new Encoder(2,3);
+    AHRS m_navx = new AHRS();
+    PIDController m_PIDLeft = new PIDController(m_constants.kPDriveVel, 0, 0);
+    PIDController m_PIDRight = new PIDController(m_constants.kPDriveVel, 0, 0);
+    ISmartMotor m_topFlywheel = new VirtualSmartMotor("Top Flywheel",8.0*0.478779);
+    ISmartMotor m_bottomFlywheel = new VirtualSmartMotor("Bottom Flywheel",8.0*0.478779);
+    VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
+    VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
+    VirtualMotor m_climberArmMotor = new VirtualMotor("Climber Motor");
+    VirtualMotor m_liftMotor = new VirtualMotor("Lift Motor");
+    AHRS m_navx = new AHRS();
+    SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)), 2048);
+    SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)), 2048);
+  
     @Override
     public RobotConstants getConstants() {
         return m_constants;
@@ -70,8 +67,13 @@ public class TestRobot implements RobotFrame {
     }
 
     @Override
-    public SpeedController getShooterFlywheelMotor() {
-        return m_flywheelMotor;
+    public SpeedController getClimberArmMotor() {
+        return m_climberArmMotor;
+    }
+
+    @Override
+    public SpeedController getLiftMotor() {
+        return m_liftMotor;
     }
 
     @Override
@@ -87,5 +89,14 @@ public class TestRobot implements RobotFrame {
     @Override
     public AHRS getDrivetrainNavX() {
         return m_navx;
+    }
+    @Override
+    public ISmartMotor getTopShooterFlywheelMotor() {
+        return m_topFlywheel;
+    }
+
+    @Override
+    public ISmartMotor getBottomShooterFlywheelMotor() {
+        return m_bottomFlywheel;
     }
 }

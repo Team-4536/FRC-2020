@@ -24,10 +24,22 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc4536.robot.commands.RamseteAutonomousCommand;
 import frc4536.robot.commands.TankDriveCommand;
 import frc4536.robot.hardware.RobotConstants;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc4536.robot.commands.ExampleCommand;
+import frc4536.robot.commands.ManualShooterCommand;
+import frc4536.robot.commands.Shoot;
+import frc4536.robot.commands.TankDriveCommand;
+import frc4536.robot.commands.WinchCommand;
 import frc4536.robot.hardware.RobotFrame;
 import frc4536.robot.hardware.TestRobot;
 import frc4536.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc4536.robot.subsystems.ExampleSubsystem;
+import frc4536.robot.subsystems.Winch;
+import frc4536.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,13 +52,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final RobotFrame m_robotHardware = new TestRobot();
   public final RobotConstants m_constants = m_robotHardware.getConstants();
-  
-
-  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(), 
+ 
+  public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
                                                          m_robotHardware.getDrivetrainRightMotor(), 
                                                          m_robotHardware.getDrivetrainNavX());
-
+  private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
+                                                m_robotHardware.getBottomShooterFlywheelMotor());
+  public final Winch m_winch = new Winch(m_robotHardware.getClimberArmMotor());
   private final XboxController m_driveController = new XboxController(0);
 
   /**
@@ -59,7 +71,8 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft),
                                                         () -> m_driveController.getX(GenericHID.Hand.kLeft), 
                                                         m_driveTrain));
-
+    m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
+    m_winch.setDefaultCommand(new WinchCommand(() -> m_driveController.getXButtonPressed(), () -> m_driveController.getYButtonPressed(), m_winch));
   }
 
   /**
@@ -70,14 +83,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
   }
-
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
     // Create a voltage constraint to ensure we don't accelerate too fast
     TrajectoryConstraint autoVoltageConstraint =
             new DifferentialDriveVoltageConstraint(
@@ -109,9 +121,5 @@ public class RobotContainer {
     );
 
     return new RamseteAutonomousCommand(m_driveTrain, m_trajectory, m_config, m_constants);
-  }
-
-  public Command testRoutine(){
-    return new FunctionalCommand()
   }
 }
