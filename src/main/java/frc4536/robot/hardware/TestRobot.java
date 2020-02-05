@@ -6,11 +6,10 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import frc4536.lib.ISmartMotor;
-import frc4536.lib.SmartMotor;
+import frc4536.lib.CIMEncoder;
+import frc4536.lib.IEncoderMotor;
 import frc4536.lib.VirtualMotor;
-import frc4536.lib.VirtualSmartMotor;
+import frc4536.lib.VirtualEncoderMotor;
 
 public class TestRobot implements RobotFrame {
     // TODO: these need tick values!
@@ -34,20 +33,18 @@ public class TestRobot implements RobotFrame {
                                                            kRamseteB, 
                                                            kRamseteZeta);
 
-    AHRS m_navx = new AHRS();
-    PIDController m_PIDLeft = new PIDController(m_constants.kPDriveVel, 0, 0);
-    PIDController m_PIDRight = new PIDController(m_constants.kPDriveVel, 0, 0);
-    Encoder m_leftEncoder = new Encoder(0,1);
-    Encoder m_rightEncoder = new Encoder(2,3);
-    SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)), 2048);
-    SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)), 2048);
-
-    ISmartMotor m_topFlywheel = new VirtualSmartMotor("Top Flywheel",8.0*0.478779);
-    ISmartMotor m_bottomFlywheel = new VirtualSmartMotor("Bottom Flywheel",8.0*0.478779);
+    IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779);
+    IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779);
     VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
     VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
     VirtualMotor m_climberArmMotor = new VirtualMotor("Climber Motor");
     VirtualMotor m_liftMotor = new VirtualMotor("Lift Motor");
+
+    AHRS m_navx = new AHRS();
+    Encoder m_leftEncoder = new Encoder(0,1);
+    Encoder m_rightEncoder = new Encoder(2,3);
+    CIMEncoder m_leftMotors = new CIMEncoder(new SpeedControllerGroup(new Spark(0), new Spark(1)), m_leftEncoder, 2048);
+    CIMEncoder m_rightMotors = new CIMEncoder(new SpeedControllerGroup(new Spark(2), new Spark(3)), m_rightEncoder, 2048);
 
     @Override
     public RobotConstants getConstants() {
@@ -55,12 +52,12 @@ public class TestRobot implements RobotFrame {
     }
 
     @Override
-    public ISmartMotor getDrivetrainRightMotor() {
+    public IEncoderMotor getDrivetrainRightMotor() {
         return m_rightMotors;
     }
 
     @Override
-    public ISmartMotor getDrivetrainLeftMotor() {
+    public IEncoderMotor getDrivetrainLeftMotor() {
         return m_leftMotors;
     }
 
@@ -89,12 +86,12 @@ public class TestRobot implements RobotFrame {
         return m_navx;
     }
     @Override
-    public ISmartMotor getTopShooterFlywheelMotor() {
+    public IEncoderMotor getTopShooterFlywheelMotor() {
         return m_topFlywheel;
     }
 
     @Override
-    public ISmartMotor getBottomShooterFlywheelMotor() {
+    public IEncoderMotor getBottomShooterFlywheelMotor() {
         return m_bottomFlywheel;
     }
 }

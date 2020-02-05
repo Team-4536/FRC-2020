@@ -1,11 +1,11 @@
 package frc4536.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4536.lib.SmartMotor;
+import frc4536.lib.IEncoderMotor;
 
 public class Intake extends SubsystemBase {
-  public SmartMotor m_motor1;
-  public Intake(SmartMotor motor1) {
+  public IEncoderMotor m_motor1;
+  public Intake(IEncoderMotor motor1) {
     m_motor1 = motor1;
   }
   

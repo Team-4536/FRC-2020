@@ -1,24 +1,18 @@
 package frc4536.lib;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-
-
 import edu.wpi.first.wpilibj.Encoder;
 
-public class SmartMotor implements ISmartMotor {
-    //private final ArrayList<SpeedController> motors = new ArrayList<>();
+public class CIMEncoder implements IEncoderMotor {
     private final SpeedController m_motors;
     private final Encoder m_encoder;
-    private final PIDController m_controller;
 
-    public SmartMotor(Encoder encoder, PIDController controller, SpeedController motors, int ticks) {
+    public CIMEncoder(SpeedController motors, Encoder encoder, int ticksPerRevolution) {
         m_motors = motors;
         m_encoder = encoder;
-        m_controller = controller;
-        m_encoder.setDistancePerPulse(1.0 / ticks);
+        m_encoder.setDistancePerPulse(1.0 / ticksPerRevolution);
     }
-    
+
     @Override
     public void setInverted(boolean inverted) {
         m_motors.setInverted(inverted);
@@ -56,18 +50,6 @@ public class SmartMotor implements ISmartMotor {
     }
 
     @Override
-    public void setVolt(double i) {
-        m_motors.setVoltage(i);
-
-    }
-
-    @Override
-    public void setSpeed(double i) {
-        setVolt(m_controller.calculate(m_encoder.getRate(), i));
-
-    }
-
-    @Override
     public double getSpeed(){
        return m_encoder.getRate();
     }
@@ -78,15 +60,7 @@ public class SmartMotor implements ISmartMotor {
     }
 
     @Override
-    public double getSetpoint() {
-        return m_controller.getSetpoint();
-    }
-
-    @Override
     public void resetEncoder() {
        m_encoder.reset();
-
     }
-
-
 }

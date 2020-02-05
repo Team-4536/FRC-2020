@@ -6,8 +6,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class LegacySmartMotor implements ISmartMotor {
-    //private final ArrayList<SpeedController> motors = new ArrayList<>();
+public class LegacySmartMotor implements IEncoderMotor {
     private final SpeedControllerGroup m_motors;
     private final Encoder m_encoder;
     private final double m_feedForward;
@@ -61,12 +60,10 @@ public class LegacySmartMotor implements ISmartMotor {
        m_motors.pidWrite(output);
     }
 
-    @Override
     public void setVolt(double i) {
         m_motors.setVoltage(i);
     }
 
-    @Override
     public void setSpeed(double i) {
         m_pid.setSetpoint(i);
     }
@@ -81,7 +78,6 @@ public class LegacySmartMotor implements ISmartMotor {
         return m_encoder.getDistance();
     }
 
-    @Override
     public double getSetpoint() {
         return m_pid.getSetpoint();
     }

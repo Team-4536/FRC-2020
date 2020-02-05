@@ -8,17 +8,17 @@
 package frc4536.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4536.lib.SmartMotor;
+import frc4536.lib.IEncoderMotor;
 
 public class Conveyor extends SubsystemBase {
     /**
     * Creates a new ExampleSubsystem.
     */
-    public SmartMotor m_topMotor, m_bottomMotor;
+    public IEncoderMotor m_topMotor, m_bottomMotor;
     public double k_topSpeed, k_bottomSpeed;
     /*public Piston m_piston*/
 
-    public Conveyor(SmartMotor topMotor, SmartMotor bottomMotor, double topSpeed, double bottomSpeed /*, Piston piston*/) {
+    public Conveyor(IEncoderMotor topMotor, IEncoderMotor bottomMotor, double topSpeed, double bottomSpeed /*, Piston piston*/) {
         super();
         m_topMotor = topMotor;
         m_bottomMotor = bottomMotor;

@@ -8,15 +8,15 @@
 package frc4536.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4536.lib.ISmartMotor;
+import frc4536.lib.IEncoderMotor;
 
 public class Shooter extends SubsystemBase {
-    private ISmartMotor m_shooterTop;
-    private ISmartMotor m_shooterBottom;
+    private IEncoderMotor m_shooterTop;
+    private IEncoderMotor m_shooterBottom;
   /**
    * Creates a new Shooter.
    */
-  public Shooter(ISmartMotor top, ISmartMotor bottom) {
+  public Shooter(IEncoderMotor top, IEncoderMotor bottom) {
     m_shooterTop = top;
     m_shooterBottom = bottom;
   }
@@ -29,8 +29,7 @@ public class Shooter extends SubsystemBase {
 
   
   public void setRPS(double speed){
-    m_shooterTop.setSpeed(speed);
-    m_shooterBottom.setSpeed(speed);
+    //TODO: IMPLEMENT THE PID
   }
 
   public void setPower(double power) {
