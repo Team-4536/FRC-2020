@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import frc4536.lib.CIMEncoder;
+import frc4536.lib.PWMEncoderMotor;
 import frc4536.lib.IEncoderMotor;
 import frc4536.lib.VirtualMotor;
 import frc4536.lib.VirtualEncoderMotor;
@@ -43,8 +43,8 @@ public class TestRobot implements RobotFrame {
     AHRS m_navx = new AHRS();
     Encoder m_leftEncoder = new Encoder(0,1);
     Encoder m_rightEncoder = new Encoder(2,3);
-    CIMEncoder m_leftMotors = new CIMEncoder(new SpeedControllerGroup(new Spark(0), new Spark(1)), m_leftEncoder, 2048);
-    CIMEncoder m_rightMotors = new CIMEncoder(new SpeedControllerGroup(new Spark(2), new Spark(3)), m_rightEncoder, 2048);
+    PWMEncoderMotor m_leftMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(0), new Spark(1)), m_leftEncoder, 2048);
+    PWMEncoderMotor m_rightMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(2), new Spark(3)), m_rightEncoder, 2048);
 
     @Override
     public RobotConstants getConstants() {

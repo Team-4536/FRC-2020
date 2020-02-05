@@ -3,11 +3,11 @@ package frc4536.lib;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Encoder;
 
-public class CIMEncoder implements IEncoderMotor {
+public class PWMEncoderMotor implements IEncoderMotor {
     private final SpeedController m_motors;
     private final Encoder m_encoder;
 
-    public CIMEncoder(SpeedController motors, Encoder encoder, int ticksPerRevolution) {
+    public PWMEncoderMotor(SpeedController motors, Encoder encoder, int ticksPerRevolution) {
         m_motors = motors;
         m_encoder = encoder;
         m_encoder.setDistancePerPulse(1.0 / ticksPerRevolution);
