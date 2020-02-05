@@ -8,7 +8,6 @@
 package frc4536.robot;
 
 import java.util.List;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -20,26 +19,11 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import frc4536.robot.commands.RamseteAutonomousCommand;
-import frc4536.robot.commands.TankDriveCommand;
-import frc4536.robot.hardware.RobotConstants;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc4536.robot.commands.ExampleCommand;
-import frc4536.robot.commands.ManualShooterCommand;
-import frc4536.robot.commands.Shoot;
-import frc4536.robot.commands.TankDriveCommand;
-import frc4536.robot.commands.WinchCommand;
-import frc4536.robot.hardware.RobotFrame;
-import frc4536.robot.hardware.TestRobot;
-import frc4536.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc4536.robot.subsystems.ExampleSubsystem;
-import frc4536.robot.subsystems.Winch;
-import frc4536.robot.subsystems.Shooter;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+
+import frc4536.robot.commands.*;
+import frc4536.robot.hardware.*;
+import frc4536.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

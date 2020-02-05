@@ -18,12 +18,6 @@ public class SmartMotor implements ISmartMotor {
         m_controller = controller;
         m_encoder.setDistancePerPulse(1.0 / ticks);
     }
-
-    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors) {
-        m_motors = motors;
-        m_encoder = encoder;
-        m_controller = controller;
-    }
     
     @Override
     public void setInverted(boolean inverted) {

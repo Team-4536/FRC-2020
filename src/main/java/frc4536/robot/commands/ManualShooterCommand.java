@@ -6,9 +6,6 @@
 /*----------------------------------------------------------------------------*/
 
 package frc4536.robot.commands;
-
-import frc4536.robot.subsystems.DriveTrain;
-import frc4536.robot.subsystems.ExampleSubsystem;
 import frc4536.robot.subsystems.Shooter;
 
 import java.util.function.DoubleSupplier;
@@ -23,11 +20,6 @@ public class ManualShooterCommand extends CommandBase {
     private final Shooter m_shooter;
     private final DoubleSupplier m_power;
 
-    /**
-     * Creates a new ExampleCommand.
-     *
-     * @param subsystem The subsystem used by this command.
-     */
     public ManualShooterCommand(DoubleSupplier power, Shooter shooter) {
     m_shooter = shooter;
     m_power = power;

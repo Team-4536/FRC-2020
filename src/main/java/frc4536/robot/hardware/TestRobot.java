@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import frc4536.lib.ISmartMotor;
-import frc4536.lib.LegacySmartMotor;
-import frc4536.lib.PIDConstants;
 import frc4536.lib.SmartMotor;
 import frc4536.lib.VirtualMotor;
 import frc4536.lib.VirtualSmartMotor;
@@ -34,23 +32,23 @@ public class TestRobot implements RobotFrame {
                                                            kMaxSpeedMetersPerSecond, 
                                                            kMaxAccelerationMetersPerSecondSquared, 
                                                            kRamseteB, 
-                                                           kRamseteZeta); 
-  
-    Encoder m_leftEncoder = new Encoder(0,1);
-    Encoder m_rightEncoder = new Encoder(2,3);
+                                                           kRamseteZeta);
+
     AHRS m_navx = new AHRS();
     PIDController m_PIDLeft = new PIDController(m_constants.kPDriveVel, 0, 0);
     PIDController m_PIDRight = new PIDController(m_constants.kPDriveVel, 0, 0);
+    Encoder m_leftEncoder = new Encoder(0,1);
+    Encoder m_rightEncoder = new Encoder(2,3);
+    SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)), 2048);
+    SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)), 2048);
+
     ISmartMotor m_topFlywheel = new VirtualSmartMotor("Top Flywheel",8.0*0.478779);
     ISmartMotor m_bottomFlywheel = new VirtualSmartMotor("Bottom Flywheel",8.0*0.478779);
     VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
     VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
     VirtualMotor m_climberArmMotor = new VirtualMotor("Climber Motor");
     VirtualMotor m_liftMotor = new VirtualMotor("Lift Motor");
-    AHRS m_navx = new AHRS();
-    SmartMotor m_rightMotors = new SmartMotor(m_rightEncoder, m_PIDRight, new SpeedControllerGroup(new Spark(2), new Spark(3)), 2048);
-    SmartMotor m_leftMotors = new SmartMotor(m_leftEncoder, m_PIDLeft, new SpeedControllerGroup(new Spark(0), new Spark(1)), 2048);
-  
+
     @Override
     public RobotConstants getConstants() {
         return m_constants;

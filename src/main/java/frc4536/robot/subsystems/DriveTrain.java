@@ -48,10 +48,6 @@ public class DriveTrain extends SubsystemBase {
         maxAcceleration = Math.max(maxAcceleration, getAcceleration());
         maxVelocity = Math.max(maxVelocity, getVelocity());
         m_odometry.update(Rotation2d.fromDegrees(getHeading()), m_leftMotor.getDistance(), m_rightMotor.getDistance());
-        ComplexWidget tankDriveTab = Shuffleboard.getTab("Tank Drive Data")
-        .add("Tank Drive", m_drive);
-        motorBasicTab.add("Distance Travelled", getDistance());
-        motorBasicTab.add("Heading", getHeading());
     }
     
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {

@@ -7,7 +7,6 @@
 
 package frc4536.robot.commands;
 
-import frc4536.robot.subsystems.ExampleSubsystem;
 import frc4536.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -22,11 +21,6 @@ public class Shoot extends CommandBase {
   private double shotTime;
   private double adjShotTime;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
   public Shoot(Shooter shooter) {
     this(shooter, 0, 100000);
   }
