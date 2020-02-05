@@ -7,9 +7,12 @@ import frc4536.lib.ISmartMotor;
 public interface RobotFrame {
     ISmartMotor getDrivetrainRightMotor(); 
     ISmartMotor getDrivetrainLeftMotor();
-    SpeedController getShooterFlywheelMotor();
+    ISmartMotor getTopShooterFlywheelMotor();
+    ISmartMotor getBottomShooterFlywheelMotor();
     SpeedController getIntakeMotor();
     SpeedController getBeltMotor();
     AHRS getDrivetrainNavX();
+    SpeedController getClimberArmMotor();
+    SpeedController getLiftMotor();
 }
 
