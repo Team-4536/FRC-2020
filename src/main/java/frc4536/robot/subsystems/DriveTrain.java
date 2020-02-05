@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4536.lib.ISmartMotor;
 
@@ -19,6 +22,15 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor = rightMotor;
         m_navx = navx;
         m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+        ComplexWidget tankDriveTab = Shuffleboard.getTab("Tank Drive Data")
+        .add("Tank Drive", m_drive);
+    }
+
+    ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
+
+    public void periodic() {
+        motorBasicTab.add("Distance Travelled", getDistance());
+        motorBasicTab.add("Heading", getHeading());
     }
     
     public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
