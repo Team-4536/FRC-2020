@@ -6,24 +6,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 public class VirtualMotor implements SpeedController, Sendable {
-
-    private int m_port;
     private double m_speed = 0;
     private boolean m_inverted = false;
-    private String m_name, m_subsystem = "";
+    private String m_name;
 
-    public VirtualMotor(String name, int port){
-        System.out.println("Virtual motor " + name + " at port " + port + " created");
+    public VirtualMotor(String name){
+        System.out.println("Virtual motor " + name + " created");
         this.m_name = name;
-        this.m_port = port;
-
-        //TODO: comtemplate moving shuffleboard interaction
-        Shuffleboard.getTab("Virtual Motors")
-                .add(((this.m_name.isEmpty()) ? "Virtual Motor" : this.m_name) + " " + this.m_port, this);
-    }
-
-    public VirtualMotor(int port){
-        this("", port);
+        Shuffleboard.getTab("Virtual Motors").add("Virtual Motor " + this.m_name, this);
     }
 
     @Override
@@ -59,58 +49,6 @@ public class VirtualMotor implements SpeedController, Sendable {
     @Override
     public void pidWrite(double output) {
         m_speed = output;
-    }
-
-    /**
-     * Gets the name of this {@link Sendable} object.
-     *
-     * @return Name
-     */
-    @Override
-    public String getName() {
-        return m_name;
-    }
-
-    /**
-     * Sets the name of this {@link Sendable} object.
-     *
-     * @param name name
-     */
-    @Override
-    public void setName(String name) {
-        this.m_name = name;
-    }
-
-    /**
-     * Sets both the subsystem name and device name of this {@link Sendable} object.
-     *
-     * @param subsystem subsystem name
-     * @param name      device name
-     */
-    @Override
-    public void setName(String subsystem, String name) {
-        this.m_subsystem = subsystem;
-        this.m_name = name;
-    }
-
-    /**
-     * Gets the subsystem name of this {@link Sendable} object.
-     *
-     * @return Subsystem name
-     */
-    @Override
-    public String getSubsystem() {
-        return m_subsystem;
-    }
-
-    /**
-     * Sets the subsystem name of this {@link Sendable} object.
-     *
-     * @param subsystem subsystem name
-     */
-    @Override
-    public void setSubsystem(String subsystem) {
-        this.m_subsystem = subsystem;
     }
 
     /**

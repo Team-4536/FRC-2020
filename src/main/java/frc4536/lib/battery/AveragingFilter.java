@@ -1,4 +1,4 @@
-package frc4536.lib;
+package frc4536.lib.battery;
 
 import java.util.Arrays;
 
