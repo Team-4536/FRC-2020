@@ -58,6 +58,10 @@ public class DriveTrain extends SubsystemBase {
        m_drive.tankDrive(leftSpeed, rightSpeed, false); 
     }
 
+    public void arcadeDrive(double speed, double rotation) {
+        m_drive.arcadeDrive(speed, rotation, false);
+    }
+
     public double getHeading() {
         return m_navx.getYaw(); 
     }
