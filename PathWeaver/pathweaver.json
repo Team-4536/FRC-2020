@@ -1,0 +1,9 @@
+{
+  // TODO: Tweak constants
+  "lengthUnit": "Meter",
+  "maxVelocity": 4.0,
+  "maxAcceleration": 1.2,
+  "wheelBase": 0.53, //TODO: This is for trenchy, generalize
+  "gameName": "Infinite Recharge",
+  "outputDir": ""
+}

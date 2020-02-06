@@ -6,26 +6,25 @@
 /*----------------------------------------------------------------------------*/
 
 package frc4536.robot.commands;
+import frc4536.robot.subsystems.Shooter;
 
-import frc4536.robot.subsystems.ExampleSubsystem;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
  * An example command that uses an example subsystem.
  */
-public class ExampleCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
+public class ManualShooterCommand extends CommandBase {
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+    private final Shooter m_shooter;
+    private final DoubleSupplier m_power;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+    public ManualShooterCommand(DoubleSupplier power, Shooter shooter) {
+    m_shooter = shooter;
+    m_power = power;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -36,11 +35,13 @@ public class ExampleCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_shooter.setPower(m_power.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_shooter.setPower(0);
   }
 
   // Returns true when the command should end.
