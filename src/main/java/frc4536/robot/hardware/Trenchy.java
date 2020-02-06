@@ -28,16 +28,15 @@ public class Trenchy implements RobotFrame {
                                                            kRamseteB, 
                                                            kRamseteZeta); 
 
-    ISmartMotor m_topFlywheel = new VirtualSmartMotor("Top Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
-    ISmartMotor m_bottomFlywheel = new VirtualSmartMotor("Bottom Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
+    IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
+    IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
     VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
     VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
     Spark m_climberArmMotor = new Spark(7); //TODO: REPLACE WITH VICTOR
     Spark m_liftMotor = new Spark(8); //TODO: REPLACE WITH VICTOR
     AHRS m_navx = new AHRS();
-    final PIDConstants kDriveConstants = new PIDConstants(5e-5, 1e-6,0,0);
-    NEOSmartMotor m_leftMotors = new NEOSmartMotor(kDriveConstants,1,50,49);
-    NEOSmartMotor m_rightMotors = new NEOSmartMotor(kDriveConstants,1,48,47);
+    IEncoderMotor m_leftMotors = new SparkMAX(10.75, 47, 48);
+    IEncoderMotor m_rightMotors = new SparkMAX(10.75, 49, 50);
 
     @Override
     public RobotConstants getConstants() {
@@ -45,12 +44,12 @@ public class Trenchy implements RobotFrame {
     }
 
     @Override
-    public ISmartMotor getDrivetrainRightMotor() {
+    public IEncoderMotor getDrivetrainRightMotor() {
         return m_rightMotors;
     }
 
     @Override
-    public ISmartMotor getDrivetrainLeftMotor() {
+    public IEncoderMotor getDrivetrainLeftMotor() {
         return m_leftMotors;
     }
 
@@ -80,12 +79,12 @@ public class Trenchy implements RobotFrame {
     }
   
     @Override
-    public ISmartMotor getTopShooterFlywheelMotor() {
+    public IEncoderMotor getTopShooterFlywheelMotor() {
         return m_topFlywheel;
     }
 
     @Override
-    public ISmartMotor getBottomShooterFlywheelMotor() {
+    public IEncoderMotor getBottomShooterFlywheelMotor() {
         return m_bottomFlywheel;
     }
 

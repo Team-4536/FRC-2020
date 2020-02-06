@@ -2,12 +2,12 @@ package frc4536.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4536.lib.SmartMotor;
+import frc4536.lib.IEncoderMotor;
 
 public class Climber extends SubsystemBase {
-public SmartMotor m_motor1, m_motor2, m_winchMotor;
+public IEncoderMotor m_motor1, m_motor2, m_winchMotor;
 
-public Climber(SmartMotor motor1, SmartMotor motor2, SmartMotor winchMotor){    
+public Climber(IEncoderMotor motor1, IEncoderMotor motor2, IEncoderMotor winchMotor){
     m_winchMotor = winchMotor;
     m_motor1 = motor1;
     m_motor2 = motor2;

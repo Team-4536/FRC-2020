@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4536.lib.ISmartMotor;
+import frc4536.lib.IEncoderMotor;
 
 public class DriveTrain extends SubsystemBase {
-    private final ISmartMotor m_leftMotor, m_rightMotor; 
+    private final IEncoderMotor m_leftMotor, m_rightMotor;
     private final DifferentialDrive m_drive; 
     private final DifferentialDriveOdometry m_odometry;
     private final AHRS m_navx;
@@ -22,7 +22,7 @@ public class DriveTrain extends SubsystemBase {
     private double previousSpeed;
     double wheelCircumference = 0.0762 * 2 * Math.PI;
   
-    public DriveTrain(ISmartMotor leftMotor, ISmartMotor rightMotor, AHRS navx) {
+    public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx) {
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
         m_navx = navx;
@@ -68,13 +68,6 @@ public class DriveTrain extends SubsystemBase {
     }
     */
 
-    public void closedLoopDrive(double linLeft, double linRight){ 
-        double angScalar = 1;//1/(2 * 0.1524 * Math.PI);
-        m_leftMotor.setSpeed(linLeft * angScalar);
-        m_rightMotor.setSpeed(linRight * angScalar);
-        System.out.println("left: " + m_leftMotor.getSetpoint() + "right: " + m_rightMotor.getSetpoint());
-    }
-
     public void resetEncoders() {
         m_leftMotor.resetEncoder();
         m_rightMotor.resetEncoder();
@@ -96,8 +89,9 @@ public class DriveTrain extends SubsystemBase {
     }
   
     public void setVoltages(double left, double right) {
-        m_leftMotor.setVolt(left);
-        m_rightMotor.setVolt(right);
+        m_leftMotor.setVoltage(left);
+        m_rightMotor.setVoltage(right);
+        m_drive.feed();
         //TODO: May need to feed the watchdog here, Oblarg added that to the WPILIb example
     }
     

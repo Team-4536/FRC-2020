@@ -2,11 +2,8 @@ package frc4536.lib;
 
 import edu.wpi.first.wpilibj.SpeedController;
 
-public interface ISmartMotor extends SpeedController{
-    void setVolt(double i);
-    void setSpeed(double i);
+public interface IEncoderMotor extends SpeedController{
     double getSpeed();
     double getDistance();
-    double getSetpoint();
     void resetEncoder();
 }

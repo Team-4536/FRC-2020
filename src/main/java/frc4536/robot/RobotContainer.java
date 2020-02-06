@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
@@ -104,6 +104,6 @@ public class RobotContainer {
             m_config
     );
 
-    return new RamseteAutonomousCommand(m_driveTrain, m_trajectory, m_config, m_constants);
+    return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
   }
 }

@@ -5,14 +5,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class VirtualSmartMotor extends SubsystemBase implements ISmartMotor, Sendable {
+public class VirtualEncoderMotor extends SubsystemBase implements IEncoderMotor, Sendable {
 
     private final VirtualMotor m_motor;
     private final Timer m_timer = new Timer();
     private double m_distance, m_prevTime;
     private final double m_maxSpeed;
 
-    public VirtualSmartMotor(String name, double maxSpeed) {
+    public VirtualEncoderMotor(String name, double maxSpeed) {
         m_motor = new VirtualMotor(name);
         m_maxSpeed = maxSpeed;
         m_timer.reset();
@@ -63,16 +63,6 @@ public class VirtualSmartMotor extends SubsystemBase implements ISmartMotor, Sen
     }
 
     @Override
-    public void setVolt(double i) {
-        m_motor.setVoltage(i);
-    }
-
-    @Override
-    public void setSpeed(double i) {
-        set(i/m_maxSpeed);
-    }
-
-    @Override
     public double getSpeed(){
         return m_motor.get()*m_maxSpeed;
     }
@@ -80,11 +70,6 @@ public class VirtualSmartMotor extends SubsystemBase implements ISmartMotor, Sen
     @Override
     public double getDistance() {
         return m_distance;
-    }
-
-    @Override
-    public double getSetpoint() {
-        return m_motor.get()*m_maxSpeed;
     }
 
     @Override
