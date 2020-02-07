@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import frc4536.lib.*;
 
-public class Trenchy implements RobotFrame {
+public class Honeycomb implements RobotFrame {
       // TODO: all of these values are sinful    
     public static final double ksVolts = 0.22;
     public static final double kvVoltSecondsPerMeter = 1.98;
