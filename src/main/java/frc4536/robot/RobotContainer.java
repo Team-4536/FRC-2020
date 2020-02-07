@@ -45,7 +45,6 @@ public class RobotContainer {
                                                          m_robotHardware.getDrivetrainNavX());
   private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
                                                 m_robotHardware.getBottomShooterFlywheelMotor());
-  public final Winch m_winch = new Winch(m_robotHardware.getClimberArmMotor());
   private final XboxController m_driveController = new XboxController(0);
 
   /**
@@ -59,7 +58,6 @@ public class RobotContainer {
                                                         () -> m_driveController.getX(GenericHID.Hand.kLeft), 
                                                         m_driveTrain));
     m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
-    m_winch.setDefaultCommand(new WinchCommand(() -> m_driveController.getXButtonPressed(), () -> m_driveController.getYButtonPressed(), m_winch));
   }
 
   /**
