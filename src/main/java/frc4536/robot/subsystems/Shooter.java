@@ -7,16 +7,20 @@
 
 package frc4536.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc4536.lib.IEncoderMotor;
 
-public class Shooter extends SubsystemBase {
+public class Shooter extends PIDSubsystem {
     private IEncoderMotor m_shooterTop;
     private IEncoderMotor m_shooterBottom;
+    //TODO: consider adding feed forward
   /**
    * Creates a new Shooter.
    */
   public Shooter(IEncoderMotor top, IEncoderMotor bottom) {
+    //TODO: constants
+    super(new PIDController(0.1, 0.1, 0));
     m_shooterTop = top;
     m_shooterBottom = bottom;
   }
@@ -29,12 +33,25 @@ public class Shooter extends SubsystemBase {
 
   
   public void setRPS(double speed){
-    //TODO: IMPLEMENT THE PID
+    setSetpoint(speed);
   }
 
   public void setPower(double power) {
     m_shooterTop.setVoltage(power);
     m_shooterBottom.setVoltage(power);
+  }
+
+  @Override
+  protected void useOutput(double output, double setpoint) {
+    // TODO May need feed forward
+    m_shooterTop.setVoltage(output);
+    m_shooterBottom.setVoltage(output);
+
+  }
+
+  @Override
+  protected double getMeasurement() {
+    return m_shooterTop.getSpeed();
   }
 
 }

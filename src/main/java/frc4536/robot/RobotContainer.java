@@ -21,8 +21,8 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
@@ -75,6 +75,8 @@ public class RobotContainer {
       .whenPressed(new SnapToAngle(m_driveTrain, 180));
     new JoystickButton(m_driveController, Button.kX.value)
       .whenPressed(new SnapToAngle(m_driveTrain, -90));
+    new JoystickButton(m_driveController, Button.kA.value)
+      .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter));
   }
   
   /**
