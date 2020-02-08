@@ -38,26 +38,18 @@ import frc4536.robot.subsystems.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final RobotFrame m_robotHardware;
-  public final RobotConstants m_constants;
-  public final DriveTrain m_driveTrain;
-  private final Shooter m_shooter;
-  private final XboxController m_driveController;
-  private final Joystick m_liftController;
-  private final Climber m_climber;
-  {
-    m_robotHardware = new TestRobot();
-    m_constants = m_robotHardware.getConstants();
-    m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
-                                                         m_robotHardware.getDrivetrainRightMotor(), 
-                                                         m_robotHardware.getDrivetrainNavX());
-    m_driveController = new XboxController(0);
-    m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
-                                                m_robotHardware.getBottomShooterFlywheelMotor());
-    m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
-                                                m_robotHardware.getLiftMotor());
-    m_liftController = new Joystick(1);
-  }
+  public final RobotFrame m_robotHardware = new TestRobot();
+  public final RobotConstants m_constants = m_robotHardware.getConstants();
+  public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
+  m_robotHardware.getDrivetrainRightMotor(), 
+  m_robotHardware.getDrivetrainNavX());
+  private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
+  m_robotHardware.getBottomShooterFlywheelMotor());
+  private final XboxController m_driveController = new XboxController(0);
+  private final Joystick m_liftController = new Joystick(1);
+  private final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
+  m_robotHardware.getLiftMotor());
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
