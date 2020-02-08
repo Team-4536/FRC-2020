@@ -73,13 +73,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new JoystickButton(m_driveController, Button.kY.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, 0));
-    new JoystickButton(m_driveController, Button.kB.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, 90));
-    new JoystickButton(m_driveController, Button.kA.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, 180));
-    new JoystickButton(m_driveController, Button.kX.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, -90));
+      .whenPressed(new IntakeCommands(m_intake, m_conveyor));
           new JoystickButton(m_driveController, Button.kA.value)
               .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter));
           new JoystickButton(m_driveController, Button.kA.value)
