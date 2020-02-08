@@ -74,7 +74,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
 
 
-    Shuffleboard.getTab("Subsystems").add(m_winch);
+    Shuffleboard.getTab("Subsystems").add(m_climber);
     Shuffleboard.getTab("Subsystems").add(m_conveyor);
     Shuffleboard.getTab("Subsystems").add(m_driveTrain);
     Shuffleboard.getTab("Subsystems").add(m_intake);
