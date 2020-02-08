@@ -9,12 +9,14 @@ package frc4536.robot;
 
 import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -23,7 +25,6 @@ import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
@@ -40,29 +41,42 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final RobotFrame m_robotHardware = new TestRobot();
   public final RobotConstants m_constants = m_robotHardware.getConstants();
- 
   public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
-                                                         m_robotHardware.getDrivetrainRightMotor(), 
-                                                         m_robotHardware.getDrivetrainNavX());
-  private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
+  m_robotHardware.getDrivetrainRightMotor(), 
+  m_robotHardware.getDrivetrainNavX());
+  public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
                                                 m_robotHardware.getBottomShooterFlywheelMotor());
-  public final Winch m_winch = new Winch(m_robotHardware.getClimberArmMotor());
   public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
   public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
+  public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
+  m_robotHardware.getLiftMotor());
+  
   private final XboxController m_driveController = new XboxController(0);
-
+  private final Joystick m_liftController = new Joystick(1);
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
     configureButtonBindings();
 
     m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft),
                                                         () -> m_driveController.getX(GenericHID.Hand.kLeft), 
-                                                                                                                    m_driveTrain));
+                                                                                              m_driveTrain));
     m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
-    m_winch.setDefaultCommand(new WinchCommand(() -> m_driveController.getXButtonPressed(), () -> m_driveController.getYButtonPressed(), m_winch));
+    m_climber.setDefaultCommand(new WinchCommand(() -> m_liftController.getRawButton(7), 
+                                                 () -> m_liftController.getY(), 
+                                                 () -> m_liftController.getRawButton(8), 
+                                                 m_climber));
+    m_conveyor.setDefaultCommand(new DefualtConveyorCommand(m_conveyor));
+    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+
+
+    Shuffleboard.getTab("Subsystems").add(m_climber);
+    Shuffleboard.getTab("Subsystems").add(m_conveyor);
+    Shuffleboard.getTab("Subsystems").add(m_driveTrain);
+    Shuffleboard.getTab("Subsystems").add(m_intake);
+    Shuffleboard.getTab("Subsystems").add(m_shooter);    
   }
 
   /**
@@ -72,19 +86,14 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driveController, Button.kY.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, 0));
-    new JoystickButton(m_driveController, Button.kB.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, 90));
-    new JoystickButton(m_driveController, Button.kA.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, 180));
-    new JoystickButton(m_driveController, Button.kX.value)
-      .whenPressed(new SnapToAngle(m_driveTrain, -90));
+          new JoystickButton(m_driveController, Button.kBumperRight.value)
+            .whileHeld(new IntakeCommands(m_intake, m_conveyor));
+    
           new JoystickButton(m_driveController, Button.kA.value)
-              .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter));
+          .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter));
+    
           new JoystickButton(m_driveController, Button.kA.value)
               .whenReleased(new InstantCommand(() -> m_shooter.setRPS(0), m_shooter));
-
   }
   
   /**

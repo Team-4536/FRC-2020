@@ -62,7 +62,7 @@ public class Shooter extends PIDSubsystem {
   }
 
   @Override
-  protected double getMeasurement() {
+  public double getMeasurement() {
     return m_shooterTop.getSpeed();
   }
 
