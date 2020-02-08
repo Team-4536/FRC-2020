@@ -9,6 +9,7 @@ package frc4536.robot;
 
 import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -46,6 +47,9 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
                                                 m_robotHardware.getBottomShooterFlywheelMotor());
   private final XboxController m_driveController = new XboxController(0);
+  private final Joystick m_liftController = new Joystick(1);
+  private final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
+                                                m_robotHardware.getLiftMotor());
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -58,6 +62,7 @@ public class RobotContainer {
                                                         () -> m_driveController.getX(GenericHID.Hand.kLeft), 
                                                         m_driveTrain));
     m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
+    m_climber.setDefaultCommand(new WinchCommand(() -> m_liftController.getRawButtonPressed(7), () -> m_liftController.getY(GenericHID.Hand.kRight), () -> m_liftController.getRawButtonPressed(8), m_climber));
   }
 
   /**
