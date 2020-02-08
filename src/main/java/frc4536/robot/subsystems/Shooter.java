@@ -7,13 +7,19 @@
 
 package frc4536.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc4536.lib.IEncoderMotor;
 
 public class Shooter extends PIDSubsystem {
     private IEncoderMotor m_shooterTop;
     private IEncoderMotor m_shooterBottom;
+    private NetworkTableEntry defaultRPS;
+    ShuffleboardTab m_shooterTab;
+      
     //TODO: consider adding feed forward
   /**
    * Creates a new Shooter.
@@ -21,6 +27,8 @@ public class Shooter extends PIDSubsystem {
   public Shooter(IEncoderMotor top, IEncoderMotor bottom) {
     //TODO: constants
     super(new PIDController(0.1, 0.1, 0));
+    m_shooterTab = Shuffleboard.getTab("Shooter");
+    defaultRPS = m_shooterTab.add("Default RPS", 6000).getEntry();
     m_shooterTop = top;
     m_shooterBottom = bottom;
   }
@@ -28,12 +36,16 @@ public class Shooter extends PIDSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+  
   }
 
   
   public void setRPS(double speed){
     setSetpoint(speed);
+  }
+
+  public void setRPS() {
+    setSetpoint(defaultRPS.getDouble(6000));
   }
 
   public void setPower(double power) {
