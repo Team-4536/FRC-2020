@@ -59,7 +59,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void arcadeDrive(double speed, double rotation) {
-        m_drive.arcadeDrive(speed, rotation, false);
+        m_drive.arcadeDrive(speed, rotation, true);
     }
 
     public double getHeading() {

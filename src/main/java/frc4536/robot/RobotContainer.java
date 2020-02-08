@@ -1,30 +1,14 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc4536.robot;
 
-import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
@@ -44,8 +28,7 @@ public class RobotContainer {
   public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
   m_robotHardware.getDrivetrainRightMotor(), 
   m_robotHardware.getDrivetrainNavX());
-  public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
-                                                m_robotHardware.getBottomShooterFlywheelMotor());
+  public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
   public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
   public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
   public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
@@ -59,18 +42,23 @@ public class RobotContainer {
    */
   public RobotContainer() {
     configureButtonBindings();
+    //Default behaviour for all subsystems lives here.
+    m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
 
-    m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft),
-                                                        () -> m_driveController.getX(GenericHID.Hand.kLeft), 
-                                                                                              m_driveTrain));
-    m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
-    m_climber.setDefaultCommand(new WinchCommand(() -> m_liftController.getRawButton(7), 
-                                                 () -> m_liftController.getY(), 
-                                                 () -> m_liftController.getRawButton(8), 
-                                                 m_climber));
-    m_conveyor.setDefaultCommand(new DefualtConveyorCommand(m_conveyor));
-    m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+    m_climber.setDefaultCommand(new RunCommand(() -> {
+      m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
+      m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
+    }, m_climber));
 
+    m_conveyor.setDefaultCommand(new RunCommand(() -> {
+      m_conveyor.raiseTop();
+      m_conveyor.moveConveyor(0);
+    }, m_conveyor));
+
+    m_intake.setDefaultCommand(new RunCommand(() -> {
+      m_intake.intake(0);
+      m_intake.retractIntake();
+    }, m_intake));
 
     Shuffleboard.getTab("Subsystems").add(m_climber);
     Shuffleboard.getTab("Subsystems").add(m_conveyor);
@@ -98,40 +86,9 @@ public class RobotContainer {
   
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
    * @return the command to run in autonomous
-vz                                                     */
+   */
   public Command getAutonomousCommand() {
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    TrajectoryConstraint autoVoltageConstraint =
-            new DifferentialDriveVoltageConstraint(
-                    new SimpleMotorFeedforward(m_constants.ksVolts,
-                            m_constants.kvVoltSecondsPerMeter,
-                            m_constants.kaVoltSecondsSquaredPerMeter),
-                    m_constants.kDriveKinematics,
-                    10);
-    TrajectoryConfig m_config =
-            new TrajectoryConfig(m_constants.kMaxSpeedMetersPerSecond,
-                    m_constants.kMaxAccelerationMetersPerSecondSquared)
-                    // Add kinematics to ensure max speed is actually obeyed
-                    .setKinematics(m_constants.kDriveKinematics)
-                    // Apply the voltage constraint
-                    .addConstraint(autoVoltageConstraint);
-
-    final Trajectory m_trajectory = TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(
-                    new Translation2d(1, 1),
-                    new Translation2d(2, -1)
-            ),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            // Pass config
-            m_config
-    );
-
     return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
   }
 }
