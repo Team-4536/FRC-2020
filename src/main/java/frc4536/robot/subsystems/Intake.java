@@ -29,5 +29,4 @@ public class Intake extends SubsystemBase {
   public void retractIntake(){
     m_piston.set(DoubleSolenoid.Value.kReverse);
   }
-
 }
