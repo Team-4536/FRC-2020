@@ -26,4 +26,5 @@ public Climber( SpeedController motor1, SpeedController winchMotor){
   public void setWinch(double speed){
     m_winchMotor.set(speed);
   }
+
 }

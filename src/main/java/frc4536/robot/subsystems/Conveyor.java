@@ -7,24 +7,22 @@
 
 package frc4536.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc4536.lib.IEncoderMotor;
 
 public class Conveyor extends SubsystemBase {
     /**
     * Creates a new ExampleSubsystem.
     */
-    public IEncoderMotor m_topMotor, m_bottomMotor;
-    public double k_topSpeed, k_bottomSpeed;
-    /*public Piston m_piston*/
+    public SpeedController m_motor;
+    public DoubleSolenoid m_piston;
 
-    public Conveyor(IEncoderMotor topMotor, IEncoderMotor bottomMotor, double topSpeed, double bottomSpeed /*, Piston piston*/) {
+    public Conveyor(SpeedController motor, DoubleSolenoid piston) {
         super();
-        m_topMotor = topMotor;
-        m_bottomMotor = bottomMotor;
-        k_topSpeed = topSpeed;
-        k_bottomSpeed = bottomSpeed;
-        /*m_piston = piston;*/
+        m_motor = motor;
+        m_piston = piston;
     }
 
     @Override
@@ -32,25 +30,16 @@ public class Conveyor extends SubsystemBase {
     // This method will be called once per scheduler run
     }
 
-    public void lowerTop(){
-        /*
-        if(m_piston.isExtended()){
-            m_piston.toggleTop();
-        }
-        */
-    }
-
     public void raiseTop(){
-        /*
-        if(!m_piston.isExtended()){
-            m_piston.toggleTop();
-        }
-        */
+        m_piston.set(Value.kForward);
     }
 
-    public void moveConveyor(double topSpeed, double bottomSpeed){
-        m_topMotor.set(topSpeed);
-        m_bottomMotor.set(bottomSpeed);
+    public void lowerTop(){
+        m_piston.set(Value.kReverse);
+    }
+
+    public void moveConveyor(double speed){
+        m_motor.set(speed);
     }
     
 }

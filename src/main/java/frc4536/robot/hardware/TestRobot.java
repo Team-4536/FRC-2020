@@ -2,14 +2,8 @@ package frc4536.robot.hardware;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import frc4536.lib.PWMEncoderMotor;
-import frc4536.lib.IEncoderMotor;
-import frc4536.lib.VirtualMotor;
-import frc4536.lib.VirtualEncoderMotor;
+import edu.wpi.first.wpilibj.*;
+import frc4536.lib.*;
 
 public class TestRobot implements RobotFrame {
     // TODO: these need tick values!
@@ -39,6 +33,8 @@ public class TestRobot implements RobotFrame {
     VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
     VirtualMotor m_climberArmMotor = new VirtualMotor("Climber Motor");
     VirtualMotor m_liftMotor = new VirtualMotor("Lift Motor");
+    VirtualSolenoid m_conveyorBlocker = new VirtualSolenoid(0,1);
+    VirtualSolenoid m_intakeExtender = new VirtualSolenoid(2,3);
 
     AHRS m_navx = new AHRS();
     Encoder m_leftEncoder = new Encoder(0,1);
@@ -69,6 +65,16 @@ public class TestRobot implements RobotFrame {
     @Override
     public SpeedController getLiftMotor() {
         return m_liftMotor;
+    }
+
+    @Override
+    public DoubleSolenoid getConveyorBlocker() {
+        return m_conveyorBlocker;
+    }
+
+    @Override
+    public DoubleSolenoid getIntakeExtender() {
+        return m_intakeExtender;
     }
 
     @Override
