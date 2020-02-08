@@ -38,10 +38,11 @@ import frc4536.robot.subsystems.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final RobotConstants m_constants = m_robotHardware.getConstants();
- 
-  public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
   public final RobotFrame m_robotHardware;
+  public final RobotConstants m_constants;
+  public final DriveTrain m_driveTrain;
+  private final Shooter m_shooter;
+  private final XboxController m_driveController;
   private final Joystick m_liftController;
   private final Climber m_climber;
   {
