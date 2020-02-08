@@ -3,18 +3,21 @@ package frc4536.lib;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.EncoderType;
 
-public class SparkMAX implements IEncoderMotor {
+public class BrushedMAX implements IEncoderMotor {
     private final CANSparkMax m_master;
     private final CANEncoder m_encoder;
     private final double k_gearRatio;
+    private final int k_ticks;
 
-    public SparkMAX(double gearRatio, int...motorIDs){
+    public BrushedMAX(double gearRatio, int ticks, int... motorIDs) {
         k_gearRatio = gearRatio;
-        m_master = new CANSparkMax(motorIDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
-        m_encoder = m_master.getEncoder();
+        k_ticks = ticks;
+        m_master = new CANSparkMax(motorIDs[0], CANSparkMaxLowLevel.MotorType.kBrushed);
+        m_encoder = m_master.getEncoder(EncoderType.kQuadrature, k_ticks);
         if(motorIDs.length > 1) for(int i = 1; i < motorIDs.length; i++){
-            new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushless).follow(m_master);
+            new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushed).follow(m_master);
         }
     }
 
@@ -31,6 +34,7 @@ public class SparkMAX implements IEncoderMotor {
     @Override
     public void setInverted(boolean isInverted) {
         m_master.setInverted(isInverted);
+        m_encoder.setInverted(isInverted);
     }
 
     @Override
@@ -60,7 +64,7 @@ public class SparkMAX implements IEncoderMotor {
 
     @Override
     public double getDistance() {
-        return m_encoder.getPosition() / k_gearRatio;
+        return m_encoder.getPosition() / (k_gearRatio);
     }
 
     @Override
