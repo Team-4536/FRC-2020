@@ -38,19 +38,25 @@ import frc4536.robot.subsystems.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final RobotFrame m_robotHardware = new TestRobot();
   public final RobotConstants m_constants = m_robotHardware.getConstants();
  
   public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
+  public final RobotFrame m_robotHardware;
+  private final Joystick m_liftController;
+  private final Climber m_climber;
+  {
+    m_robotHardware = new TestRobot();
+    m_constants = m_robotHardware.getConstants();
+    m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
                                                          m_robotHardware.getDrivetrainRightMotor(), 
                                                          m_robotHardware.getDrivetrainNavX());
-  private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
+    m_driveController = new XboxController(0);
+    m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
                                                 m_robotHardware.getBottomShooterFlywheelMotor());
-  private final XboxController m_driveController = new XboxController(0);
-  private final Joystick m_liftController = new Joystick(1);
-  private final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
+    m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
                                                 m_robotHardware.getLiftMotor());
-
+    m_liftController = new Joystick(1);
+  }
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -62,7 +68,10 @@ public class RobotContainer {
                                                         () -> m_driveController.getX(GenericHID.Hand.kLeft), 
                                                         m_driveTrain));
     m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
-    m_climber.setDefaultCommand(new WinchCommand(() -> m_liftController.getRawButtonPressed(7), () -> m_liftController.getY(GenericHID.Hand.kRight), () -> m_liftController.getRawButtonPressed(8), m_climber));
+    m_climber.setDefaultCommand(new WinchCommand(() -> m_liftController.getRawButton(7), 
+                                                 () -> m_liftController.getY(), 
+                                                 () -> m_liftController.getRawButton(8), 
+                                                 m_climber));
   }
 
   /**

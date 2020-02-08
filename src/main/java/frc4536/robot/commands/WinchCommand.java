@@ -18,7 +18,8 @@ public class WinchCommand extends CommandBase {
     m_climber = climber;
     m_activateArm = activateArm;
     m_armSpeed = armSpeed;
-    
+   // Use addRequirements() here to declare subsystem dependencies.
+   addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
