@@ -82,10 +82,6 @@ public class RobotContainer {
     private void configureButtonBindings() {
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
-
-        new JoystickButton(m_driveController, Button.kA.value)
-                .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter))
-                .whenReleased(new InstantCommand(() -> m_shooter.setRPS(0), m_shooter));
     }
 
     /**
