@@ -47,6 +47,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), 
                                                 m_robotHardware.getBottomShooterFlywheelMotor());
   public final Winch m_winch = new Winch(m_robotHardware.getClimberArmMotor());
+  public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
+  public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
   private final XboxController m_driveController = new XboxController(0);
 
   /**
