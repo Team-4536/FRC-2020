@@ -22,73 +22,72 @@ import frc4536.robot.subsystems.*;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  public final RobotFrame m_robotHardware = new TestRobot();
-  public final RobotConstants m_constants = m_robotHardware.getConstants();
-  public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
-  m_robotHardware.getDrivetrainRightMotor(), 
-  m_robotHardware.getDrivetrainNavX());
-  public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
-  public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
-  public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
-  public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
-  m_robotHardware.getLiftMotor());
-  
-  private final XboxController m_driveController = new XboxController(0);
-  private final Joystick m_liftController = new Joystick(1);
-  
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    configureButtonBindings();
-    //Default behaviour for all subsystems lives here.
-    m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
+    // The robot's subsystems and commands are defined here...
+    public final RobotFrame m_robotHardware = new TestRobot();
+    public final RobotConstants m_constants = m_robotHardware.getConstants();
+    public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
+            m_robotHardware.getDrivetrainRightMotor(),
+            m_robotHardware.getDrivetrainNavX());
+    public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
+    public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
+    public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
+    public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
+            m_robotHardware.getLiftMotor());
 
-    m_climber.setDefaultCommand(new RunCommand(() -> {
-      m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
-      m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
-    }, m_climber));
+    private final XboxController m_driveController = new XboxController(0);
+    private final Joystick m_liftController = new Joystick(1);
 
-    m_conveyor.setDefaultCommand(new RunCommand(() -> {
-      m_conveyor.raiseTop();
-      m_conveyor.moveConveyor(0);
-    }, m_conveyor));
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        configureButtonBindings();
+        //Default behaviour for all subsystems lives here.
+        m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
 
-    m_intake.setDefaultCommand(new RunCommand(() -> {
-      m_intake.intake(0);
-      m_intake.retractIntake();
-    }, m_intake));
+        m_climber.setDefaultCommand(new RunCommand(() -> {
+            m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
+            m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
+        }, m_climber));
 
-    Shuffleboard.getTab("Subsystems").add(m_climber);
-    Shuffleboard.getTab("Subsystems").add(m_conveyor);
-    Shuffleboard.getTab("Subsystems").add(m_driveTrain);
-    Shuffleboard.getTab("Subsystems").add(m_intake);
-    Shuffleboard.getTab("Subsystems").add(m_shooter);    
-  }
+        m_conveyor.setDefaultCommand(new RunCommand(() -> {
+            m_conveyor.raiseTop();
+            m_conveyor.moveConveyor(0);
+        }, m_conveyor));
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by instantiating a {@link GenericHID} or one of its subclasses
-   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-          new JoystickButton(m_driveController, Button.kBumperRight.value)
-            .whileHeld(new IntakeCommands(m_intake, m_conveyor));
-    
-          new JoystickButton(m_driveController, Button.kA.value)
-          .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter));
-    
-          new JoystickButton(m_driveController, Button.kA.value)
-              .whenReleased(new InstantCommand(() -> m_shooter.setRPS(0), m_shooter));
-  }
-  
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
-  }
+        m_intake.setDefaultCommand(new RunCommand(() -> {
+            m_intake.intake(0);
+            m_intake.retractIntake();
+        }, m_intake));
+
+        Shuffleboard.getTab("Subsystems").add(m_climber);
+        Shuffleboard.getTab("Subsystems").add(m_conveyor);
+        Shuffleboard.getTab("Subsystems").add(m_driveTrain);
+        Shuffleboard.getTab("Subsystems").add(m_intake);
+        Shuffleboard.getTab("Subsystems").add(m_shooter);
+    }
+
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by instantiating a {@link GenericHID} or one of its subclasses
+     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+     * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        new JoystickButton(m_driveController, Button.kBumperRight.value)
+                .whileHeld(new IntakeCommands(m_intake, m_conveyor));
+
+        new JoystickButton(m_driveController, Button.kA.value)
+                .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter))
+                .whenReleased(new InstantCommand(() -> m_shooter.setRPS(0), m_shooter));
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
+    }
 }
