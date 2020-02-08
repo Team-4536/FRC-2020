@@ -1,20 +1,25 @@
 package frc4536.robot.commands;
+
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc4536.robot.subsystems.Winch;
+import frc4536.robot.subsystems.Climber;
 
 public class WinchCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Winch m_winch;
-  private final BooleanSupplier m_spinWinchForwards, m_spinWinchBackwards;
+  private final BooleanSupplier m_winchTime, m_activateArm;
+  private final Climber m_climber;
+  private final DoubleSupplier m_armSpeed;
   /**
    * Creates a command for driving with a controller
    */
-  public WinchCommand(BooleanSupplier spinWinchForwards, BooleanSupplier spinWinchBackwards, Winch winch) {
-    m_winch = winch;
-    m_spinWinchForwards = spinWinchForwards;
-    m_spinWinchBackwards = spinWinchBackwards;
-    addRequirements(winch);
+  public WinchCommand(BooleanSupplier winchTime, DoubleSupplier armSpeed, BooleanSupplier activateArm, Climber climber) {
+    m_winchTime = winchTime;
+    m_climber = climber;
+    m_activateArm = activateArm;
+    m_armSpeed = armSpeed;
+   // Use addRequirements() here to declare subsystem dependencies.
+   addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
@@ -25,15 +30,16 @@ public class WinchCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // if button 1 is pressed turn the motor to extend the arm if button 2 is pressed and button 1 is not turn the motor the other direction
-  if(m_spinWinchForwards.getAsBoolean()){
-    m_winch.turnWinch(0.5);
-    
-  }
-  else if(m_spinWinchBackwards.getAsBoolean()){
-    m_winch.turnWinch(-0.5);
-  }
-  else m_winch.turnWinch(0);
+    if(m_activateArm.getAsBoolean()){
+      m_climber.setArm(m_armSpeed.getAsDouble());
+    } else {
+      m_climber.setArm(0);
+    }
+    if(m_winchTime.getAsBoolean()){
+      m_climber.setWinch(m_armSpeed.getAsDouble());
+    } else{
+      m_climber.setWinch(0);
+    }
 }
   // Returns true when the command should end.
   @Override
