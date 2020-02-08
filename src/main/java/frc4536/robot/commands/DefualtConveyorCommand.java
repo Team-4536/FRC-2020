@@ -8,6 +8,7 @@ public class DefualtConveyorCommand extends CommandBase{
 
     public DefualtConveyorCommand(Conveyor conveyor){
         m_conveyor = conveyor;
+        addRequirements(conveyor);
     }
 
     // Called when the command is initially scheduled.

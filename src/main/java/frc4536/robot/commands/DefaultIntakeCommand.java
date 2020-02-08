@@ -8,6 +8,7 @@ public class DefaultIntakeCommand extends CommandBase{
 
     public DefaultIntakeCommand(Intake intake){
         m_intake = intake;
+        addRequirements(intake);
     }
 
     // Called when the command is initially scheduled.

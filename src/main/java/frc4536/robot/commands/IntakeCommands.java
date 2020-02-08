@@ -16,6 +16,7 @@ public class IntakeCommands extends CommandBase {
   public IntakeCommands(Intake intake, Conveyor conveyor) {
     m_intake = intake;
     m_conveyor = conveyor;
+    addRequirements(intake,conveyor);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
