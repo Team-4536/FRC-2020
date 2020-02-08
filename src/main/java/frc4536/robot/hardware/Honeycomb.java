@@ -2,6 +2,7 @@ package frc4536.robot.hardware;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import frc4536.lib.*;
@@ -38,6 +39,9 @@ public class Honeycomb implements RobotFrame {
     IEncoderMotor m_leftMotors = new SparkMAX(10.75, 47, 48);
     IEncoderMotor m_rightMotors = new SparkMAX(10.75, 49, 50);
 
+    VirtualSolenoid m_conveyorBlocker = new VirtualSolenoid(0,1);
+    VirtualSolenoid m_intakeExtender = new VirtualSolenoid(2,3);
+
     @Override
     public RobotConstants getConstants() {
         return m_constants;
@@ -61,6 +65,16 @@ public class Honeycomb implements RobotFrame {
     @Override
     public SpeedController getLiftMotor() {
         return m_liftMotor;
+    }
+
+    @Override
+    public DoubleSolenoid getConveyorBlocker() {
+        return m_conveyorBlocker;
+    }
+
+    @Override
+    public DoubleSolenoid getIntakeExtender() {
+        return m_intakeExtender;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package frc4536.robot.hardware;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import frc4536.lib.IEncoderMotor;
 
@@ -15,5 +16,7 @@ public interface RobotFrame {
     RobotConstants getConstants();
     SpeedController getClimberArmMotor();
     SpeedController getLiftMotor();
+    DoubleSolenoid getConveyorBlocker();
+    DoubleSolenoid getIntakeExtender();
 }
 
