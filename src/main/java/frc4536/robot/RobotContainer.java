@@ -58,7 +58,7 @@ public class RobotContainer {
 
     m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft),
                                                         () -> m_driveController.getX(GenericHID.Hand.kLeft), 
-                                                        m_driveTrain));
+                                                                                                                    m_driveTrain));
     m_shooter.setDefaultCommand(new ManualShooterCommand(() -> m_driveController.getY(GenericHID.Hand.kRight), m_shooter));
     m_winch.setDefaultCommand(new WinchCommand(() -> m_driveController.getXButtonPressed(), () -> m_driveController.getYButtonPressed(), m_winch));
   }
@@ -80,13 +80,16 @@ public class RobotContainer {
       .whenPressed(new SnapToAngle(m_driveTrain, -90));
           new JoystickButton(m_driveController, Button.kA.value)
               .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter));
+          new JoystickButton(m_driveController, Button.kA.value)
+              .whenReleased(new InstantCommand(() -> m_shooter.setRPS(0), m_shooter));
+
   }
   
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
+vz                                                     */
   public Command getAutonomousCommand() {
     // Create a voltage constraint to ensure we don't accelerate too fast
     TrajectoryConstraint autoVoltageConstraint =
