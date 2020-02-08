@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
@@ -58,7 +60,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
     configureButtonBindings();
 
     m_driveTrain.setDefaultCommand(new TankDriveCommand(() -> m_driveController.getY(GenericHID.Hand.kLeft),
@@ -71,6 +72,13 @@ public class RobotContainer {
                                                  m_climber));
     m_conveyor.setDefaultCommand(new DefualtConveyorCommand(m_conveyor));
     m_intake.setDefaultCommand(new DefaultIntakeCommand(m_intake));
+
+
+    Shuffleboard.getTab("Subsystems").add(m_winch);
+    Shuffleboard.getTab("Subsystems").add(m_conveyor);
+    Shuffleboard.getTab("Subsystems").add(m_driveTrain);
+    Shuffleboard.getTab("Subsystems").add(m_intake);
+    Shuffleboard.getTab("Subsystems").add(m_shooter);    
   }
 
   /**
