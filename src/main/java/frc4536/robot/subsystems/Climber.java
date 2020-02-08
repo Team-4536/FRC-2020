@@ -31,4 +31,5 @@ public Climber(IEncoderMotor motor1, IEncoderMotor motor2, IEncoderMotor winchMo
   public void pullWinch(double speed){
     m_winchMotor.set(speed);
   }
+
 }
