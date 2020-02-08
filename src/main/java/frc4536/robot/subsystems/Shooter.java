@@ -40,7 +40,10 @@ public class Shooter extends PIDSubsystem {
   
   }
 
-  
+  /**
+   * Used to set the PID setpoint
+   * @param speed the speed in rps
+   */
   public void setRPS(double speed){
     setSetpoint(speed);
   }
