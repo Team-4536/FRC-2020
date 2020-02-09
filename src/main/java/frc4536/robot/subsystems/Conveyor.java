@@ -13,33 +13,24 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Conveyor extends SubsystemBase {
-    /**
-    * Creates a new ExampleSubsystem.
-    */
-    public SpeedController m_motor;
-    public DoubleSolenoid m_piston;
+    private SpeedController m_motor;
+    private DoubleSolenoid m_piston;
 
     public Conveyor(SpeedController motor, DoubleSolenoid piston) {
-        super();
         m_motor = motor;
         m_piston = piston;
     }
 
-    @Override
-    public void periodic() {
-    // This method will be called once per scheduler run
-    }
-
-    public void raiseTop(){
+    public void raiseTop() {
         m_piston.set(Value.kForward);
     }
 
-    public void lowerTop(){
+    public void lowerTop() {
         m_piston.set(Value.kReverse);
     }
 
-    public void moveConveyor(double speed){
+    public void moveConveyor(double speed) {
         m_motor.set(speed);
     }
-    
+
 }

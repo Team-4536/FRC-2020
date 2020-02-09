@@ -14,10 +14,6 @@ public class Intake extends SubsystemBase {
     m_piston = piston;
   }
 
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
   public void intake(double speed){
     m_motor1.set(speed);
   }
