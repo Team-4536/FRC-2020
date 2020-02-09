@@ -24,10 +24,10 @@ import frc4536.robot.subsystems.*;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public final RobotFrame m_robotHardware = new TestRobot();
-    public final RobotConstants m_constants = m_robotHardware.getConstants();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
-            m_robotHardware.getDrivetrainNavX());
+            m_robotHardware.getDrivetrainNavX(),
+            m_robotHardware.getConstants());
     public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
     public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
     public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
@@ -88,6 +88,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
+        return m_driveTrain.getRamseteAuto();
     }
 }

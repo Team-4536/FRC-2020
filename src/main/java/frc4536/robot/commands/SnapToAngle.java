@@ -14,19 +14,13 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
-/**
- * An example command that uses an example subsystem.
- */
+/*
 public class SnapToAngle extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain m_driveTrain;
   private final double m_goalAngle;
   private final PIDController m_controller = new PIDController(0.0135, 0.01296, 0.0);
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
+
   public SnapToAngle(final DriveTrain driveTrain, double goalAngle) {
     m_driveTrain = driveTrain;
     m_goalAngle = Utilities.angleConverter(goalAngle);
@@ -59,3 +53,4 @@ public class SnapToAngle extends CommandBase {
     return false;
   }
 }
+ */
