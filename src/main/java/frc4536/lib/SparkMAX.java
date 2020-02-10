@@ -31,7 +31,6 @@ public class SparkMAX implements IEncoderMotor {
     @Override
     public void setInverted(boolean isInverted) {
         m_master.setInverted(isInverted);
-        m_encoder.setInverted(isInverted);
     }
 
     @Override
