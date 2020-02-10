@@ -5,15 +5,16 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.util.Units;
 import frc4536.lib.*;
 
 public class Honeycomb implements RobotFrame {
-      // TODO: all of these values are sinful    
-    public static final double ksVolts = 0.22;
-    public static final double kvVoltSecondsPerMeter = 1.98;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.2;
-    public static final double kPDriveVel = 8.5;
-    public static final double kTrackWidthMeters = 0.53;
+      // TODO: tune these once the mechanisms are put on the robot
+    public static final double ksVolts = 0.235;
+    public static final double kvVoltSecondsPerMeter = 0.277;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.3;
+    public static final double kPDriveVel = 11.5;
+    public static final double kTrackWidthMeters = Units.inchesToMeters(21.8685);
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kRamseteB = 2;
