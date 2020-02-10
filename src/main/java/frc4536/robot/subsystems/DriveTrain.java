@@ -52,8 +52,8 @@ public class DriveTrain extends SubsystemBase {
     public void arcadeDrive(double speed, double rotation) {
         double s2 = speed * speed,
                 r2 = rotation * rotation;
-        m_leftMotor.setVoltage(s2 + r2);
-        m_rightMotor.setVoltage(s2 - r2);
+        m_leftMotor.set(s2 + r2);
+        m_rightMotor.set(s2 - r2);
     }
 
     public Rotation2d getHeading() {
@@ -95,8 +95,8 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void setOutput(double leftVolts, double rightVolts){
-        m_leftMotor.setVoltage(leftVolts / 12);
-        m_rightMotor.setVoltage(rightVolts / 12);
+        m_leftMotor.setVoltage(leftVolts);
+        m_rightMotor.setVoltage(rightVolts);
     }
 
     public Command getRamseteAuto(){
