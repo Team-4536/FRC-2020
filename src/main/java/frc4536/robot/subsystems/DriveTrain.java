@@ -50,8 +50,8 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void arcadeDrive(double speed, double rotation) {
-        double s2 = speed * speed,
-                r2 = rotation * rotation;
+        double s2 = Math.copySign(speed * speed, speed),
+                r2 = Math.copySign(rotation * rotation, rotation);
         m_leftMotor.set(s2 + r2);
         m_rightMotor.set(s2 - r2);
     }
