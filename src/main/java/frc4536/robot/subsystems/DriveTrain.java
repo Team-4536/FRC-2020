@@ -24,7 +24,6 @@ import java.util.Arrays;
 
 public class DriveTrain extends SubsystemBase {
     private final IEncoderMotor m_leftMotor, m_rightMotor;
-    private final DifferentialDrive m_drive;
     private final AHRS m_navx;
     private Pose2d m_pose;
     private double maxVelocity, maxAcceleration, previousSpeed;
@@ -34,14 +33,13 @@ public class DriveTrain extends SubsystemBase {
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
         m_navx = navx;
-        m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
         m_driveConstants = driveConstants;
-
         m_odometry = new DifferentialDriveOdometry(getHeading());
         kinematics = m_driveConstants.kDriveKinematics;
         feedforward = new SimpleMotorFeedforward(m_driveConstants.ksVolts, m_driveConstants.kvVoltSecondsPerMeter, m_driveConstants.kaVoltSecondsSquaredPerMeter);
         leftPID = new PIDController(m_driveConstants.kPDriveVel,0,0);
         rightPID = new PIDController(m_driveConstants.kPDriveVel,0,0);
+        rightMotor.setInverted(true);
     }
 
     @Override
@@ -52,7 +50,10 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void arcadeDrive(double speed, double rotation) {
-        m_drive.arcadeDrive(speed, rotation, true);
+        double s2 = speed * speed,
+                r2 = rotation * rotation;
+        m_leftMotor.setVoltage(s2 + r2);
+        m_rightMotor.setVoltage(s2 - r2);
     }
 
     public Rotation2d getHeading() {
