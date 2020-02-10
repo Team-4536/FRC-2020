@@ -13,11 +13,11 @@ public class Honeycomb implements RobotFrame {
     public static final double ksVolts = 0.235;
     public static final double kvVoltSecondsPerMeter = 0.277;
     public static final double kaVoltSecondsSquaredPerMeter = 0.3;
-    public static final double kPDriveVel = 11.5;
+    public static final double kPDriveVel = 11.5 / 12;
     public static final double kTrackWidthMeters = Units.inchesToMeters(21.8685);
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kRamseteB = 2;
+    public static final double kRamseteB = 4;
     public static final double kRamseteZeta = 0.7;
 
     public RobotConstants m_constants = new RobotConstants(ksVolts, 

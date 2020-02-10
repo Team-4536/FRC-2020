@@ -10,13 +10,14 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
 import frc4536.robot.hardware.RobotConstants;
 
@@ -40,6 +41,10 @@ public class DriveTrain extends SubsystemBase {
         leftPID = new PIDController(m_driveConstants.kPDriveVel,0,0);
         rightPID = new PIDController(m_driveConstants.kPDriveVel,0,0);
         rightMotor.setInverted(true);
+
+        ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
+        motorBasicTab.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
+        motorBasicTab.addNumber("Right Distance", () -> m_rightMotor.getDistance() * wheelCircumference);
     }
 
     @Override
@@ -69,8 +74,8 @@ public class DriveTrain extends SubsystemBase {
 
     public DifferentialDriveWheelSpeeds getSpeeds(){
         return new DifferentialDriveWheelSpeeds(
-                m_leftMotor.getSpeed(),
-                m_rightMotor.getSpeed()
+                m_leftMotor.getSpeed() * wheelCircumference,
+                m_rightMotor.getSpeed() * wheelCircumference
         );
     }
 
@@ -103,7 +108,7 @@ public class DriveTrain extends SubsystemBase {
         TrajectoryConfig config = new TrajectoryConfig(Units.feetToMeters(2), Units.feetToMeters(2)); //max sped and accel
         config.setKinematics(getKinematics());
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-                Arrays.asList(new Pose2d(), new Pose2d(1,0, new Rotation2d())),
+                Arrays.asList(new Pose2d(), new Pose2d(3,0, new Rotation2d())),
                 config);
         RamseteCommand command = new RamseteCommand(trajectory,
                 this::getPose,
@@ -117,7 +122,11 @@ public class DriveTrain extends SubsystemBase {
                 this
                 );
 
-        return command;
+        return new InstantCommand(() -> {
+            m_leftMotor.resetEncoder();
+            m_rightMotor.resetEncoder();
+            m_navx.reset();
+        }).andThen(command).andThen(new PrintCommand(m_leftMotor.getDistance() * wheelCircumference + " " + m_rightMotor.getDistance() * wheelCircumference));
     }
 
 
