@@ -15,7 +15,7 @@ import frc4536.robot.hardware.RobotConstants;
 public class DriveTrain extends SubsystemBase {
     private final IEncoderMotor m_leftMotor, m_rightMotor;
     private final AHRS m_navx;
-    private Pose2d m_pose;
+    private Pose2d m_pose = new Pose2d();
     private double wheelCircumference = Units.inchesToMeters(3) * 2 * Math.PI;
 
     public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx, RobotConstants driveConstants) {
