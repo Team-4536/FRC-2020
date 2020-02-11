@@ -87,6 +87,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
+        return m_driveTrain.scurveTo();
     }
 }
