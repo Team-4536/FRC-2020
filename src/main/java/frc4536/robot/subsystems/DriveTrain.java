@@ -1,6 +1,8 @@
 package frc4536.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -122,8 +124,22 @@ public class DriveTrain extends SubsystemBase {
                                                                        List.of(new Translation2d(1,1), new Translation2d(2,1)),
                                                                        new Pose2d(2,1,new Rotation2d(0)),
                                                                        config);
+
+        return new RamseteCommand(
+            trajectory,
+            this::getPose,
+            new RamseteController(m_driveConstants.kRamseteB, m_driveConstants.kRamseteZeta),
+            new SimpleMotorFeedforward(m_driveConstants.ksVolts,
+                    m_driveConstants.kvVoltSecondsPerMeter,
+                    m_driveConstants.kaVoltSecondsSquaredPerMeter),
+            kDriveKinematics,
+            this::getSpeeds,
+            new PIDController(m_driveConstants.kPDriveVel, 0, 0),
+            new PIDController(m_driveConstants.kPDriveVel, 0, 0),
+            this::setOutput,
+            this
+        ).andThen(() -> setOutput(0,0));
         /*
-        exampleTrajectory,
         m_robotDrive::getPose,
         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
         new SimpleMotorFeedforward(DriveConstants.ksVolts,
@@ -137,7 +153,6 @@ public class DriveTrain extends SubsystemBase {
         m_robotDrive::tankDriveVolts,
         m_robotDrive
         */
-       return new PrintCommand("no scurve for thou");
     }
 }
 
