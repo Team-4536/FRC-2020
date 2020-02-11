@@ -3,6 +3,7 @@ package frc4536.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -18,14 +19,15 @@ public class DriveTrain extends SubsystemBase {
     private final AHRS m_navx;
     private Pose2d m_pose = new Pose2d();
     private double wheelCircumference = kWheelDiameterMeters * Math.PI;
+    private DifferentialDriveKinematics kDriveKinematics;
 
     public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx, RobotConstants driveConstants) {
         m_leftMotor = leftMotor;
         m_rightMotor = rightMotor;
         m_navx = navx;
         m_driveConstants = driveConstants;
-        m_odometry = new DifferentialDriveOdometry(getHeading());
         rightMotor.setInverted(true);
+        kDriveKinematics = new DifferentialDriveKinematics(m_driveConstants.kTrackWidthMeters);
 
         ShuffleboardTab drivetrain_data = Shuffleboard.getTab("Drivetrain Data");
         drivetrain_data.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
@@ -37,6 +39,10 @@ public class DriveTrain extends SubsystemBase {
         drivetrain_data.add("Reset Encoders", new InstantCommand(this::resetEncoders));
         drivetrain_data.add("Reset Pose", new InstantCommand(this::resetPose));
         drivetrain_data.add("Reset Gyro", new InstantCommand(this::resetGyro));
+
+        m_odometry = new DifferentialDriveOdometry(getHeading());
+        resetGyro();
+        resetEncoders();
     }
 
     @Override
@@ -107,6 +113,7 @@ public class DriveTrain extends SubsystemBase {
         m_robotDrive::tankDriveVolts,
         m_robotDrive
         */
+       return new PrintCommand("no scurve for thou");
     }
 }
 
