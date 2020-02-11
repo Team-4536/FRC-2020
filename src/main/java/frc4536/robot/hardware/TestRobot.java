@@ -3,6 +3,7 @@ package frc4536.robot.hardware;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.util.Units;
 import frc4536.lib.*;
 
 public class TestRobot implements RobotFrame {
@@ -17,7 +18,7 @@ public class TestRobot implements RobotFrame {
     private final double kMaxAccelerationMetersPerSecondSquared = 3;
     private final double kRamseteB = 2;
     private final double kRamseteZeta = 0.7;
-    private final double kWheelDiameterInches = 6;
+    private final double kWheelDiameterInches = Units.inchesToMeters(6);
     public RobotConstants m_constants = new RobotConstants(ksVolts, 
                                                            kvVoltSecondsPerMeter, 
                                                            kaVoltSecondsSquaredPerMeter, 

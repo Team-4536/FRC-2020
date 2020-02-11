@@ -23,7 +23,7 @@ import frc4536.robot.subsystems.*;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public final RobotFrame m_robotHardware = new Honeycomb();
+    public final RobotFrame m_robotHardware = new TestRobot();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
