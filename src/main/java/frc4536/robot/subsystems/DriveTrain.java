@@ -1,6 +1,7 @@
 package frc4536.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -8,6 +9,8 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
@@ -20,6 +23,8 @@ public class DriveTrain extends SubsystemBase {
     private Pose2d m_pose = new Pose2d();
     private double wheelCircumference = kWheelDiameterMeters * Math.PI;
     private DifferentialDriveKinematics kDriveKinematics;
+    private DifferentialDriveVoltageConstraint autoVoltageConstraint;
+    private TrajectoryConfig config;
 
     public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx, RobotConstants driveConstants) {
         m_leftMotor = leftMotor;
@@ -27,7 +32,7 @@ public class DriveTrain extends SubsystemBase {
         m_navx = navx;
         m_driveConstants = driveConstants;
         rightMotor.setInverted(true);
-        kDriveKinematics = new DifferentialDriveKinematics(m_driveConstants.kTrackWidthMeters);
+        kDriveKinematics = driveConstants.kDriveKinematics;
 
         ShuffleboardTab drivetrain_data = Shuffleboard.getTab("Drivetrain Data");
         drivetrain_data.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
@@ -43,10 +48,10 @@ public class DriveTrain extends SubsystemBase {
         m_odometry = new DifferentialDriveOdometry(getHeading());
         resetGyro();
         resetEncoders();
+
     }
 
-    @Override
-    public void periodic() {
+    @Override public void periodic() {
         m_pose = m_odometry.update(getHeading(),
                 m_leftMotor.getDistance() * wheelCircumference,
                 m_rightMotor.getDistance() * wheelCircumference);
@@ -98,6 +103,14 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public Command scurveTo() {
+        autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
+                m_driveConstants.kvVoltSecondsPerMeter,
+                m_driveConstants.kaVoltSecondsSquaredPerMeter),
+                kDriveKinematics,
+                10);
+        config = new TrajectoryConfig(m_driveConstants.kMaxSpeedMetersPerSecond, m_driveConstants.kMaxAccelerationMetersPerSecondSquared)
+            .setKinematics(kDriveKinematics)
+            .addConstraint(autoVoltageConstraint);
         /*
         exampleTrajectory,
         m_robotDrive::getPose,
