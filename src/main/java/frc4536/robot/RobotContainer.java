@@ -31,8 +31,7 @@ public class RobotContainer {
     public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
     public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
     public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
-    public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
-            m_robotHardware.getLiftMotor());
+    public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor());
 
     private final XboxController m_driveController = new XboxController(0);
     private final Joystick m_liftController = new Joystick(1);
@@ -43,7 +42,7 @@ public class RobotContainer {
     public RobotContainer() {
         configureButtonBindings();
         //Default behaviour for all subsystems lives here.
-        m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
+        m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
 
         m_climber.setDefaultCommand(new RunCommand(() -> {
             m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
@@ -88,6 +87,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return m_driveTrain.getRamseteAuto();
+        return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
     }
 }
