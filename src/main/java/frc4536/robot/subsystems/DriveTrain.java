@@ -54,9 +54,9 @@ public class DriveTrain extends SubsystemBase {
         drivetrain_data.add("Reset Pose", new InstantCommand(this::resetPose));
         drivetrain_data.add("Reset Gyro", new InstantCommand(this::resetGyro));
 
+        resetEncoders();
         m_odometry = new DifferentialDriveOdometry(getHeading());
         resetGyro();
-        resetEncoders();
     }
 
     @Override public void periodic() {
@@ -121,7 +121,7 @@ public class DriveTrain extends SubsystemBase {
             .addConstraint(autoVoltageConstraint);
 
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
-                                                                       List.of(new Translation2d(1,1), new Translation2d(2,1)),
+                                                                       List.of(new Translation2d(1,1)),
                                                                        new Pose2d(2,1,new Rotation2d(0)),
                                                                        config);
 
