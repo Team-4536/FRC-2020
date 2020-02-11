@@ -33,6 +33,9 @@ public class DriveTrain extends SubsystemBase {
         drivetrain_data.addNumber("Right Velocity", () -> m_rightMotor.getSpeed() * wheelCircumference);
         drivetrain_data.addString("Pose", () -> getPose().toString());
         drivetrain_data.addString("Heading", () -> getHeading().toString());
+        drivetrain_data.add("Reset Encoders", new InstantCommand(this::resetEncoders));
+        drivetrain_data.add("Reset Pose", new InstantCommand(this::resetPose));
+        drivetrain_data.add("Reset Gyro", new InstantCommand(this::resetGyro));
     }
 
     @Override
@@ -70,6 +73,21 @@ public class DriveTrain extends SubsystemBase {
     public void setOutput(double leftVolts, double rightVolts) {
         m_leftMotor.setVoltage(leftVolts);
         m_rightMotor.setVoltage(rightVolts);
+    }
+
+    public void resetEncoders(){
+        m_leftMotor.resetEncoder();
+        m_rightMotor.resetEncoder();
+    }
+
+    public void resetPose(){
+        resetEncoders();
+        m_odometry.resetPosition(new Pose2d(), getHeading());
+    }
+
+    public void resetGyro(){
+        m_navx.reset();
+        resetPose();
     }
 }
 
