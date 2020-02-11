@@ -19,6 +19,7 @@ public class Honeycomb implements RobotFrame {
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kRamseteB = 4;
     public static final double kRamseteZeta = 0.7;
+    public static final double kWheelDiameterInches = 6;
 
     public RobotConstants m_constants = new RobotConstants(ksVolts, 
                                                            kvVoltSecondsPerMeter, 
@@ -28,7 +29,8 @@ public class Honeycomb implements RobotFrame {
                                                            kMaxSpeedMetersPerSecond, 
                                                            kMaxAccelerationMetersPerSecondSquared, 
                                                            kRamseteB, 
-                                                           kRamseteZeta); 
+                                                           kRamseteZeta,
+                                                           kWheelDiameterInches);
 
     IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
     IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON

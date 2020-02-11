@@ -11,7 +11,9 @@ public class RobotConstants {
                           double kMaxSpeedMetersPerSecond, 
                           double kMaxAccelerationMetersPerSecondSquared,
                           double kRamseteB, 
-                          double kRamseteZeta) {
+                          double kRamseteZeta,
+                          double kWheelDiameterInches
+                          ) {
         this.ksVolts = ksVolts;
         this.kvVoltSecondsPerMeter = kvVoltSecondsPerMeter;
         this.kaVoltSecondsSquaredPerMeter = kaVoltSecondsSquaredPerMeter;
@@ -22,6 +24,7 @@ public class RobotConstants {
         this.kMaxAccelerationMetersPerSecondSquared = kMaxAccelerationMetersPerSecondSquared;
         this.kRamseteB = kRamseteB;
         this.kRamseteZeta = kRamseteZeta;
+        this.kWheelDiameterInches = kWheelDiameterInches;
     }
     public final double ksVolts;
     public final double kvVoltSecondsPerMeter;
@@ -33,4 +36,5 @@ public class RobotConstants {
     public final double kMaxAccelerationMetersPerSecondSquared;
     public final double kRamseteB;
     public final double kRamseteZeta;
+    public final double kWheelDiameterInches;
 }
