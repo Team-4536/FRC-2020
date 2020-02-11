@@ -29,6 +29,8 @@ public class DriveTrain extends SubsystemBase {
         ShuffleboardTab drivetrain_data = Shuffleboard.getTab("Drivetrain Data");
         drivetrain_data.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
         drivetrain_data.addNumber("Right Distance", () -> m_rightMotor.getDistance() * wheelCircumference);
+        drivetrain_data.addNumber("Left Velocity", () -> m_leftMotor.getSpeed() * wheelCircumference);
+        drivetrain_data.addNumber("Right Velocity", () -> m_rightMotor.getSpeed() * wheelCircumference);
         drivetrain_data.addString("Pose", () -> m_pose.toString());
     }
 
