@@ -1,33 +1,21 @@
 package frc4536.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
 import frc4536.robot.hardware.RobotConstants;
 
-import java.util.Arrays;
-
 public class DriveTrain extends SubsystemBase {
     private final IEncoderMotor m_leftMotor, m_rightMotor;
     private final AHRS m_navx;
     private Pose2d m_pose;
-    private double maxVelocity, maxAcceleration, previousSpeed;
     private double wheelCircumference = Units.inchesToMeters(3) * 2 * Math.PI;
 
     public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx, RobotConstants driveConstants) {
@@ -36,15 +24,12 @@ public class DriveTrain extends SubsystemBase {
         m_navx = navx;
         m_driveConstants = driveConstants;
         m_odometry = new DifferentialDriveOdometry(getHeading());
-        kinematics = m_driveConstants.kDriveKinematics;
-        feedforward = new SimpleMotorFeedforward(m_driveConstants.ksVolts, m_driveConstants.kvVoltSecondsPerMeter, m_driveConstants.kaVoltSecondsSquaredPerMeter);
-        leftPID = new PIDController(m_driveConstants.kPDriveVel,0,0);
-        rightPID = new PIDController(m_driveConstants.kPDriveVel,0,0);
         rightMotor.setInverted(true);
 
-        ShuffleboardTab motorBasicTab = Shuffleboard.getTab("Motor Data");
-        motorBasicTab.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
-        motorBasicTab.addNumber("Right Distance", () -> m_rightMotor.getDistance() * wheelCircumference);
+        ShuffleboardTab drivetrain_data = Shuffleboard.getTab("Drivetrain Data");
+        drivetrain_data.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
+        drivetrain_data.addNumber("Right Distance", () -> m_rightMotor.getDistance() * wheelCircumference);
+        drivetrain_data.addString("Pose", () -> m_pose.toString());
     }
 
     @Override
@@ -67,10 +52,6 @@ public class DriveTrain extends SubsystemBase {
 
     private RobotConstants m_driveConstants;
     private DifferentialDriveOdometry m_odometry;
-    private DifferentialDriveKinematics kinematics;
-    private SimpleMotorFeedforward feedforward;
-    private PIDController leftPID;
-    private PIDController rightPID;
 
     public DifferentialDriveWheelSpeeds getSpeeds(){
         return new DifferentialDriveWheelSpeeds(
@@ -79,57 +60,14 @@ public class DriveTrain extends SubsystemBase {
         );
     }
 
-    public SimpleMotorFeedforward getFeedforward() {
-        return feedforward;
-    }
-
-    public PIDController getLeftPID() {
-        return leftPID;
-    }
-
-    public PIDController getRightPID() {
-        return rightPID;
-    }
-
-    public DifferentialDriveKinematics getKinematics() {
-        return kinematics;
-    }
-
     public Pose2d getPose(){
         return m_pose;
     }
 
-    public void setOutput(double leftVolts, double rightVolts){
+    public void setOutput(double leftVolts, double rightVolts) {
         m_leftMotor.setVoltage(leftVolts);
         m_rightMotor.setVoltage(rightVolts);
     }
-
-    public Command getRamseteAuto(){
-        TrajectoryConfig config = new TrajectoryConfig(Units.feetToMeters(2), Units.feetToMeters(2)); //max sped and accel
-        config.setKinematics(getKinematics());
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-                Arrays.asList(new Pose2d(), new Pose2d(3,0, new Rotation2d())),
-                config);
-        RamseteCommand command = new RamseteCommand(trajectory,
-                this::getPose,
-                new RamseteController(m_driveConstants.kRamseteB, m_driveConstants.kRamseteZeta),
-                getFeedforward(),
-                getKinematics(),
-                this::getSpeeds,
-                getLeftPID(),
-                getRightPID(),
-                this::setOutput,
-                this
-                );
-
-        return new InstantCommand(() -> {
-            m_leftMotor.resetEncoder();
-            m_rightMotor.resetEncoder();
-            m_navx.reset();
-        }).andThen(command).andThen(new PrintCommand(m_leftMotor.getDistance() * wheelCircumference + " " + m_rightMotor.getDistance() * wheelCircumference));
-    }
-
-
 }
 
 //I'm putting some extra code here to clear up the drivetrain clutter. It's only temporary, for me working.
