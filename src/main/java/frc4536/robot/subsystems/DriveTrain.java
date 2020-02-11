@@ -91,6 +91,24 @@ public class DriveTrain extends SubsystemBase {
         m_navx.reset();
         resetPose();
     }
+
+    public Command scurveTo() {
+        /*
+        exampleTrajectory,
+        m_robotDrive::getPose,
+        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+        new SimpleMotorFeedforward(DriveConstants.ksVolts,
+                DriveConstants.kvVoltSecondsPerMeter,
+                DriveConstants.kaVoltSecondsSquaredPerMeter),
+        DriveConstants.kDriveKinematics,
+        m_robotDrive::getWheelSpeeds,
+        new PIDController(DriveConstants.kPDriveVel, 0, 0),
+        new PIDController(DriveConstants.kPDriveVel, 0, 0),
+        // RamseteCommand passes volts to the callback
+        m_robotDrive::tankDriveVolts,
+        m_robotDrive
+        */
+    }
 }
 
 //I'm putting some extra code here to clear up the drivetrain clutter. It's only temporary, for me working.
