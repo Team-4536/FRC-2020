@@ -59,7 +59,8 @@ public class DriveTrain extends SubsystemBase {
         resetGyro();
     }
 
-    @Override public void periodic() {
+    @Override
+    public void periodic() {
         m_pose = m_odometry.update(getHeading(),
                 m_leftMotor.getDistance() * wheelCircumference,
                 m_rightMotor.getDistance() * wheelCircumference);
@@ -121,9 +122,10 @@ public class DriveTrain extends SubsystemBase {
             .addConstraint(autoVoltageConstraint);
 
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
-                                                                       List.of(new Translation2d(1,1)),
-                                                                       new Pose2d(2,1,new Rotation2d(0)),
+                                                                       List.of(new Translation2d(1,-1)),
+                                                                       new Pose2d(3,-3,new Rotation2d(0)),
                                                                        config);
+
 
         return new RamseteCommand(
             trajectory,
@@ -138,7 +140,7 @@ public class DriveTrain extends SubsystemBase {
             new PIDController(m_driveConstants.kPDriveVel, 0, 0),
             this::setOutput,
             this
-        ).andThen(() -> setOutput(0,0));
+        );
         /*
         m_robotDrive::getPose,
         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),

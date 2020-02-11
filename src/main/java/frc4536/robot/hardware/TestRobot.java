@@ -12,9 +12,9 @@ public class TestRobot implements RobotFrame {
     private final double ksVolts = 2;
     private final double kvVoltSecondsPerMeter = 0.353;
     private final double kaVoltSecondsSquaredPerMeter = 0.00864;
-    private final double kPDriveVel = 0.0233;
+    private final double kPDriveVel = 1;
     private final double kTrackWidthMeters = 0.7112;
-    private final double kMaxSpeedMetersPerSecond = 8;
+    private final double kMaxSpeedMetersPerSecond = 2;
     private final double kMaxAccelerationMetersPerSecondSquared = 3;
     private final double kRamseteB = 2;
     private final double kRamseteZeta = 0.7;
