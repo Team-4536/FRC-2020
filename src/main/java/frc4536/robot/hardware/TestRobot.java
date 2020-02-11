@@ -17,6 +17,7 @@ public class TestRobot implements RobotFrame {
     private final double kMaxAccelerationMetersPerSecondSquared = 3;
     private final double kRamseteB = 2;
     private final double kRamseteZeta = 0.7;
+    private final double kWheelDiameterInches = 6;
     public RobotConstants m_constants = new RobotConstants(ksVolts, 
                                                            kvVoltSecondsPerMeter, 
                                                            kaVoltSecondsSquaredPerMeter, 
@@ -25,7 +26,8 @@ public class TestRobot implements RobotFrame {
                                                            kMaxSpeedMetersPerSecond, 
                                                            kMaxAccelerationMetersPerSecondSquared, 
                                                            kRamseteB, 
-                                                           kRamseteZeta);
+                                                           kRamseteZeta,
+                                                           kWheelDiameterInches);
 
     IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779);
     IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779);

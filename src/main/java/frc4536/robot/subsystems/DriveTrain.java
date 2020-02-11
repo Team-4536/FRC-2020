@@ -12,11 +12,13 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
 import frc4536.robot.hardware.RobotConstants;
 
+import static frc4536.robot.hardware.Honeycomb.kWheelDiameterInches;
+
 public class DriveTrain extends SubsystemBase {
     private final IEncoderMotor m_leftMotor, m_rightMotor;
     private final AHRS m_navx;
     private Pose2d m_pose;
-    private double wheelCircumference = Units.inchesToMeters(3) * 2 * Math.PI;
+    private double wheelCircumference = Units.inchesToMeters(kWheelDiameterInches) * Math.PI;
 
     public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx, RobotConstants driveConstants) {
         m_leftMotor = leftMotor;
