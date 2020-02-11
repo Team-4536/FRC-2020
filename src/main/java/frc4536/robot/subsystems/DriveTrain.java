@@ -31,7 +31,8 @@ public class DriveTrain extends SubsystemBase {
         drivetrain_data.addNumber("Right Distance", () -> m_rightMotor.getDistance() * wheelCircumference);
         drivetrain_data.addNumber("Left Velocity", () -> m_leftMotor.getSpeed() * wheelCircumference);
         drivetrain_data.addNumber("Right Velocity", () -> m_rightMotor.getSpeed() * wheelCircumference);
-        drivetrain_data.addString("Pose", () -> m_pose.toString());
+        drivetrain_data.addString("Pose", () -> getPose().toString());
+        drivetrain_data.addString("Heading", () -> getHeading().toString());
     }
 
     @Override
