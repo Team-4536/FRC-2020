@@ -33,7 +33,7 @@ public class DriveTrain extends SubsystemBase {
     private double wheelCircumference = kWheelDiameterMeters * Math.PI;
     private DifferentialDriveKinematics kDriveKinematics;
     private DifferentialDriveVoltageConstraint autoVoltageConstraint;
-    private TrajectoryConfig config;
+    private TrajectoryConfig m_config;
 
     public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx, RobotConstants driveConstants) {
         m_leftMotor = leftMotor;
@@ -57,6 +57,14 @@ public class DriveTrain extends SubsystemBase {
         resetEncoders();
         m_odometry = new DifferentialDriveOdometry(getHeading());
         resetGyro();
+        autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
+                m_driveConstants.kvVoltSecondsPerMeter,
+                m_driveConstants.kaVoltSecondsSquaredPerMeter),
+                kDriveKinematics,
+                10);
+        m_config = new TrajectoryConfig(m_driveConstants.kMaxSpeedMetersPerSecond, m_driveConstants.kMaxAccelerationMetersPerSecondSquared)
+                .setKinematics(kDriveKinematics)
+                .addConstraint(autoVoltageConstraint);
     }
 
     @Override
@@ -91,6 +99,10 @@ public class DriveTrain extends SubsystemBase {
         return m_pose;
     }
 
+    public TrajectoryConfig getConfig() {
+        return m_config;
+    }
+
     public void setOutput(double leftVolts, double rightVolts) {
         m_leftMotor.setVoltage(leftVolts);
         m_rightMotor.setVoltage(rightVolts);
@@ -111,22 +123,7 @@ public class DriveTrain extends SubsystemBase {
         resetPose();
     }
 
-    public Command scurveTo() {
-        autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
-                m_driveConstants.kvVoltSecondsPerMeter,
-                m_driveConstants.kaVoltSecondsSquaredPerMeter),
-                kDriveKinematics,
-                10);
-        config = new TrajectoryConfig(m_driveConstants.kMaxSpeedMetersPerSecond, m_driveConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(kDriveKinematics)
-            .addConstraint(autoVoltageConstraint);
-
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
-                                                                       List.of(new Translation2d(1,-1)),
-                                                                       new Pose2d(3,-3,new Rotation2d(0)),
-                                                                       config);
-
-
+    public Command scurveTo(Trajectory trajectory) {
         return new RamseteCommand(
             trajectory,
             this::getPose,
@@ -141,20 +138,6 @@ public class DriveTrain extends SubsystemBase {
             this::setOutput,
             this
         );
-        /*
-        m_robotDrive::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        m_robotDrive::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        m_robotDrive::tankDriveVolts,
-        m_robotDrive
-        */
     }
 }
 
