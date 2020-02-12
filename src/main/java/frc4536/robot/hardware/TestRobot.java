@@ -14,7 +14,7 @@ public class TestRobot implements RobotFrame {
     private final double kTrackWidthMeters = 0.7112;
     private final double kMaxSpeedMetersPerSecond = 2;
     private final double kMaxAccelerationMetersPerSecondSquared = 3;
-    private final double kRamseteB = 2;
+    private final double kRamseteB = 16;
     private final double kRamseteZeta = 0.7;
     private final double kWheelDiameterInches = Units.inchesToMeters(6);
     public RobotConstants m_constants = new RobotConstants(ksVolts, 
