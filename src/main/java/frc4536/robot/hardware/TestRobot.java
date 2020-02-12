@@ -3,20 +3,20 @@ package frc4536.robot.hardware;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.util.Units;
 import frc4536.lib.*;
 
 public class TestRobot implements RobotFrame {
-    // TODO: these need tick values!
-    // TODO: all of these values are sinful    
     private final double ksVolts = 2;
     private final double kvVoltSecondsPerMeter = 0.353;
     private final double kaVoltSecondsSquaredPerMeter = 0.00864;
-    private final double kPDriveVel = 0.0233;
-    private final double kTrackWidthMeters = 0.71;
-    private final double kMaxSpeedMetersPerSecond = 8;
+    private final double kPDriveVel = 1;
+    private final double kTrackWidthMeters = 0.7112;
+    private final double kMaxSpeedMetersPerSecond = 2;
     private final double kMaxAccelerationMetersPerSecondSquared = 3;
     private final double kRamseteB = 2;
     private final double kRamseteZeta = 0.7;
+    private final double kWheelDiameterInches = Units.inchesToMeters(6);
     public RobotConstants m_constants = new RobotConstants(ksVolts, 
                                                            kvVoltSecondsPerMeter, 
                                                            kaVoltSecondsSquaredPerMeter, 
@@ -25,7 +25,8 @@ public class TestRobot implements RobotFrame {
                                                            kMaxSpeedMetersPerSecond, 
                                                            kMaxAccelerationMetersPerSecondSquared, 
                                                            kRamseteB, 
-                                                           kRamseteZeta);
+                                                           kRamseteZeta,
+                                                           kWheelDiameterInches);
 
     IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779);
     IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779);

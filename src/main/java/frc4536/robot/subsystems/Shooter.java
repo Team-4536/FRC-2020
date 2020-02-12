@@ -28,7 +28,8 @@ public class Shooter extends PIDSubsystem {
     //TODO: constants
     super(new PIDController(0.1, 0.1, 0));
     m_shooterTab = Shuffleboard.getTab("Shooter");
-    defaultRPS = m_shooterTab.add("Default RPS", 6000).getEntry();
+    defaultRPS = m_shooterTab.add("Default RPS",
+            6000).getEntry();
     m_shooterTop = top;
     m_shooterBottom = bottom;
   }

@@ -20,7 +20,6 @@ public class LegacySmartMotor implements IEncoderMotor {
         m_encoder.setPIDSourceType(PIDSourceType.kRate);
         m_pid = new PIDController(pidConstants.kP, pidConstants.kI, pidConstants.kD, 1.0/maxSpeed, m_encoder, m_motors);
     
-        //TODO: THIS IS FOR TESTING ONLY
         SmartDashboard.putData(m_pid);
     }
     

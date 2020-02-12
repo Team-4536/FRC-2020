@@ -4,7 +4,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -13,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
+
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -24,15 +31,14 @@ import frc4536.robot.subsystems.*;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public final RobotFrame m_robotHardware = new TestRobot();
-    public final RobotConstants m_constants = m_robotHardware.getConstants();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
-            m_robotHardware.getDrivetrainNavX());
+            m_robotHardware.getDrivetrainNavX(),
+            m_robotHardware.getConstants());
     public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
     public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
     public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
-    public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(),
-            m_robotHardware.getLiftMotor());
+    public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor());
 
     private final XboxController m_driveController = new XboxController(0);
     private final Joystick m_liftController = new Joystick(1);
@@ -43,7 +49,7 @@ public class RobotContainer {
     public RobotContainer() {
         configureButtonBindings();
         //Default behaviour for all subsystems lives here.
-        m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
+        m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
 
         m_climber.setDefaultCommand(new RunCommand(() -> {
             m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
@@ -88,6 +94,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new PrintCommand("YOU DO NOT HAVE AN AUTONOMOUS COMMAND!");
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
+                List.of(new Translation2d(1,-1)),
+                new Pose2d(3,-3,new Rotation2d(0)),
+                m_driveTrain.getConfig());
+        return m_driveTrain.scurveTo(trajectory);
     }
 }
