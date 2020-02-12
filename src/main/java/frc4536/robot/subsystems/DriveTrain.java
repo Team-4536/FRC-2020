@@ -162,7 +162,7 @@ public class DriveTrain extends SubsystemBase {
         maxVelocity = Math.max(maxVelocity, getVelocity());
 
          (Sasha) I'm keeeping this because it has additional elements, probably will remove it after adding proper updates.
-    public Pose2d getPose() { //TODO: This only works properly when run in a loop.
+    public Pose2d getPose() {
         return m_odometry.update(new Rotation2d(getHeading()), m_leftMotor.getSpeed(), m_rightMotor.getSpeed());
     }
 
@@ -200,7 +200,7 @@ public class DriveTrain extends SubsystemBase {
         m_leftMotor.setVoltage(left);
         m_rightMotor.setVoltage(right);
         m_drive.feed();
-        //TODO: May need to feed the watchdog here, Oblarg added that to the WPILIb example
+
     }
 
     public double getVelocity() {
