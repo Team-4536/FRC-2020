@@ -8,7 +8,6 @@ import frc4536.lib.*;
 
 public class TestRobot implements RobotFrame {
     // TODO: these need tick values!
-    // TODO: all of these values are sinful    
     private final double ksVolts = 2;
     private final double kvVoltSecondsPerMeter = 0.353;
     private final double kaVoltSecondsSquaredPerMeter = 0.00864;
