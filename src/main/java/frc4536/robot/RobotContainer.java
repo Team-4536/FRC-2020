@@ -45,6 +45,9 @@ public class RobotContainer {
     private final XboxController m_driveController = new XboxController(0);
     private final Joystick m_liftController = new Joystick(1);
 
+    private final NetworkTableEntry m_xInitial;
+    private final NetworkTableEntry m_yInitial;
+    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -73,6 +76,9 @@ public class RobotContainer {
         Shuffleboard.getTab("Subsystems").add(m_driveTrain);
         Shuffleboard.getTab("Subsystems").add(m_intake);
         Shuffleboard.getTab("Subsystems").add(m_shooter);
+
+        m_xInitial = Shuffleboard.getTab("Autonomous").add("Initial X", 1.0).getEntry();
+        m_yInitial = Shuffleboard.getTab("Autonomous").add("Initial Y", 3.3).getEntry();
     }
 
     /**
@@ -96,6 +102,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0),new Rotation2d(0.0)));
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
                 List.of(new Translation2d(1,-1)),
                 new Pose2d(3,-3,new Rotation2d(0)),

@@ -118,6 +118,11 @@ public class DriveTrain extends SubsystemBase {
         m_odometry.resetPosition(new Pose2d(), getHeading());
     }
 
+    public void resetPose(Pose2d pos){
+        resetEncoders();
+        m_odometry.resetPosition(pos, getHeading());
+    }
+
     public void resetGyro(){
         m_navx.reset();
         resetPose();
