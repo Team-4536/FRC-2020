@@ -7,67 +7,80 @@
 
 package frc4536.robot.subsystems;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc4536.lib.IEncoderMotor;
+import frc4536.robot.Constants;
 
-public class Shooter extends PIDSubsystem {
+import java.util.function.DoubleSupplier;
+
+public class Shooter extends SubsystemBase {
     private IEncoderMotor m_shooterTop;
     private IEncoderMotor m_shooterBottom;
-    private NetworkTableEntry defaultRPS;
-    ShuffleboardTab m_shooterTab;
-      
-    //TODO: consider adding feed forward
-  /**
-   * Creates a new Shooter.
-   */
-  public Shooter(IEncoderMotor top, IEncoderMotor bottom) {
-    //TODO: constants
-    super(new PIDController(0.1, 0.1, 0));
-    m_shooterTab = Shuffleboard.getTab("Shooter");
-    defaultRPS = m_shooterTab.add("Default RPS",
-            6000).getEntry();
-    m_shooterTop = top;
-    m_shooterBottom = bottom;
-  }
+    private PIDController m_topPIDController = new PIDController(Constants.getShooterP(), 0,0);
+    private PIDController m_bottomPIDController = new PIDController(Constants.getShooterP(), 0,0);
+    private SimpleMotorFeedforward k_feedForwards = new SimpleMotorFeedforward(Constants.getShooterkS(), Constants.getShooterkV());
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  
-  }
+    /**
+     * Creates a new Shooter.
+     */
+    public Shooter(IEncoderMotor top, IEncoderMotor bottom) {
+        m_shooterTop = top;
+        m_shooterBottom = bottom;
+        m_topPIDController.setTolerance(1.6666);
+        m_bottomPIDController.setTolerance(1.6666);
+        ShuffleboardTab shooter_data = Shuffleboard.getTab("Shooter Data");
+        shooter_data.addNumber("Top RPS", () -> m_shooterTop.getSpeed());
+        shooter_data.addNumber("Bottom RPS", () -> m_shooterBottom.getSpeed());
+        shooter_data.addBoolean("Top Target", () -> m_topPIDController.atSetpoint());
+        shooter_data.addBoolean("Bottom Target", () -> m_bottomPIDController.atSetpoint());
+    }
 
-  /**
-   * Used to set the PID setpoint
-   * @param speed the speed in rps
-   */
-  public void setRPS(double speed){
-    setSetpoint(speed);
-  }
+    public void setTopPower(double power) {
+        m_shooterTop.setVoltage(power * 12);
+    }
 
-  public void setRPS() {
-    setSetpoint(defaultRPS.getDouble(6000));
-  }
+    public void setBottomPower(double power){
+        m_shooterBottom.setVoltage(power * 12);
+    }
 
-  public void setPower(double power) {
-    m_shooterTop.setVoltage(power);
-    m_shooterBottom.setVoltage(power);
-  }
+    public PIDController getTopPIDController() {
+        return m_topPIDController;
+    }
 
-  @Override
-  protected void useOutput(double output, double setpoint) {
-    // TODO May need feed forward
-    m_shooterTop.setVoltage(output);
-    m_shooterBottom.setVoltage(output);
+    public PIDController getBottomPIDController() {
+        return m_bottomPIDController;
+    }
 
-  }
+    public double getTopRate() {
+        return m_shooterTop.getSpeed();
+    }
 
-  @Override
-  public double getMeasurement() {
-    return m_shooterTop.getSpeed();
-  }
+    public double getBottomRate() {
+        return m_shooterBottom.getSpeed();
+    }
 
+    public Command spinToRPM(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
+        Command spinTop = new PIDCommand(
+                getTopPIDController(),
+                this::getTopRate,
+                topRPS.getAsDouble(),
+                o -> setTopPower(o + k_feedForwards.calculate(topRPS.getAsDouble())),
+                this);
+        Command spinBottom = new PIDCommand(
+                getBottomPIDController(),
+                this::getBottomRate,
+                bottomRPS.getAsDouble(),
+                o -> setBottomPower(o + k_feedForwards.calculate(bottomRPS.getAsDouble())),
+                this);
+
+        return new WaitUntilCommand(() -> (m_topPIDController.atSetpoint() && m_bottomPIDController.atSetpoint()))
+                .deadlineWith(spinTop, spinBottom);
+    }
 }

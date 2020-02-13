@@ -66,6 +66,11 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake));
 
+        m_shooter.setDefaultCommand(new RunCommand(() -> {
+            m_shooter.setTopPower(0);
+            m_shooter.setBottomPower(0);
+        }));
+
         Shuffleboard.getTab("Subsystems").add(m_climber);
         Shuffleboard.getTab("Subsystems").add(m_conveyor);
         Shuffleboard.getTab("Subsystems").add(m_driveTrain);
@@ -80,12 +85,17 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-
-        NetworkTableEntry angle = Shuffleboard.getTab("Drivetrain Data").add("PID Setpoint", 0).getEntry();
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
-                .whileHeld(new SnapToAngle(m_driveTrain, () -> angle.getDouble(0)));
+                .whileHeld(new SnapToAngle(m_driveTrain, () -> {
+                    return 0;
+                }));
+        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
+        NetworkTableEntry top =  data.add("Top RPS",0).getEntry();
+        NetworkTableEntry bot = data.add("Top RPS",0).getEntry();
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
+        new JoystickButton(m_driveController, Button.kB.value)
+                .whileHeld(m_shooter.spinToRPM(() -> top.getDouble(0), () -> bot.getDouble(0)));
     }
 
     /**
