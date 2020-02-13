@@ -1,5 +1,6 @@
 package frc4536.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -8,6 +9,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -80,12 +82,12 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+
+        NetworkTableEntry angle = Shuffleboard.getTab("Drivetrain Data").add("PID Setpoint", 0).getEntry();
+        new JoystickButton(m_driveController, Button.kBumperLeft.value)
+                .whileHeld(new SnapToAngle(m_driveTrain, () -> angle.getDouble(0)));
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
-
-        new JoystickButton(m_driveController, Button.kA.value)
-                .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter))
-                .whenReleased(new InstantCommand(() -> m_shooter.setRPS(0), m_shooter));
     }
 
     /**
@@ -100,4 +102,5 @@ public class RobotContainer {
                 m_driveTrain.getConfig());
         return m_driveTrain.scurveTo(trajectory);
     }
+
 }
