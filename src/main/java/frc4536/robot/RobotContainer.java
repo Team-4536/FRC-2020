@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
@@ -57,7 +55,7 @@ public class RobotContainer {
             m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
             m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
         }, m_climber));
-        
+
         m_conveyor.setDefaultCommand(new RunCommand(() -> {
             m_conveyor.raiseTop();
             m_conveyor.moveConveyor(0);
