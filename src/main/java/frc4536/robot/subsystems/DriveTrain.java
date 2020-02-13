@@ -1,6 +1,10 @@
 package frc4536.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -138,6 +142,23 @@ public class DriveTrain extends SubsystemBase {
             this::setOutput,
             this
         );
+    }
+
+    //Vision
+     
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    private NetworkTableEntry visionError = table.getEntry("tx");
+    private NetworkTableEntry pipeline = table.getEntry("pipeline");
+
+    public void toggleDriverVision(boolean on){
+        if (on)
+            pipeline.setDouble(1);
+        else 
+            pipeline.setDouble(0);
+    }
+
+    public double getVisionAngle() {
+        return visionError.getDouble(0.0);
     }
 }
 
