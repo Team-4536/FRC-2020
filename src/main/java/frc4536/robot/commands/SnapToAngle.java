@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
-/*
+
 public class SnapToAngle extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain m_driveTrain;
@@ -39,7 +39,7 @@ public class SnapToAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveTrain.arcadeDrive(0.0, m_controller.calculate(m_driveTrain.getHeading()));
+    m_driveTrain.arcadeDrive(0.0, m_controller.calculate(-m_driveTrain.getHeading().getDegrees()));
   }
 
   // Called once the command ends or is interrupted.
@@ -53,4 +53,4 @@ public class SnapToAngle extends CommandBase {
     return false;
   }
 }
- */
+ 

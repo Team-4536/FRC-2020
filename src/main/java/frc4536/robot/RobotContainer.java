@@ -1,9 +1,11 @@
 package frc4536.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -82,6 +85,15 @@ public class RobotContainer {
     private void configureButtonBindings() {
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
+
+        NetworkTableEntry angle = Shuffleboard.getTab("Drivetrain Data").add("Setpoint", 0).getEntry();
+
+        new JoystickButton(m_driveController, Button.kB.value)
+                .whileHeld(new PIDCommand(new PIDController(0.0135, 0.01296, 0.0),
+                            () -> -m_driveTrain.getHeading().getDegrees(),
+                            angle.getDouble(0),
+                            output -> m_driveTrain.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), output), 
+                            m_driveTrain));
 
         new JoystickButton(m_driveController, Button.kA.value)
                 .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter))
