@@ -99,5 +99,18 @@ public class RobotContainer {
                 new Pose2d(3,-3,new Rotation2d(0)),
                 m_driveTrain.getConfig());
         return m_driveTrain.scurveTo(trajectory);
+    //robot starts in the center of initiation line 
+    //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
+    // wait 2 seconds 
+    //stop shooter, lift conveyor, 
+    // put out intake 
+    //spin up intake 
+    //scurve to begining of trench 
+    //scurve to end of trench 
+    //intake one ball
+    // scurve back to begining of trench
+    // run shoot command 
+
+    
     }
 }
