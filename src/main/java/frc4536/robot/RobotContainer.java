@@ -1,5 +1,6 @@
 package frc4536.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -8,6 +9,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +45,9 @@ public class RobotContainer {
     private final XboxController m_driveController = new XboxController(0);
     private final Joystick m_liftController = new Joystick(1);
 
+    private final NetworkTableEntry m_xInitial;
+    private final NetworkTableEntry m_yInitial;
+    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -71,6 +76,9 @@ public class RobotContainer {
         Shuffleboard.getTab("Subsystems").add(m_driveTrain);
         Shuffleboard.getTab("Subsystems").add(m_intake);
         Shuffleboard.getTab("Subsystems").add(m_shooter);
+
+        m_xInitial = Shuffleboard.getTab("Autonomous").add("Initial X", 1.0).getEntry();
+        m_yInitial = Shuffleboard.getTab("Autonomous").add("Initial Y", 3.3).getEntry();
     }
 
     /**
@@ -80,12 +88,12 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+
+        NetworkTableEntry angle = Shuffleboard.getTab("Drivetrain Data").add("PID Setpoint", 0).getEntry();
+        new JoystickButton(m_driveController, Button.kBumperLeft.value)
+                .whileHeld(new SnapToAngle(m_driveTrain, () -> angle.getDouble(0)));
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
-
-        new JoystickButton(m_driveController, Button.kA.value)
-                .whileHeld(new InstantCommand(() -> m_shooter.setRPS(6000), m_shooter))
-                .whenReleased(new InstantCommand(() -> m_shooter.setRPS(0), m_shooter));
     }
 
     /**
@@ -94,6 +102,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0),new Rotation2d(m_driveTrain.getHeading())));
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
                 List.of(new Translation2d(1,-1)),
                 new Pose2d(3,-3,new Rotation2d(0)),
@@ -113,4 +122,5 @@ public class RobotContainer {
 
     
     }
+
 }
