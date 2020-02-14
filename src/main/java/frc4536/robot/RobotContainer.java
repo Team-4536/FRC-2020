@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
@@ -86,7 +88,12 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
-                .whileHeld(new SnapToAngle(m_driveTrain, () -> -m_driveTrain.getHeading().getDegrees() + m_driveTrain.getVisionAngle()));
+                .whileHeld(new PIDCommand(new PIDController(0.02, 0.04/3, 0),
+                        () -> m_driveTrain.getVisionAngle(),
+                        0,
+                        o -> m_driveTrain.arcadeDrive(0, -o),
+                        m_driveTrain));
+
         ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
         NetworkTableEntry top =  data.add("Top Setpoint",0).getEntry();
         NetworkTableEntry bot = data.add("Bottom Setpoint",0).getEntry();
