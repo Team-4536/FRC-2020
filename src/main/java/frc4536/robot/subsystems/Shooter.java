@@ -23,9 +23,9 @@ import java.util.function.DoubleSupplier;
 public class Shooter extends SubsystemBase {
     private IEncoderMotor m_shooterTop;
     private IEncoderMotor m_shooterBottom;
-    private PIDController m_topPIDController = new PIDController(Constants.getShooterP(), 0,0);
-    private PIDController m_bottomPIDController = new PIDController(Constants.getShooterP(), 0,0);
-    private SimpleMotorFeedforward k_feedForwards = new SimpleMotorFeedforward(Constants.getShooterkS(), Constants.getShooterkV());
+    private PIDController m_topPIDController = new PIDController(Constants.SHOOTER_P, 0,0);
+    private PIDController m_bottomPIDController = new PIDController(Constants.SHOOTER_P, 0,0);
+    private SimpleMotorFeedforward k_feedForwards = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
 
     /**
      * Creates a new Shooter.
@@ -43,11 +43,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setTopPower(double power) {
-        m_shooterTop.setVoltage(power * 12);
+        m_shooterTop.setVoltage(power);
     }
 
     public void setBottomPower(double power){
-        m_shooterBottom.setVoltage(power * 12);
+        m_shooterBottom.setVoltage(power);
     }
 
     public PIDController getTopPIDController() {
