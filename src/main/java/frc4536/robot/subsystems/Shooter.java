@@ -77,8 +77,7 @@ public class Shooter extends SubsystemBase {
                 getBottomPIDController(),
                 this::getBottomRate,
                 bottomRPS.getAsDouble(),
-                o -> setBottomPower(o + k_feedForwards.calculate(bottomRPS.getAsDouble())),
-                this);
+                o -> setBottomPower(o + k_feedForwards.calculate(bottomRPS.getAsDouble())));
 
         return new WaitUntilCommand(() -> (m_topPIDController.atSetpoint() && m_bottomPIDController.atSetpoint()))
                 .deadlineWith(spinTop, spinBottom);
