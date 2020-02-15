@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase {
         return m_shooterBottom.getSpeed();
     }
 
-    public Command spinToRPM(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
+    public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
         if (m_shooterTop instanceof IPIDMotor && m_shooterBottom instanceof IPIDMotor) { //I wish Java had elvis operators....
             return new RunCommand(() -> {
                 ((IPIDMotor) m_shooterTop).setSetpoint(topRPS.getAsDouble()); //If this motor is smart we pass the RPM values directly.
