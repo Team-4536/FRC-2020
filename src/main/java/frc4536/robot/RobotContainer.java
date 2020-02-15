@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
@@ -116,24 +117,47 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
-                List.of(new Translation2d(1,-1)),
-                new Pose2d(3,-3,new Rotation2d(0)),
-                m_driveTrain.getConfig());
-        return m_driveTrain.scurveTo(trajectory);
-    //robot starts in the center of initiation line
-    //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
-    // wait 2 seconds 
-    //stop shooter, lift conveyor, 
-    // put out intake 
-    //spin up intake 
-    //scurve to begining of trench 
-    //scurve to end of trench 
-    //intake one ball
-    // scurve back to begining of trench
-    // run shoot command 
+        //TODO: tweak angles
 
-    
+        Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(-180));
+        Pose2d shootingPosition = new Pose2d(0.60,5.3, Rotation2d.fromDegrees(-190));
+        Pose2d endTrench = new Pose2d(0.69,10.68, Rotation2d.fromDegrees(0));
+
+        // trajectory from initial position to shooting point (end of trench)
+        Trajectory initToShoot = TrajectoryGenerator.generateTrajectory(
+                List.of(startPosition, shootingPosition),
+                m_driveTrain.getConfig()
+        );
+        // trajectory from shooting position to end of trench
+        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(
+                List.of(shootingPosition, endTrench),
+                m_driveTrain.getConfig()
+        );
+        // return trajectory
+        Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(
+                List.of(endTrench,shootingPosition),
+                m_driveTrain.getConfig().setReversed(true)
+        );
+
+        return new SequentialCommandGroup(
+                //robot starts in the center of initiation line
+                //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
+                // wait 2 seconds
+                //stop shooter, lift conveyor,
+                // put out intake
+                //spin up intake
+                //scurve to begining of trench
+                m_driveTrain.scurveTo(initToShoot),
+                //scurve to end of trench
+                m_driveTrain.scurveTo(shootToEnd),
+                //intake one ball
+                // scurve back to begining of trench
+                m_driveTrain.scurveTo(endToShoot)
+                // run shoot command
+        );
+
+        return m_driveTrain.scurveTo(initToShoot).andThen(m_driveTrain.scurveTo(shootToEnd)).andThen(m_driveTrain.scurveTo(endToShoot));
+        m_driveTrain.getConfig().setEndVelocity(3));
     }
 
 }
