@@ -121,12 +121,16 @@ public class RobotContainer {
 
         // trajectory from shooting position to end of trench
         Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
-                List.of(startPosition, shootingPosition, endTrench),
+                startPosition,
+                List.of(shootingPosition.getTranslation()),
+                endTrench,
                 m_driveTrain.getConfig()
         );
         // return trajectory
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(
-                List.of(endTrench,shootingPosition),
+                endTrench,
+                List.of(new Translation2d(7.5,-0.6)),
+                shootingPosition,
                 m_driveTrain.getConfig().setReversed(true)
         );
 
