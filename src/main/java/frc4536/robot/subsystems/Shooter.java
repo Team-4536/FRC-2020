@@ -21,9 +21,10 @@ import java.util.function.DoubleSupplier;
 public class Shooter extends SubsystemBase {
     private IEncoderMotor m_shooterTop;
     private IEncoderMotor m_shooterBottom;
-    private PIDController m_topPIDController = new PIDController(Constants.SHOOTER_P, 0, 0);
-    private PIDController m_bottomPIDController = new PIDController(Constants.SHOOTER_P, 0, 0);
-    private SimpleMotorFeedforward k_feedForwards = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
+    private PIDController m_topPIDController = new PIDController(Constants.SHOOTER_P_TOP, 0, 0);
+    private PIDController m_bottomPIDController = new PIDController(Constants.SHOOTER_P_BOTTOM, 0, 0);
+    private SimpleMotorFeedforward k_top_feedForwards = new SimpleMotorFeedforward(Constants.SHOOTER_TOP_KS, Constants.SHOOTER_TOP_KV);
+    private SimpleMotorFeedforward k_bottom_feedForwards = new SimpleMotorFeedforward(Constants.SHOOTER_BOTTOM_KS, Constants.SHOOTER_BOTTOM_KV);
 
     /**
      * Creates a new Shooter.
@@ -33,8 +34,8 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom = bottom;
         m_topPIDController.setTolerance(1.6666);
         m_bottomPIDController.setTolerance(1.6666);
-        m_shooterBottom.setInverted(true);
-        m_shooterTop.setInverted(true);
+        //m_shooterBottom.setInverted(true);
+        //m_shooterTop.setInverted(true);
         ShuffleboardTab shooter_data = Shuffleboard.getTab("Shooter Data");
         shooter_data.addNumber("Top RPS", () -> m_shooterTop.getSpeed());
         shooter_data.addNumber("Bottom RPS", () -> m_shooterBottom.getSpeed());
@@ -67,11 +68,11 @@ public class Shooter extends SubsystemBase {
         } else return new RunCommand(() -> {
             m_shooterTop.setVoltage(
                     m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
-                            + k_feedForwards.calculate(topRPS.getAsDouble())
+                            + k_top_feedForwards.calculate(topRPS.getAsDouble())
             );
             m_shooterBottom.setVoltage(
                     m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
-                            + k_feedForwards.calculate(topRPS.getAsDouble())
+                            + k_bottom_feedForwards.calculate(topRPS.getAsDouble())
             );
         }, this);
     }

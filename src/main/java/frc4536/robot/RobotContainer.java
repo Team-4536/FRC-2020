@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public final RobotFrame m_robotHardware = new TestRobot();
+    public final RobotFrame m_robotHardware = new Honeycomb();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
@@ -95,12 +95,12 @@ public class RobotContainer {
                         m_driveTrain));
 
         ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
-        NetworkTableEntry top =  data.add("Top Setpoint",0).getEntry();
-        NetworkTableEntry bot = data.add("Bottom Setpoint",0).getEntry();
+        NetworkTableEntry top =  data.add("Top Setpoint",Constants.SHOOTER_RPS_TOP).getEntry();
+        NetworkTableEntry bot = data.add("Bottom Setpoint",Constants.SHOOTER_RPS_BOTTOM).getEntry();
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
-                .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS), () -> bot.getDouble(Constants.SHOOTER_RPS)));
+                .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
     }
 
     /**
