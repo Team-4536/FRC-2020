@@ -59,6 +59,10 @@ public class Shooter extends SubsystemBase {
         return m_shooterBottom.getSpeed();
     }
 
+    public boolean ready() {
+        return m_bottomPIDController.atSetpoint() && m_topPIDController.atSetpoint();
+    }
+
     public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
         if (m_shooterTop instanceof IPIDMotor && m_shooterBottom instanceof IPIDMotor) { //I wish Java had elvis operators....
             return new RunCommand(() -> {
