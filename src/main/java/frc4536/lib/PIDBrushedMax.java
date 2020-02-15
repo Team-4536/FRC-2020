@@ -9,8 +9,8 @@ public class PIDBrushedMax extends BrushedMAX implements IPIDMotor, Sendable {
     private final CANPIDController m_pidController;
     private double m_setpoint;
 
-    public PIDBrushedMax(double gearRatio, int ticks, PIDConstants pidConstants, int... motorIDs) {
-        super(gearRatio, ticks, motorIDs);
+    public PIDBrushedMax(double gearRatio, boolean encoderInverted, int ticks, PIDConstants pidConstants, int... motorIDs) {
+        super(gearRatio, encoderInverted, ticks, motorIDs);
         m_pidController = super.m_master.getPIDController(); //Gets the master motor controller from the super class, Neo.java
 
         m_pidController.setP(pidConstants.kP);
