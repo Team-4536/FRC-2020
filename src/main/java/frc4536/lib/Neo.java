@@ -4,12 +4,12 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
-public class SparkMAX implements IEncoderMotor {
-    private final CANSparkMax m_master;
+public class Neo implements IEncoderMotor {
+    protected final CANSparkMax m_master; //Set these to protected so the subclass can access them.
     private final CANEncoder m_encoder;
     private final double k_gearRatio;
 
-    public SparkMAX(double gearRatio, int...motorIDs){
+    public Neo(double gearRatio, int...motorIDs){
         k_gearRatio = gearRatio;
         m_master = new CANSparkMax(motorIDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
         m_encoder = m_master.getEncoder();

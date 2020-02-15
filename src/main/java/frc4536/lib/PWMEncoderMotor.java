@@ -44,6 +44,7 @@ public class PWMEncoderMotor implements IEncoderMotor {
         m_motors.stopMotor();
     }
 
+    @SuppressWarnings("removal")
     @Override
     public void pidWrite(double output) {
        m_motors.pidWrite(output);

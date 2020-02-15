@@ -32,15 +32,15 @@ public class Honeycomb implements RobotFrame {
                                                            kRamseteZeta,
             kWheelDiameterMeters);
 
-    IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
-    IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779); //TODO: REPLACE WITH TALON
+    IEncoderMotor m_topFlywheel = new BrushedMAX(1, 8192, 45); //TODO: Change gear ratio to two
+    IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel", 46); //TODO: REPLACE WITH TALON
     VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
     VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
     Spark m_climberArmMotor = new Spark(7); //TODO: REPLACE WITH VICTOR
     Spark m_liftMotor = new Spark(8); //TODO: REPLACE WITH VICTOR
     AHRS m_navx = new AHRS();
-    IEncoderMotor m_leftMotors = new SparkMAX(10.75, 47, 48);
-    IEncoderMotor m_rightMotors = new SparkMAX(10.75, 49, 50);
+    IEncoderMotor m_leftMotors = new Neo(10.75, 47, 48);
+    IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
 
     VirtualSolenoid m_conveyorBlocker = new VirtualSolenoid(0,1);
     VirtualSolenoid m_intakeExtender = new VirtualSolenoid(2,3);

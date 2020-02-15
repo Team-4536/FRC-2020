@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -13,8 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
@@ -68,6 +68,11 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake));
 
+        m_shooter.setDefaultCommand(new RunCommand(() -> {
+            m_shooter.setTopPower(0);
+            m_shooter.setBottomPower(0);
+        }, m_shooter));
+
         Shuffleboard.getTab("Subsystems").add(m_climber);
         Shuffleboard.getTab("Subsystems").add(m_conveyor);
         Shuffleboard.getTab("Subsystems").add(m_driveTrain);
@@ -82,12 +87,20 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-
-        NetworkTableEntry angle = Shuffleboard.getTab("Drivetrain Data").add("PID Setpoint", 0).getEntry();
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
-                .whileHeld(new SnapToAngle(m_driveTrain, () -> angle.getDouble(0)));
+                .whileHeld(new PIDCommand(new PIDController(Constants.VISION_KP, Constants.VISION_KI, Constants.VISION_KD),
+                        m_driveTrain::getVisionAngle,
+                        0,
+                        o -> m_driveTrain.arcadeDrive(0, -o),
+                        m_driveTrain));
+
+        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
+        NetworkTableEntry top =  data.add("Top Setpoint",0).getEntry();
+        NetworkTableEntry bot = data.add("Bottom Setpoint",0).getEntry();
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
+        new JoystickButton(m_driveController, Button.kB.value)
+                .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS), () -> bot.getDouble(Constants.SHOOTER_RPS)));
     }
 
     /**
