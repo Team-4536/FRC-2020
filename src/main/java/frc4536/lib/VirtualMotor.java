@@ -8,12 +8,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 public class VirtualMotor implements SpeedController, Sendable {
     private double m_speed = 0;
     private boolean m_inverted = false;
-    private String m_name;
 
     public VirtualMotor(String name){
         System.out.println("Virtual motor " + name + " created");
-        this.m_name = name;
-        Shuffleboard.getTab("Virtual Motors").add("Virtual Motor " + this.m_name, this);
+        Shuffleboard.getTab("Virtual Motors").add("Virtual Motor " + name, this);
     }
 
     @Override

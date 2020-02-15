@@ -88,8 +88,8 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
-                .whileHeld(new PIDCommand(new PIDController(0.02, 0.04/3, 0),
-                        () -> m_driveTrain.getVisionAngle(),
+                .whileHeld(new PIDCommand(new PIDController(Constants.VISION_KP, Constants.VISION_KI, Constants.VISION_KD),
+                        m_driveTrain::getVisionAngle,
                         0,
                         o -> m_driveTrain.arcadeDrive(0, -o),
                         m_driveTrain));
@@ -100,7 +100,7 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
-                .whenHeld(m_shooter.spinToRPM(() -> top.getDouble(0), () -> bot.getDouble(0)));
+                .whenHeld(m_shooter.spinToRPM(() -> top.getDouble(Constants.SHOOTER_RPS), () -> bot.getDouble(Constants.SHOOTER_RPS)));
     }
 
     /**

@@ -9,13 +9,11 @@ public class BrushedMAX implements IEncoderMotor {
     private final CANSparkMax m_master;
     private final CANEncoder m_encoder;
     private final double k_gearRatio;
-    private final int k_ticks;
 
     public BrushedMAX(double gearRatio, int ticks, int... motorIDs) {
         k_gearRatio = gearRatio;
-        k_ticks = ticks;
         m_master = new CANSparkMax(motorIDs[0], CANSparkMaxLowLevel.MotorType.kBrushed);
-        m_encoder = m_master.getEncoder(EncoderType.kQuadrature, k_ticks);
+        m_encoder = m_master.getEncoder(EncoderType.kQuadrature, ticks);
         if(motorIDs.length > 1) for(int i = 1; i < motorIDs.length; i++){
             new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushed).follow(m_master);
         }

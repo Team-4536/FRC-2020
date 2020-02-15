@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
@@ -18,16 +17,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
 import frc4536.robot.hardware.RobotConstants;
 
-import java.util.List;
-
-import static edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator.generateTrajectory;
 import static frc4536.robot.hardware.Honeycomb.kWheelDiameterMeters;
 
 public class DriveTrain extends SubsystemBase {
@@ -36,7 +30,6 @@ public class DriveTrain extends SubsystemBase {
     private Pose2d m_pose = new Pose2d();
     private double wheelCircumference = kWheelDiameterMeters * Math.PI;
     private DifferentialDriveKinematics kDriveKinematics;
-    private DifferentialDriveVoltageConstraint autoVoltageConstraint;
     private TrajectoryConfig m_config;
 
     public DriveTrain(IEncoderMotor leftMotor, IEncoderMotor rightMotor, AHRS navx, RobotConstants driveConstants) {
@@ -61,7 +54,7 @@ public class DriveTrain extends SubsystemBase {
         resetEncoders();
         m_odometry = new DifferentialDriveOdometry(getHeading());
         resetGyro();
-        autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
+        DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
                 m_driveConstants.kvVoltSecondsPerMeter,
                 m_driveConstants.kaVoltSecondsSquaredPerMeter),
                 kDriveKinematics,

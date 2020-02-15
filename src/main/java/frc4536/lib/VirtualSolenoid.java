@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 public class VirtualSolenoid extends DoubleSolenoid {
 
-    private int fc, rc;
     private Value kValue = Value.kOff;
     private NetworkTableEntry disp;
 
@@ -18,10 +17,8 @@ public class VirtualSolenoid extends DoubleSolenoid {
      */
     public VirtualSolenoid(int forwardChannel, int reverseChannel) {
         super(forwardChannel, reverseChannel);
-        fc = forwardChannel;
-        rc = reverseChannel;
         disp = Shuffleboard.getTab("Virtual Motors")
-                .add("Virtual Solenoid " + fc + ", " + rc, false).getEntry();
+                .add("Virtual Solenoid " + forwardChannel + ", " + reverseChannel, false).getEntry();
     }
 
     /**

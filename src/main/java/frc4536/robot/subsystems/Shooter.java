@@ -32,6 +32,8 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom = bottom;
         m_topPIDController.setTolerance(1.6666);
         m_bottomPIDController.setTolerance(1.6666);
+        m_shooterBottom.setInverted(true);
+        m_shooterTop.setInverted(true);
         ShuffleboardTab shooter_data = Shuffleboard.getTab("Shooter Data");
         shooter_data.addNumber("Top RPS", () -> m_shooterTop.getSpeed());
         shooter_data.addNumber("Bottom RPS", () -> m_shooterBottom.getSpeed());
@@ -47,14 +49,6 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom.setVoltage(power);
     }
 
-    public PIDController getTopPIDController() {
-        return m_topPIDController;
-    }
-
-    public PIDController getBottomPIDController() {
-        return m_bottomPIDController;
-    }
-
     public double getTopRate() {
         return m_shooterTop.getSpeed();
     }
@@ -65,7 +59,6 @@ public class Shooter extends SubsystemBase {
 
     public Command spinToRPM(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
         return new RunCommand(() -> {
-            System.out.println("Top: " + topRPS.getAsDouble() + "Bot: " + bottomRPS.getAsDouble());
             m_shooterTop.setVoltage(
                     m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
                     + k_feedForwards.calculate(topRPS.getAsDouble())
