@@ -1,5 +1,6 @@
 package frc4536.robot.hardware;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -32,18 +33,22 @@ public class Honeycomb implements RobotFrame {
                                                            kRamseteZeta,
             kWheelDiameterMeters);
 
-    IEncoderMotor m_topFlywheel = new BrushedMAX(1, 8192, 45); //TODO: Change gear ratio to two
-    IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel", 46); //TODO: REPLACE WITH TALON
-    VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
-    VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
-    Spark m_climberArmMotor = new Spark(7); //TODO: REPLACE WITH VICTOR
-    Spark m_liftMotor = new Spark(8); //TODO: REPLACE WITH VICTOR
+    IEncoderMotor m_topFlywheel = new BrushedMAX(1, false, 8192, 21);
+    //new PIDBrushedMax(1, false, 8192, new PIDConstants(10.2/12,0,0), 21);
+    IEncoderMotor m_bottomFlywheel = new BrushedMAX(1, true, 8192, 20);
+    //new PIDBrushedMax(1, true, 8192, new PIDConstants(10.3/12,0,0), 20);
+
+    SpeedController m_intakeMotor = new WPI_VictorSPX(1);
+    SpeedController m_beltMotor = new WPI_VictorSPX(4);
+    SpeedController m_climberArmMotor = new WPI_VictorSPX(2);
+    SpeedController m_liftMotor = new WPI_VictorSPX(3);
+
     AHRS m_navx = new AHRS();
     IEncoderMotor m_leftMotors = new Neo(10.75, 47, 48);
     IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
 
-    VirtualSolenoid m_conveyorBlocker = new VirtualSolenoid(0,1);
-    VirtualSolenoid m_intakeExtender = new VirtualSolenoid(2,3);
+    DoubleSolenoid m_conveyorBlocker = new DoubleSolenoid(0,1);
+    DoubleSolenoid m_intakeExtender = new DoubleSolenoid(2,3);
 
     @Override
     public RobotConstants getConstants() {
