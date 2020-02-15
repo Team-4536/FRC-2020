@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
+import frc4536.lib.IPIDMotor;
 import frc4536.robot.Constants;
 
 import java.util.function.DoubleSupplier;
@@ -20,8 +21,8 @@ import java.util.function.DoubleSupplier;
 public class Shooter extends SubsystemBase {
     private IEncoderMotor m_shooterTop;
     private IEncoderMotor m_shooterBottom;
-    private PIDController m_topPIDController = new PIDController(Constants.SHOOTER_P, 0,0);
-    private PIDController m_bottomPIDController = new PIDController(Constants.SHOOTER_P, 0,0);
+    private PIDController m_topPIDController = new PIDController(Constants.SHOOTER_P, 0, 0);
+    private PIDController m_bottomPIDController = new PIDController(Constants.SHOOTER_P, 0, 0);
     private SimpleMotorFeedforward k_feedForwards = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV);
 
     /**
@@ -45,7 +46,7 @@ public class Shooter extends SubsystemBase {
         m_shooterTop.setVoltage(power);
     }
 
-    public void setBottomPower(double power){
+    public void setBottomPower(double power) {
         m_shooterBottom.setVoltage(power);
     }
 
@@ -57,15 +58,20 @@ public class Shooter extends SubsystemBase {
         return m_shooterBottom.getSpeed();
     }
 
-    public Command spinToRPM(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
-        return new RunCommand(() -> {
+    public Command spinToRPM(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
+        if (m_shooterTop instanceof IPIDMotor && m_shooterBottom instanceof IPIDMotor) { //I wish Java had elvis operators....
+            return new RunCommand(() -> {
+                ((IPIDMotor) m_shooterTop).setSetpoint(topRPS.getAsDouble()); //If this motor is smart we pass the RPM values directly.
+                ((IPIDMotor) m_shooterBottom).setSetpoint(bottomRPS.getAsDouble());
+            }, this);
+        } else return new RunCommand(() -> {
             m_shooterTop.setVoltage(
                     m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
-                    + k_feedForwards.calculate(topRPS.getAsDouble())
+                            + k_feedForwards.calculate(topRPS.getAsDouble())
             );
             m_shooterBottom.setVoltage(
                     m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
-                    + k_feedForwards.calculate(topRPS.getAsDouble())
+                            + k_feedForwards.calculate(topRPS.getAsDouble())
             );
         }, this);
     }

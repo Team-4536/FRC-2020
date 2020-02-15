@@ -2,8 +2,10 @@ package frc4536.lib;
 
 import com.revrobotics.CANPIDController;
 import com.revrobotics.ControlType;
+import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class PIDNeo extends Neo implements IPIDMotor{
+public class PIDNeo extends Neo implements IPIDMotor, Sendable {
     private final CANPIDController m_pidController;
     private double m_setpoint;
 
@@ -19,7 +21,7 @@ public class PIDNeo extends Neo implements IPIDMotor{
     }
 
     @Override
-    public void setSpeed(double speed) {
+    public void setSetpoint(double speed) {
         m_setpoint = speed;
         m_pidController.setReference(m_setpoint, ControlType.kVelocity);
     }
@@ -27,5 +29,17 @@ public class PIDNeo extends Neo implements IPIDMotor{
     @Override
     public double getSetpoint() {
         return m_setpoint;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("PIDController");
+        builder.setActuator(true);
+        builder.addDoubleProperty("p", m_pidController::getP, m_pidController::setP);
+        builder.addDoubleProperty("i", m_pidController::getI, m_pidController::setI);
+        builder.addDoubleProperty("d", m_pidController::getD, m_pidController::setD);
+        builder.addDoubleProperty("iZone", m_pidController::getIZone, m_pidController::setIZone);
+        builder.addDoubleProperty("f", m_pidController::getFF, m_pidController::setFF);
+        builder.addDoubleProperty("setpoint", this::getSetpoint, this::setSetpoint);
     }
 }
