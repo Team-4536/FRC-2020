@@ -11,10 +11,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
 import frc4536.robot.Constants;
 
@@ -67,19 +64,16 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command spinToRPM(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
-        Command spinTop = new PIDCommand(
-                getTopPIDController(),
-                this::getTopRate,
-                topRPS.getAsDouble(),
-                o -> setTopPower(o + k_feedForwards.calculate(topRPS.getAsDouble())),
-                this);
-        Command spinBottom = new PIDCommand(
-                getBottomPIDController(),
-                this::getBottomRate,
-                bottomRPS.getAsDouble(),
-                o -> setBottomPower(o + k_feedForwards.calculate(bottomRPS.getAsDouble())));
-
-        return new WaitUntilCommand(() -> (m_topPIDController.atSetpoint() && m_bottomPIDController.atSetpoint()))
-                .deadlineWith(spinTop, spinBottom);
+        return new RunCommand(() -> {
+            System.out.println("Top: " + topRPS.getAsDouble() + "Bot: " + bottomRPS.getAsDouble());
+            m_shooterTop.setVoltage(
+                    m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
+                    + k_feedForwards.calculate(topRPS.getAsDouble())
+            );
+            m_shooterBottom.setVoltage(
+                    m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
+                    + k_feedForwards.calculate(topRPS.getAsDouble())
+            );
+        }, this);
     }
 }

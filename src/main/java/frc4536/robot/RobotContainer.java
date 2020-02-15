@@ -100,7 +100,7 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
-                .whileHeld(m_shooter.spinToRPM(() -> top.getDouble(0), () -> bot.getDouble(0)));
+                .whenHeld(m_shooter.spinToRPM(() -> top.getDouble(0), () -> bot.getDouble(0)));
     }
 
     /**
