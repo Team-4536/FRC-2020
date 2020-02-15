@@ -13,9 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
@@ -45,6 +43,9 @@ public class RobotContainer {
     private final XboxController m_driveController = new XboxController(0);
     private final Joystick m_liftController = new Joystick(1);
 
+    private final NetworkTableEntry m_xInitial;
+    private final NetworkTableEntry m_yInitial;
+    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -78,6 +79,9 @@ public class RobotContainer {
         Shuffleboard.getTab("Subsystems").add(m_driveTrain);
         Shuffleboard.getTab("Subsystems").add(m_intake);
         Shuffleboard.getTab("Subsystems").add(m_shooter);
+
+        m_xInitial = Shuffleboard.getTab("Autonomous").add("Initial X", 1.0).getEntry();
+        m_yInitial = Shuffleboard.getTab("Autonomous").add("Initial Y", 3.3).getEntry();
     }
 
     /**
@@ -109,11 +113,45 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
-                List.of(new Translation2d(1,-1)),
-                new Pose2d(3,-3,new Rotation2d(0)),
-                m_driveTrain.getConfig());
-        return m_driveTrain.scurveTo(trajectory);
-    }
+        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
+        //TODO: tweak angles
+        Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(-180));
+        Pose2d shootingPosition = new Pose2d(0.60,5.3, Rotation2d.fromDegrees(-190));
+        Pose2d endTrench = new Pose2d(0.69,10.68, Rotation2d.fromDegrees(0));
 
+        // trajectory from shooting position to end of trench
+        Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
+                List.of(startPosition, shootingPosition, endTrench),
+                m_driveTrain.getConfig()
+        );
+        // return trajectory
+        Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(
+                List.of(endTrench,shootingPosition),
+                m_driveTrain.getConfig().setReversed(true)
+        );
+
+        //robot starts in the center of initiation line
+        //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
+        //stop shooter, lift conveyor,
+        // put out intake
+        //spin up intake
+        //scurve from init to end of trench
+        //intake one ball
+        // scurve back to begining of trench
+        // run shoot command
+        return new ParallelCommandGroup(
+            new RunCommand(m_intake::extendIntake).withTimeout(1),
+            new RunCommand(() -> m_intake.intake(1)),
+            new SequentialCommandGroup(
+                new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
+                        .withTimeout(5)
+                        .andThen(m_conveyor::raiseTop),
+                m_driveTrain.scurveTo(initToEnd),
+                m_driveTrain.scurveTo(endToShoot),
+                new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
+                        .withTimeout(5)
+                        .andThen(m_conveyor::raiseTop)
+            )
+        );
+    }
 }
