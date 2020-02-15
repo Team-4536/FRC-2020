@@ -11,9 +11,10 @@ public class ShootCommand extends ParallelCommandGroup {
     public ShootCommand(Conveyor conveyor, Shooter shooter, DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
         addCommands(
                 shooter.spinUp(topRPS, bottomRPS),
-                new WaitUntilCommand(() -> (shooter.getTopRate() > 60 && shooter.getBottomRate() > 60))
+                //TODO: and!
+                new WaitUntilCommand(() -> (shooter.getTopRate() > 60 || shooter.getBottomRate() > 60))
                     .andThen(new RunCommand(conveyor::lowerTop)),
-                new WaitUntilCommand(() -> (shooter.getTopRate() > 60 && shooter.getBottomRate() > 60))
+                new WaitUntilCommand(() -> (shooter.getTopRate() > 60 || shooter.getBottomRate() > 60))
                     .andThen(new RunCommand(() -> conveyor.moveConveyor(1.0)))
         );
     }
