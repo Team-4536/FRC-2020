@@ -6,16 +6,15 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
+@SuppressWarnings("removal")
 public class LegacySmartMotor implements IEncoderMotor {
     private final SpeedControllerGroup m_motors;
     private final Encoder m_encoder;
-    private final double m_feedForward;
     private final PIDController m_pid;
 
     public LegacySmartMotor(Encoder encoder, PIDConstants pidConstants, SpeedControllerGroup motors, int ticks, double maxSpeed) {
         m_motors = motors;
         m_encoder = encoder;
-        m_feedForward = 1.0/maxSpeed;
         m_encoder.setDistancePerPulse(1.0 / ticks);
         m_encoder.setPIDSourceType(PIDSourceType.kRate);
         m_pid = new PIDController(pidConstants.kP, pidConstants.kI, pidConstants.kD, 1.0/maxSpeed, m_encoder, m_motors);
