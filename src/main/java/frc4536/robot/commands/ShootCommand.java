@@ -9,10 +9,12 @@ import java.util.function.DoubleSupplier;
 
 public class ShootCommand extends ParallelCommandGroup {
     public ShootCommand(Conveyor conveyor, Shooter shooter, DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
-        addCommands( new RunCommand(() -> conveyor.moveConveyor(0.5)),
+        addCommands(
                 shooter.spinUp(topRPS, bottomRPS),
                 new WaitUntilCommand(() -> (shooter.getTopRate() > 60 && shooter.getBottomRate() > 60))
-                    .andThen(new RunCommand(conveyor::lowerTop))
+                    .andThen(new RunCommand(conveyor::lowerTop)),
+                new WaitUntilCommand(() -> (shooter.getTopRate() > 60 && shooter.getBottomRate() > 60))
+                    .andThen(new RunCommand(() -> conveyor.moveConveyor(1.0)))
         );
     }
 }

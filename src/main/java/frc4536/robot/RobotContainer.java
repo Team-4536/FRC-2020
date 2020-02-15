@@ -115,9 +115,9 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
         //TODO: tweak angles
-        Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(-180));
-        Pose2d shootingPosition = new Pose2d(0.60,5.3, Rotation2d.fromDegrees(-190));
-        Pose2d endTrench = new Pose2d(0.69,10.68, Rotation2d.fromDegrees(0));
+        Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
+        Pose2d shootingPosition = new Pose2d(5.3,.6, Rotation2d.fromDegrees(0));
+        Pose2d endTrench = new Pose2d(10.68,0.69, Rotation2d.fromDegrees(0));
 
         // trajectory from shooting position to end of trench
         Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
@@ -140,8 +140,8 @@ public class RobotContainer {
         // scurve back to begining of trench
         // run shoot command
         return new ParallelCommandGroup(
-            new RunCommand(m_intake::extendIntake).withTimeout(1),
-            new RunCommand(() -> m_intake.intake(1)),
+            //new RunCommand(m_intake::extendIntake).withTimeout(1),
+            //new RunCommand(() -> m_intake.intake(1)),
             new SequentialCommandGroup(
                 new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
                         .withTimeout(5)
