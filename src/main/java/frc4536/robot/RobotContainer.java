@@ -102,13 +102,13 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0),new Rotation2d(m_driveTrain.getHeading())));
+        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0,new Rotation2d(0)),
                 List.of(new Translation2d(1,-1)),
                 new Pose2d(3,-3,new Rotation2d(0)),
                 m_driveTrain.getConfig());
         return m_driveTrain.scurveTo(trajectory);
-    //robot starts in the center of initiation line 
+    //robot starts in the center of initiation line
     //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
     // wait 2 seconds 
     //stop shooter, lift conveyor, 
