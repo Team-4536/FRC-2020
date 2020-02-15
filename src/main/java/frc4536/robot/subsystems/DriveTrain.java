@@ -79,7 +79,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(m_navx.getAngle());
+        return Rotation2d.fromDegrees(-m_navx.getAngle());
     }
 
     private RobotConstants m_driveConstants;
