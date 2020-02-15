@@ -6,7 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.EncoderType;
 
 public class BrushedMAX implements IEncoderMotor {
-    private final CANSparkMax m_master;
+    protected final CANSparkMax m_master; //Set these to protected so the subclass can access them.
     private final CANEncoder m_encoder;
     private final double k_gearRatio;
 
