@@ -124,7 +124,7 @@ public class RobotContainer {
                 startPosition,
                 List.of(new Translation2d(5.106, -0.465)),
                 endTrench,
-                m_driveTrain.getConfig()
+                m_driveTrain.getConfig().setReversed(false)
         );
         // return trajectory
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(
@@ -138,7 +138,7 @@ public class RobotContainer {
                 shootingPosition,
                 List.of(new Translation2d(5.106,-1.7)),
                 twoBallPosition,
-                m_driveTrain.getConfig()
+                m_driveTrain.getConfig().setReversed(false)
         );
 
         Trajectory shootAgain = TrajectoryGenerator.generateTrajectory(
@@ -165,16 +165,12 @@ public class RobotContainer {
                  //       .withTimeout(5)
                  //       .andThen(m_conveyor::raiseTop),
                 m_driveTrain.scurveTo(initToEnd),
-                new PrintCommand(m_driveTrain.getPose().toString()),
                 m_driveTrain.scurveTo(endToShoot),
-                    new PrintCommand(m_driveTrain.getPose().toString()),
                     new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
                             .withTimeout(5)
                             .andThen(m_conveyor::raiseTop),
                 m_driveTrain.scurveTo(shootTo2Ball),
-                    new PrintCommand(m_driveTrain.getPose().toString()),
                 m_driveTrain.scurveTo(shootAgain),
-                    new PrintCommand(m_driveTrain.getPose().toString()),
                 new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
                         .withTimeout(5)
                         .andThen(m_conveyor::raiseTop)
