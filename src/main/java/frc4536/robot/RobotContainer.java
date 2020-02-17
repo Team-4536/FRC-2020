@@ -116,20 +116,20 @@ public class RobotContainer {
         m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
         //TODO: tweak angles
         Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
-        Pose2d shootingPosition = new Pose2d(5.3,-0.6, Rotation2d.fromDegrees(0));
-        Pose2d endTrench = new Pose2d(10.68,-0.69, Rotation2d.fromDegrees(0));
+        Pose2d shootingPosition = new Pose2d(2.997,-2.562, Rotation2d.fromDegrees(0));
+        Pose2d endTrench = new Pose2d(7.14,-0.754, Rotation2d.fromDegrees(0));
 
         // trajectory from shooting position to end of trench
         Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
                 startPosition,
-                List.of(shootingPosition.getTranslation()),
+                List.of(new Translation2d(5.106, -0.767)),
                 endTrench,
                 m_driveTrain.getConfig()
         );
         // return trajectory
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(
                 endTrench,
-                List.of(new Translation2d(7.5,-0.6)),
+                List.of(new Translation2d(5.407,-1.758)),
                 shootingPosition,
                 m_driveTrain.getConfig().setReversed(true)
         );
@@ -147,9 +147,9 @@ public class RobotContainer {
             //new RunCommand(m_intake::extendIntake).withTimeout(1),
             //new RunCommand(() -> m_intake.intake(1)),
             new SequentialCommandGroup(
-                new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
-                        .withTimeout(5)
-                        .andThen(m_conveyor::raiseTop),
+                //new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
+                 //       .withTimeout(5)
+                 //       .andThen(m_conveyor::raiseTop),
                 m_driveTrain.scurveTo(initToEnd),
                 m_driveTrain.scurveTo(endToShoot),
                 new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
