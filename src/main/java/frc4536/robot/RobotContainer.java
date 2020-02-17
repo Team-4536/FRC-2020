@@ -116,13 +116,13 @@ public class RobotContainer {
         m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
         //TODO: tweak angles
         Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
-        Pose2d shootingPosition = new Pose2d(2.997,-2.562, Rotation2d.fromDegrees(0));
-        Pose2d endTrench = new Pose2d(7.14,-0.754, Rotation2d.fromDegrees(0));
-
+        Pose2d shootingPosition = new Pose2d(3.3,-2.562, Rotation2d.fromDegrees(0));
+        Pose2d endTrench = new Pose2d(7.341,-0.465, Rotation2d.fromDegrees(0));
+        Pose2d twoBallPosition = new Pose2d(6.312,-2.903, Rotation2d.fromDegrees(-90));
         // trajectory from shooting position to end of trench
         Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
                 startPosition,
-                List.of(new Translation2d(5.106, -0.767)),
+                List.of(new Translation2d(5.106, -0.465)),
                 endTrench,
                 m_driveTrain.getConfig()
         );
@@ -130,6 +130,20 @@ public class RobotContainer {
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(
                 endTrench,
                 List.of(new Translation2d(5.407,-1.758)),
+                shootingPosition,
+                m_driveTrain.getConfig().setReversed(true)
+        );
+
+        Trajectory shootTo2Ball = TrajectoryGenerator.generateTrajectory(
+                shootingPosition,
+                List.of(new Translation2d(5.106,-1.7)),
+                twoBallPosition,
+                m_driveTrain.getConfig()
+        );
+
+        Trajectory shootAgain = TrajectoryGenerator.generateTrajectory(
+                twoBallPosition,
+                List.of(new Translation2d(5.106,-1.7)),
                 shootingPosition,
                 m_driveTrain.getConfig().setReversed(true)
         );
@@ -151,7 +165,16 @@ public class RobotContainer {
                  //       .withTimeout(5)
                  //       .andThen(m_conveyor::raiseTop),
                 m_driveTrain.scurveTo(initToEnd),
+                new PrintCommand(m_driveTrain.getPose().toString()),
                 m_driveTrain.scurveTo(endToShoot),
+                    new PrintCommand(m_driveTrain.getPose().toString()),
+                    new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
+                            .withTimeout(5)
+                            .andThen(m_conveyor::raiseTop),
+                m_driveTrain.scurveTo(shootTo2Ball),
+                    new PrintCommand(m_driveTrain.getPose().toString()),
+                m_driveTrain.scurveTo(shootAgain),
+                    new PrintCommand(m_driveTrain.getPose().toString()),
                 new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
                         .withTimeout(5)
                         .andThen(m_conveyor::raiseTop)
