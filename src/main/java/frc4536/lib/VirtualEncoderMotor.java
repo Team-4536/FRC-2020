@@ -1,19 +1,27 @@
 package frc4536.lib;
 
 import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VirtualEncoderMotor extends SubsystemBase implements IEncoderMotor, Sendable {
 
-    private final VirtualMotor m_motor;
+    private final SpeedController m_motor;
     private final Timer m_timer = new Timer();
     private double m_distance, m_prevTime;
     private final double m_maxSpeed;
 
-    public VirtualEncoderMotor(String name, double maxSpeed) {
-        m_motor = new VirtualMotor(name);
+    public VirtualEncoderMotor(SpeedController motor, double maxSpeed) {
+        m_motor = motor;
+        m_maxSpeed = maxSpeed;
+        m_timer.reset();
+        m_timer.start();
+    }
+
+    public VirtualEncoderMotor(String motor, double maxSpeed) {
+        m_motor = new VirtualMotor(motor);
         m_maxSpeed = maxSpeed;
         m_timer.reset();
         m_timer.start();
@@ -88,7 +96,7 @@ public class VirtualEncoderMotor extends SubsystemBase implements IEncoderMotor,
         builder.setActuator(true);
         builder.setSafeState(this::disable);
         builder.addDoubleProperty("Voltage", this::get, this::set);
-        builder.addDoubleProperty("Distance", this::getDistance, (You_Cant_Set_Distance_So_This_Is_A_Placeholder) -> {});
+        builder.addDoubleProperty("Distance", this::getDistance, a -> m_distance = a);
     }
 
 }
