@@ -1,7 +1,6 @@
 package frc4536.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.*;
-import frc4536.robot.Constants;
 import frc4536.robot.subsystems.Conveyor;
 import frc4536.robot.subsystems.Shooter;
 
