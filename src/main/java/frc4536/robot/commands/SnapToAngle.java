@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
 
-
 public class SnapToAngle extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain m_driveTrain;
@@ -53,4 +52,3 @@ public class SnapToAngle extends CommandBase {
     return false;
   }
 }
-
