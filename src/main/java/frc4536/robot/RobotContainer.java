@@ -1,6 +1,7 @@
 package frc4536.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -84,7 +85,15 @@ public class RobotContainer {
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
                 .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
-    }
+                new JoystickButton(m_liftController, 4)
+                .whileHeld(new RunCommand(() -> m_intake.extendIntake()));
+                new JoystickButton(m_liftController, 6)
+                .whileHeld(new RunCommand(() -> m_intake.retractIntake()));
+                new JoystickButton(m_liftController, 3)
+                .whileHeld(new RunCommand(() -> m_conveyor.raiseTop()));
+                new JoystickButton(m_liftController, 5)
+                .whileHeld(new RunCommand(() -> m_conveyor.lowerTop()));
+        }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
