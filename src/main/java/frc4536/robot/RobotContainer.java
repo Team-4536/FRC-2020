@@ -105,16 +105,7 @@ public class RobotContainer {
             m_shooter.setTopPower(0);
             m_shooter.setBottomPower(0);
         }, m_shooter);
-
-        NetworkTableEntry angle = Shuffleboard.getTab("Drivetrain Data").add("Setpoint", 0).getEntry();
-
-        new JoystickButton(m_driveController, Button.kB.value)
-                .whileHeld(new PIDCommand(new PIDController(0.0135, 0.01296, 0.0),
-                            () -> -m_driveTrain.getHeading().getDegrees(),
-                            angle.getDouble(0),
-                            output -> m_driveTrain.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), output), 
-                            m_driveTrain));
-
+        
         default_climber.setName("Default Climber");
         default_conveyor.setName("Default Conveyor");
         default_shooter.setName("Default Shooter");
