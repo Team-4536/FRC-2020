@@ -89,14 +89,18 @@ public class RobotContainer {
                 .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
                 new JoystickButton(m_liftController, 11)
                 .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
+                new JoystickButton(m_liftController, 9)
+                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_liftController.getY())));
+                new JoystickButton(m_liftController, 10)
+                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_liftController.getY())));
         }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
-            m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
-            m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
+            m_climber.setWinch(0);
+            m_climber.setArm(0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> {
             m_conveyor.raiseTop();
