@@ -51,28 +51,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         configureButtonBindings();
-        //Default behaviour for all subsystems lives here.
-        m_driveTrain.setDefaultCommand(new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain));
-
-        m_climber.setDefaultCommand(new RunCommand(() -> {
-            m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
-            m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
-        }, m_climber));
-
-        m_conveyor.setDefaultCommand(new RunCommand(() -> {
-            m_conveyor.raiseTop();
-            m_conveyor.moveConveyor(0);
-        }, m_conveyor));
-
-        m_intake.setDefaultCommand(new RunCommand(() -> {
-            m_intake.intake(0);
-            m_intake.retractIntake();
-        }, m_intake));
-
-        m_shooter.setDefaultCommand(new RunCommand(() -> {
-            m_shooter.setTopPower(0);
-            m_shooter.setBottomPower(0);
-        }, m_shooter));
+        configureDefaultCommands();
 
         Shuffleboard.getTab("Subsystems").add(m_climber);
         Shuffleboard.getTab("Subsystems").add(m_conveyor);
@@ -105,6 +84,39 @@ public class RobotContainer {
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
                 .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+    }
+
+    private void configureDefaultCommands() {
+        //Default behaviour for all subsystems lives here.
+        CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
+        CommandBase default_climber = new RunCommand(() -> {
+            m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
+            m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
+        }, m_climber);
+        CommandBase default_conveyor = new RunCommand(() -> {
+            m_conveyor.raiseTop();
+            m_conveyor.moveConveyor(0);
+        }, m_conveyor);
+        CommandBase default_intake = new RunCommand(() -> {
+            m_intake.intake(0);
+            m_intake.retractIntake();
+        }, m_intake);
+        CommandBase default_shooter = new RunCommand(() -> {
+            m_shooter.setTopPower(0);
+            m_shooter.setBottomPower(0);
+        }, m_shooter);
+
+        default_climber.setName("Default Climber");
+        default_conveyor.setName("Default Conveyor");
+        default_shooter.setName("Default Shooter");
+        default_intake.setName("Default Intake");
+        default_driveTrain.setName("Default Drivetrain");
+
+        m_driveTrain.setDefaultCommand(default_driveTrain);
+        m_climber.setDefaultCommand(default_climber);
+        m_conveyor.setDefaultCommand(default_conveyor);
+        m_intake.setDefaultCommand(default_intake);
+        m_shooter.setDefaultCommand(default_shooter);
     }
 
     /**
@@ -148,16 +160,6 @@ public class RobotContainer {
                 m_driveTrain.getConfig().setReversed(true)
         );
 
-        //robot starts in the center of initiation line
-        //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
-        //stop shooter, lift conveyor,
-        // put out intake
-        //spin up intake
-        //scurve from init to end of trench
-        //intake one ball
-        // scurve back to begining of trench
-        // run shoot command
-
         return new SequentialCommandGroup(
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
@@ -165,7 +167,7 @@ public class RobotContainer {
                     m_conveyor.lowerTop();
                     m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
                 }, m_conveyor)
-                        .alongWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME), //shoot. TODO: shoot command
+                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME), //shoot. TODO: shoot command
 
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
@@ -174,9 +176,10 @@ public class RobotContainer {
                     m_conveyor.lowerTop();
                     m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
                 }, m_conveyor)
-                        .alongWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME) //shoot. TODO: shoot command
+                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME) //shoot. TODO: shoot command
         );
 
+        //Same thing as above, but worse
         /*
                     m_driveTrain.scurveTo(initToEnd)
                     .raceWith(new IntakeCommands(m_intake, m_conveyor))
@@ -188,6 +191,16 @@ public class RobotContainer {
                     .andThen(m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)))
                     .andThen(new RunCommand(m_conveyor::lowerTop).alongWith(new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SPEED))));
 
+
+       //robot starts in the center of initiation line
+        //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
+        //stop shooter, lift conveyor,
+        // put out intake
+        //spin up intake
+        //scurve from init to end of trench
+        //intake one ball
+        // scurve back to begining of trench
+        // run shoot command
 
         return new ParallelCommandGroup(
                 //new RunCommand(m_intake::extendIntake).withTimeout(1),
