@@ -8,6 +8,7 @@ import frc4536.robot.subsystems.Intake;
 public class IntakeCommands extends CommandBase {
     private final Intake m_intake;
     private final Conveyor m_conveyor;
+
   public IntakeCommands(Intake intake, Conveyor conveyor) {
     m_intake = intake;
     m_conveyor = conveyor;
@@ -18,11 +19,21 @@ public class IntakeCommands extends CommandBase {
   public void execute() {
       m_intake.intake(Constants.INTAKE_SPINSPEED);
       m_intake.extendIntake();
-      m_conveyor.moveConveyor(Constants.CONVEYOR_SPEED);
+      m_conveyor.moveConveyor(Constants.CONVEYOR_INTAKE_SPEED);
   }
 
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+    public void end(boolean a){
+      System.out.println("Intake Command Finished");
+  }
+
+  @Override
+    public String getName(){
+      return "Intake Command";
   }
 }
