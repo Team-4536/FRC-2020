@@ -44,6 +44,7 @@ public class Honeycomb implements RobotFrame {
     SpeedController m_liftMotor = new WPI_VictorSPX(3);
 
     AHRS m_navx = new AHRS();
+
     IEncoderMotor m_leftMotors = new Neo(10.75, 47, 48);
     IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
 
