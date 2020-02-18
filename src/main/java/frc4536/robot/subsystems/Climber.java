@@ -12,7 +12,7 @@ public class Climber extends SubsystemBase {
     }
 
     public void setArm(double speed) {
-        m_armMotor.set(speed);
+        m_armMotor.set(-speed); //Negative voltage raises the arm.
     }
 
     public void setWinch(double speed) {
