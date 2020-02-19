@@ -21,5 +21,6 @@ public class Constants {
             CONVEYOR_SHOOT_SPEED = 0.5,
             SHOOT_TIME = 4, //seconds
             TURN_TOLERANCE_DEG = 5,
-            TURN_TOLERANCE_DEG_PER_SEC = 5;
+            TURN_TOLERANCE_DEG_PER_SEC = 5,
+            DRIVE_DEADZONE = 0.15;
 }

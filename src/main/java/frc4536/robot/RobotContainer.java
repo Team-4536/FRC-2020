@@ -86,35 +86,35 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
-                .whileHeld(new VisionToTargetCommand(m_driveTrain));
+                .whileHeld(new VisionToTargetCommand(m_driveTrain)); //vision
         new JoystickButton(m_driveController, Button.kBumperRight.value)
-                .whileHeld(new IntakeCommands(m_intake, m_conveyor));
-        new JoystickButton(m_driveController, Button.kB.value)
+                .whileHeld(new IntakeCommands(m_intake, m_conveyor)); //Intake
+        new JoystickButton(m_driveController, Button.kB.value) //Spin up conveyor
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
-        new JoystickButton(m_driveController, Button.kY.value)
+        new JoystickButton(m_driveController, Button.kY.value) //Spin up intake
                 .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
 
-        new JoystickButton(m_operatorJoystick, 12)
+        new JoystickButton(m_operatorJoystick, 12) //Intake extend
                 .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
-        new JoystickButton(m_operatorJoystick, 11)
+        new JoystickButton(m_operatorJoystick, 11) //Conveyor lower
                 .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
-        new JoystickButton(m_operatorJoystick, 9)
+        new JoystickButton(m_operatorJoystick, 9) //Winch manual control
                 .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
-        new JoystickButton(m_operatorJoystick, 10)
+        new JoystickButton(m_operatorJoystick, 10) //Climber manual control
                 .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
-        new JoystickButton(m_operatorJoystick, 7)
+        new JoystickButton(m_operatorJoystick, 7) //Conveyor manual control
                 .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
-        new JoystickButton(m_operatorJoystick, 8)
+        new JoystickButton(m_operatorJoystick, 8) //Intake manual control
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
-        new JoystickButton(m_operatorJoystick, 2)
+        new JoystickButton(m_operatorJoystick, 2) //Spinup shooter
                 .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
     }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(
-            Math.abs(m_driveController.getY(GenericHID.Hand.kLeft)) > 0.2 ? -m_driveController.getY(GenericHID.Hand.kLeft) : 0, 
-            Math.abs(m_driveController.getX(GenericHID.Hand.kRight)) > 0.2 ? m_driveController.getX(GenericHID.Hand.kRight) : 0), 
+            Math.abs(m_driveController.getY(GenericHID.Hand.kLeft)) > Constants.DRIVE_DEADZONE ? -m_driveController.getY(GenericHID.Hand.kLeft) : 0,
+            Math.abs(m_driveController.getX(GenericHID.Hand.kRight)) > Constants.DRIVE_DEADZONE ? m_driveController.getX(GenericHID.Hand.kRight) : 0),
             m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
             m_climber.setWinch(0);
