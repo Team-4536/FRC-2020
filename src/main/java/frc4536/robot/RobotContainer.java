@@ -112,7 +112,10 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
-        CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
+        CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(
+            Math.abs(m_driveController.getY(GenericHID.Hand.kLeft)) > 0.2 ? -m_driveController.getY(GenericHID.Hand.kLeft) : 0, 
+            Math.abs(m_driveController.getX(GenericHID.Hand.kRight)) > 0.2 ? m_driveController.getX(GenericHID.Hand.kRight) : 0), 
+            m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
             m_climber.setWinch(0);
             m_climber.setArm(0);
