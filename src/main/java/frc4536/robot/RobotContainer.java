@@ -1,7 +1,6 @@
 package frc4536.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -42,7 +41,7 @@ public class RobotContainer {
     public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor(), m_robotHardware.getBottomLimitSwitch());
 
     private final XboxController m_driveController = new XboxController(0);
-    private final Joystick m_liftController = new Joystick(1);
+    private final Joystick m_operatorJoystick = new Joystick(1);
 
     private final NetworkTableEntry m_xInitial;
     private final NetworkTableEntry m_yInitial;
@@ -85,15 +84,15 @@ public class RobotContainer {
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
                 .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
-                new JoystickButton(m_liftController, 12)
+        new JoystickButton(m_operatorJoystick, 12)
                 .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
-                new JoystickButton(m_liftController, 11)
+        new JoystickButton(m_operatorJoystick, 11)
                 .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
-                new JoystickButton(m_liftController, 9)
-                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_liftController.getY())));
-                new JoystickButton(m_liftController, 10)
-                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_liftController.getY())));
-        }
+        new JoystickButton(m_operatorJoystick, 9)
+                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 10)
+                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
+    }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
