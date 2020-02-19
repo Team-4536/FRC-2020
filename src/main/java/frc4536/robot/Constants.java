@@ -19,5 +19,7 @@ public class Constants {
             INTAKE_SPINSPEED = -1,
             CONVEYOR_INTAKE_SPEED = 1.0,
             CONVEYOR_SHOOT_SPEED = 0.5,
-            SHOOT_TIME = 4; //seconds
+            SHOOT_TIME = 4, //seconds
+            TURN_TOLERANCE_DEG = 5,
+            TURN_TOLERANCE_DEG_PER_SEC = 5;
 }

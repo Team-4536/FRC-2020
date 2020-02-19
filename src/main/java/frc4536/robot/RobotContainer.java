@@ -71,11 +71,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
-                .whileHeld(new PIDCommand(new PIDController(Constants.VISION_KP, Constants.VISION_KI, Constants.VISION_KD),
-                        m_driveTrain::getVisionAngle,
-                        0,
-                        o -> m_driveTrain.arcadeDrive(0, -o),
-                        m_driveTrain));
+                .whileHeld(new VisionToTargetCommand(m_driveTrain));
 
         ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
         NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
@@ -163,6 +159,7 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
+                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
                 new RunCommand(() -> {
                     m_conveyor.lowerTop();
                     m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
@@ -172,6 +169,7 @@ public class RobotContainer {
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
+                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
                 new RunCommand(() -> {
                     m_conveyor.lowerTop();
                     m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
