@@ -171,7 +171,7 @@ public class RobotContainer {
 
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
-                m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)) //scurve to the shooting position and preemptively spin up the shooter
+                m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
                 new ShootCommand(m_shooter, m_conveyor)
         );
 
