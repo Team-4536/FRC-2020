@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -18,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
-
 import java.util.List;
 
 /**
@@ -77,14 +77,12 @@ public class RobotContainer {
                         o -> m_driveTrain.arcadeDrive(0, -o),
                         m_driveTrain));
 
-        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
-        NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
-        NetworkTableEntry bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
-                .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
-
+                .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
+      
+      
         new JoystickButton(m_operatorJoystick, 12)
                 .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
         new JoystickButton(m_operatorJoystick, 11)
@@ -100,6 +98,9 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
+        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
+        NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
+        NetworkTableEntry bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
@@ -115,8 +116,12 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {
-            m_shooter.setTopPower(0);
-            m_shooter.setBottomPower(0);
+            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.7)
+                m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
+            else {
+                m_shooter.setTopPower(0);
+                m_shooter.setBottomPower(0);
+            }
         }, m_shooter);
 
         default_climber.setName("Default Climber");
@@ -176,20 +181,12 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
-                new RunCommand(() -> {
-                    m_conveyor.lowerTop();
-                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME), //shoot. TODO: shoot command
+                new ShootCommand(m_shooter, m_conveyor),
 
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
-                new RunCommand(() -> {
-                    m_conveyor.lowerTop();
-                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME) //shoot. TODO: shoot command
+                new ShootCommand(m_shooter, m_conveyor)
         );
 
         //Same thing as above, but worse
