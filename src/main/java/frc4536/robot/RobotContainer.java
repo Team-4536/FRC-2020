@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
-
 import java.util.List;
 
 /**
@@ -82,10 +81,6 @@ public class RobotContainer {
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
-
-
-        
-        
     }
 
     private void configureDefaultCommands() {
@@ -107,13 +102,14 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {
-            if(m_driveController.getTriggerAxis(Hand.kRight)>0.7)  m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
+            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.7)
+                m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
             else {
                 m_shooter.setTopPower(0);
                 m_shooter.setBottomPower(0);
             }
         }, m_shooter);
-        
+
         default_climber.setName("Default Climber");
         default_conveyor.setName("Default Conveyor");
         default_shooter.setName("Default Shooter");
@@ -138,7 +134,7 @@ public class RobotContainer {
         Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
         Pose2d shootingPosition = new Pose2d(3.3, -2.562, Rotation2d.fromDegrees(0));
         Pose2d endTrench = new Pose2d(7.341, -0.465, Rotation2d.fromDegrees(0));
-    Pose2d twoBallPosition = new Pose2d(6.312, -2.903, Rotation2d.fromDegrees(-90));
+        Pose2d twoBallPosition = new Pose2d(6.312, -2.903, Rotation2d.fromDegrees(-90));
         // trajectory from shooting position to end of trench
         Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
                 startPosition,
