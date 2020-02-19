@@ -36,14 +36,19 @@ public class TestRobot implements RobotFrame {
     VirtualSolenoid m_conveyorBlocker = new VirtualSolenoid(0,1);
     VirtualSolenoid m_intakeExtender = new VirtualSolenoid(2,3);
 
-    AHRS m_navx = new AHRS();
+    AHRS m_navx = new AHRS(){
+        @Override
+        public double getAngle(){
+            return -m_navx.getAngle();
+        }
+    };
     Encoder m_leftEncoder = new Encoder(0,1);
     Encoder m_rightEncoder = new Encoder(2,3);
     IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779);
     IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779);
     IEncoderMotor m_leftMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(0), new Spark(1)), m_leftEncoder, 2048);
     IEncoderMotor m_rightMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(2), new Spark(3)), m_rightEncoder, 2048);
-
+    DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
     @Override
     public RobotConstants getConstants() {
         return m_constants;
@@ -101,5 +106,10 @@ public class TestRobot implements RobotFrame {
     @Override
     public IEncoderMotor getBottomShooterFlywheelMotor() {
         return m_bottomFlywheel;
+    }
+
+    @Override
+    public DigitalInput getBottomLimitSwitch(){
+        return m_bottomLimitSwitch;
     }
 }

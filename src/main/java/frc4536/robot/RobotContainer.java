@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.*;
@@ -18,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
-
 import java.util.List;
 
 /**
@@ -38,13 +39,14 @@ public class RobotContainer {
     public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
     public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
     public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
-    public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor());
+    public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor(), m_robotHardware.getBottomLimitSwitch());
 
     private final XboxController m_driveController = new XboxController(0);
-    private final Joystick m_liftController = new Joystick(1);
+    private final Joystick m_operatorJoystick = new Joystick(1);
 
     private final NetworkTableEntry m_xInitial;
     private final NetworkTableEntry m_yInitial;
+    private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -59,8 +61,12 @@ public class RobotContainer {
         Shuffleboard.getTab("Subsystems").add(m_intake);
         Shuffleboard.getTab("Subsystems").add(m_shooter);
 
+
         m_xInitial = Shuffleboard.getTab("Autonomous").add("Initial X", 3.3).getEntry();
         m_yInitial = Shuffleboard.getTab("Autonomous").add("Initial Y", -1.0).getEntry();
+        generateAutoCommands();
+        Shuffleboard.getTab("Autonomous").add(m_chooser);
+
     }
 
     /**
@@ -73,21 +79,35 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
                 .whileHeld(new VisionToTargetCommand(m_driveTrain));
 
-        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
-        NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
-        NetworkTableEntry bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
-                .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+                .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
+      
+      
+        new JoystickButton(m_operatorJoystick, 12)
+                .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
+        new JoystickButton(m_operatorJoystick, 11)
+                .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
+        new JoystickButton(m_operatorJoystick, 9)
+                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 10)
+                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 7)
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
+        new JoystickButton(m_operatorJoystick, 8)
+                .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
     }
 
     private void configureDefaultCommands() {
+        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
+        NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
+        NetworkTableEntry bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
-            m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
-            m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
+            m_climber.setWinch(0);
+            m_climber.setArm(0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> {
             m_conveyor.raiseTop();
@@ -98,10 +118,14 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {
-            m_shooter.setTopPower(0);
-            m_shooter.setBottomPower(0);
+            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.7)
+                m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
+            else {
+                m_shooter.setTopPower(0);
+                m_shooter.setBottomPower(0);
+            }
         }, m_shooter);
-        
+
         default_climber.setName("Default Climber");
         default_conveyor.setName("Default Conveyor");
         default_shooter.setName("Default Shooter");
@@ -115,14 +139,8 @@ public class RobotContainer {
         m_shooter.setDefaultCommand(default_shooter);
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
-        //TODO: tweak angles
+
+    public void generateAutoCommands() {
         Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
         Pose2d shootingPosition = new Pose2d(3.3, -2.562, Rotation2d.fromDegrees(0));
         Pose2d endTrench = new Pose2d(7.341, -0.465, Rotation2d.fromDegrees(0));
@@ -156,26 +174,30 @@ public class RobotContainer {
                 m_driveTrain.getConfig().setReversed(true)
         );
 
-        return new SequentialCommandGroup(
+        final Command m_trenchAuto = new SequentialCommandGroup(
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new RunCommand(() -> {
-                    m_conveyor.lowerTop();
-                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME), //shoot. TODO: shoot command
+                new ShootCommand(m_shooter, m_conveyor),
 
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new RunCommand(() -> {
-                    m_conveyor.lowerTop();
-                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME) //shoot. TODO: shoot command
+                new ShootCommand(m_shooter, m_conveyor)
         );
+        m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
+    }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
+        //TODO: tweak angles
+        return m_chooser.getSelected();
+
 
         //Same thing as above, but worse
         /*

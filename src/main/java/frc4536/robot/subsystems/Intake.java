@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Intake extends SubsystemBase {
-  public SpeedController m_motor1;
+  private SpeedController m_motor1;
   private DoubleSolenoid m_piston;
 
   public Intake(SpeedController motor1, DoubleSolenoid piston) {
