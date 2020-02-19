@@ -41,7 +41,7 @@ public class RobotContainer {
     public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor());
 
     private final XboxController m_driveController = new XboxController(0);
-    private final Joystick m_liftController = new Joystick(1);
+    private final Joystick m_operatorJoystick = new Joystick(1);
 
     private final NetworkTableEntry m_xInitial;
     private final NetworkTableEntry m_yInitial;
@@ -81,6 +81,20 @@ public class RobotContainer {
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
+      
+      
+        new JoystickButton(m_operatorJoystick, 12)
+                .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
+        new JoystickButton(m_operatorJoystick, 11)
+                .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
+        new JoystickButton(m_operatorJoystick, 9)
+                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 10)
+                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 7)
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
+        new JoystickButton(m_operatorJoystick, 8)
+                .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
     }
 
     private void configureDefaultCommands() {
@@ -90,8 +104,8 @@ public class RobotContainer {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
-            m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
-            m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
+            m_climber.setWinch(0);
+            m_climber.setArm(0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> {
             m_conveyor.raiseTop();
