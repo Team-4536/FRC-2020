@@ -32,5 +32,4 @@ public class Conveyor extends SubsystemBase {
     public void moveConveyor(double speed) {
         m_motor.set(speed);
     }
-
 }
