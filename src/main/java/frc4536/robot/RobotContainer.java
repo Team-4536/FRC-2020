@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
+
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public final RobotFrame m_robotHardware = new TestRobot();
+    public final RobotFrame m_robotHardware = new Honeycomb();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
@@ -44,8 +44,7 @@ public class RobotContainer {
     private final XboxController m_driveController = new XboxController(0);
     private final Joystick m_operatorJoystick = new Joystick(1);
 
-    private final NetworkTableEntry m_xInitial;
-    private final NetworkTableEntry m_yInitial;
+    private final NetworkTableEntry m_xInitial, m_yInitial, top, bot;
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     /**
@@ -55,18 +54,28 @@ public class RobotContainer {
         configureButtonBindings();
         configureDefaultCommands();
 
-        Shuffleboard.getTab("Subsystems").add(m_climber);
-        Shuffleboard.getTab("Subsystems").add(m_conveyor);
-        Shuffleboard.getTab("Subsystems").add(m_driveTrain);
-        Shuffleboard.getTab("Subsystems").add(m_intake);
-        Shuffleboard.getTab("Subsystems").add(m_shooter);
+        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data"),
+                subsystems = Shuffleboard.getTab("Subsystems"),
+                auto = Shuffleboard.getTab("Autonomous");
 
+        subsystems.add(m_climber);
+        subsystems.add(m_conveyor);
+        subsystems.add(m_driveTrain);
+        subsystems.add(m_intake);
+        subsystems.add(m_shooter);
 
-        m_xInitial = Shuffleboard.getTab("Autonomous").add("Initial X", 3.3).getEntry();
-        m_yInitial = Shuffleboard.getTab("Autonomous").add("Initial Y", -1.0).getEntry();
+        top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
+        bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
+
+        m_xInitial = auto.add("Initial X", 3.3).getEntry();
+        m_yInitial = auto.add("Initial Y", -1.0).getEntry();
         generateAutoCommands();
-        Shuffleboard.getTab("Autonomous").add(m_chooser);
+        auto.add(m_chooser);
 
+        subsystems.add("Conv L", new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor).withTimeout(3));
+        subsystems.add("Conv R", new RunCommand(() -> m_conveyor.raiseTop(), m_conveyor).withTimeout(3));
+        subsystems.add("Int Retract", new RunCommand(() -> m_intake.retractIntake(), m_intake).withTimeout(3));
+        subsystems.add("Int Extemd", new RunCommand(() -> m_intake.extendIntake(), m_intake).withTimeout(3));
     }
 
     /**
@@ -78,13 +87,13 @@ public class RobotContainer {
     private void configureButtonBindings() {
         new JoystickButton(m_driveController, Button.kBumperLeft.value)
                 .whileHeld(new VisionToTargetCommand(m_driveTrain));
-
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
-      
-      
+        new JoystickButton(m_driveController, Button.kY.value)
+                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+
         new JoystickButton(m_operatorJoystick, 12)
                 .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
         new JoystickButton(m_operatorJoystick, 11)
@@ -97,12 +106,11 @@ public class RobotContainer {
                 .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
         new JoystickButton(m_operatorJoystick, 8)
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
+        new JoystickButton(m_operatorJoystick, 2)
+                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
     }
 
     private void configureDefaultCommands() {
-        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
-        NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
-        NetworkTableEntry bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
@@ -118,9 +126,10 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {
-            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.7)
+            System.out.println(m_driveController.getTriggerAxis(Hand.kRight));
+            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.5) {
                 m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
-            else {
+            } else {
                 m_shooter.setTopPower(0);
                 m_shooter.setBottomPower(0);
             }
@@ -188,6 +197,7 @@ public class RobotContainer {
         );
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
