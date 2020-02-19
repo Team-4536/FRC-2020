@@ -167,20 +167,12 @@ public class RobotContainer {
         return new SequentialCommandGroup(
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
-                new RunCommand(() -> {
-                    m_conveyor.lowerTop();
-                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME), //shoot. TODO: shoot command
+                new ShootCommand(m_shooter, m_conveyor),
 
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
-                m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
-                new RunCommand(() -> {
-                    m_conveyor.lowerTop();
-                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME) //shoot. TODO: shoot command
+                m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)) //scurve to the shooting position and preemptively spin up the shooter
+                new ShootCommand(m_shooter, m_conveyor)
         );
 
         //Same thing as above, but worse
