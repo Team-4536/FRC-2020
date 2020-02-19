@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.*;
@@ -45,6 +46,7 @@ public class RobotContainer {
 
     private final NetworkTableEntry m_xInitial;
     private final NetworkTableEntry m_yInitial;
+    private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -59,8 +61,12 @@ public class RobotContainer {
         Shuffleboard.getTab("Subsystems").add(m_intake);
         Shuffleboard.getTab("Subsystems").add(m_shooter);
 
+
         m_xInitial = Shuffleboard.getTab("Autonomous").add("Initial X", 3.3).getEntry();
         m_yInitial = Shuffleboard.getTab("Autonomous").add("Initial Y", -1.0).getEntry();
+        generateAutoCommands();
+        Shuffleboard.getTab("Autonomous").add(m_chooser);
+
     }
 
     /**
@@ -137,14 +143,8 @@ public class RobotContainer {
         m_shooter.setDefaultCommand(default_shooter);
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
-        //TODO: tweak angles
+
+    public void generateAutoCommands() {
         Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
         Pose2d shootingPosition = new Pose2d(3.3, -2.562, Rotation2d.fromDegrees(0));
         Pose2d endTrench = new Pose2d(7.341, -0.465, Rotation2d.fromDegrees(0));
@@ -178,7 +178,7 @@ public class RobotContainer {
                 m_driveTrain.getConfig().setReversed(true)
         );
 
-        return new SequentialCommandGroup(
+        final Command m_trenchAuto = new SequentialCommandGroup(
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
                 new ShootCommand(m_shooter, m_conveyor),
@@ -188,6 +188,18 @@ public class RobotContainer {
                 m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
                 new ShootCommand(m_shooter, m_conveyor)
         );
+        m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
+    }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
+        //TODO: tweak angles
+        return m_chooser.getSelected();
+
 
         //Same thing as above, but worse
         /*

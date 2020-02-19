@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class VirtualEncoderMotor extends SubsystemBase implements IEncoderMotor, Sendable {
+public class VirtualEncoderMotor extends SubsystemBase implements IEncoderMotor {
 
     private final SpeedController m_motor;
     private final Timer m_timer = new Timer();

@@ -36,7 +36,12 @@ public class TestRobot implements RobotFrame {
     VirtualSolenoid m_conveyorBlocker = new VirtualSolenoid(0,1);
     VirtualSolenoid m_intakeExtender = new VirtualSolenoid(2,3);
 
-    AHRS m_navx = new AHRS();
+    AHRS m_navx = new AHRS(){
+        @Override
+        public double getAngle(){
+            return -m_navx.getAngle();
+        }
+    };
     Encoder m_leftEncoder = new Encoder(0,1);
     Encoder m_rightEncoder = new Encoder(2,3);
     IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779);
