@@ -3,6 +3,7 @@ package frc4536.robot.hardware;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.util.Units;
@@ -46,6 +47,7 @@ public class Honeycomb implements RobotFrame {
 
     IEncoderMotor m_leftMotors = new Neo(10.75, 47, 48);
     IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
+    DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
 
     DoubleSolenoid m_conveyorBlocker = new DoubleSolenoid(0,1);
     DoubleSolenoid m_intakeExtender = new DoubleSolenoid(2,3);
@@ -109,5 +111,7 @@ public class Honeycomb implements RobotFrame {
     public IEncoderMotor getBottomShooterFlywheelMotor() {
         return m_bottomFlywheel;
     }
-
+    @Override
+    public DigitalInput getBottomLimitSwitch(){
+        return m_bottomLimitSwitch;}
 }

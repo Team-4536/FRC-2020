@@ -59,6 +59,8 @@ public class VirtualRobot extends SubsystemBase implements RobotFrame {
 
     IEncoderMotor m_topFlywheel = new VirtualEncoderMotor(new Talon(3),90);
     IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor(new Talon(4),100);
+    DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
+
 
     AHRS m_navx = new AHRS(){
         @Override
@@ -148,4 +150,7 @@ public class VirtualRobot extends SubsystemBase implements RobotFrame {
     public IEncoderMotor getBottomShooterFlywheelMotor() {
         return m_bottomFlywheel;
     }
+    @Override
+    public DigitalInput getBottomLimitSwitch(){
+        return m_bottomLimitSwitch;}
 }
