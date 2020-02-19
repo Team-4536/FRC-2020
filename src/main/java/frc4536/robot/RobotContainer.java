@@ -84,6 +84,7 @@ public class RobotContainer {
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
                 .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+
         new JoystickButton(m_operatorJoystick, 12)
                 .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
         new JoystickButton(m_operatorJoystick, 11)
@@ -92,6 +93,10 @@ public class RobotContainer {
                 .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
         new JoystickButton(m_operatorJoystick, 10)
                 .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 7)
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
+        new JoystickButton(m_operatorJoystick, 8)
+                .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
     }
 
     private void configureDefaultCommands() {
