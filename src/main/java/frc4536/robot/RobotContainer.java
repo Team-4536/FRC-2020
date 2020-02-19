@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -19,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
-
 import java.util.List;
 
 /**
@@ -42,7 +42,7 @@ public class RobotContainer {
     public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor());
 
     private final XboxController m_driveController = new XboxController(0);
-    private final Joystick m_liftController = new Joystick(1);
+    private final Joystick m_operatorJoystick = new Joystick(1);
 
     private final NetworkTableEntry m_xInitial;
     private final NetworkTableEntry m_yInitial;
@@ -83,21 +83,35 @@ public class RobotContainer {
                         o -> m_driveTrain.arcadeDrive(0, -o),
                         m_driveTrain));
 
-        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
-        NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
-        NetworkTableEntry bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)
-                .whenHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+                .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
+      
+      
+        new JoystickButton(m_operatorJoystick, 12)
+                .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
+        new JoystickButton(m_operatorJoystick, 11)
+                .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
+        new JoystickButton(m_operatorJoystick, 9)
+                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 10)
+                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 7)
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
+        new JoystickButton(m_operatorJoystick, 8)
+                .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
     }
 
     private void configureDefaultCommands() {
+        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data");
+        NetworkTableEntry top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
+        NetworkTableEntry bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive(-m_driveController.getY(GenericHID.Hand.kLeft), m_driveController.getX(GenericHID.Hand.kRight)), m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {
-            m_climber.setWinch(m_liftController.getRawButton(7) ? -m_liftController.getY() : 0);
-            m_climber.setArm(m_liftController.getRawButton(8) ? -m_liftController.getY() : 0);
+            m_climber.setWinch(0);
+            m_climber.setArm(0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> {
             m_conveyor.raiseTop();
@@ -108,8 +122,12 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {
-            m_shooter.setTopPower(0);
-            m_shooter.setBottomPower(0);
+            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.7)
+                m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
+            else {
+                m_shooter.setTopPower(0);
+                m_shooter.setBottomPower(0);
+            }
         }, m_shooter);
 
         default_climber.setName("Default Climber");
@@ -163,20 +181,12 @@ public class RobotContainer {
         final Command m_trenchAuto = new SequentialCommandGroup(
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
-                new RunCommand(() -> {
-                        m_conveyor.lowerTop();
-                        m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME), //shoot. TODO: shoot command
+                new ShootCommand(m_shooter, m_conveyor),
 
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
-                new RunCommand(() -> {
-                        m_conveyor.lowerTop();
-                        m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
-                }, m_conveyor)
-                        .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)).withTimeout(Constants.SHOOT_TIME) //shoot. TODO: shoot command
+                new ShootCommand(m_shooter, m_conveyor)
         );
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }

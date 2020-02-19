@@ -70,9 +70,7 @@ public class DriveTrain extends SubsystemBase {
                 m_rightMotor.getDistance() * wheelCircumference);
     }
 
-    public void arcadeDrive(double speed, double rotation) {
-        double s2 = Math.copySign(speed * speed, speed),
-                r2 = Math.copySign(rotation * rotation, rotation);
+    public void arcadeDrive(double s2, double r2) {
         m_leftMotor.set(s2 + r2);
         m_rightMotor.set(s2 - r2);
     }
