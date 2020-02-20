@@ -198,6 +198,10 @@ public class RobotContainer {
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
                 new ShootCommand(m_shooter, m_conveyor)
         );
+
+        final Command m_eightBallAuto = new SequentialCommandGroup(
+                m_driveTrain.scurveTo(TrajectoryGenerator.generateTrajectory(startPosition, List.of(new Translation2d(5.106, -0.465)), shootingPosition, m_driveTrain.getConfig().setReversed(false))).raceWith(new IntakeCommands(m_intake, m_conveyor))
+        );
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }
 
