@@ -51,6 +51,15 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom.setVoltage(power);
     }
 
+    public void stop(){
+        m_topPIDController.reset();
+        m_bottomPIDController.reset();
+        m_topPIDController.setSetpoint(0);
+        m_bottomPIDController.setSetpoint(0);
+        m_shooterTop.set(0);
+        m_shooterBottom.set(0);
+    }
+
     public double getTopRate() {
         return m_shooterTop.getSpeed();
     }
