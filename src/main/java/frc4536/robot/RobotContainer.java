@@ -210,7 +210,7 @@ public class RobotContainer {
                 new ShootCommand(m_shooter, m_conveyor),
                 m_driveTrain.scurveTo(shotToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)),
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp()),
-                new ShootCommand(m_shooter, m_conveyor
+                new ShootCommand(m_shooter, m_conveyor)
 
         );
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
