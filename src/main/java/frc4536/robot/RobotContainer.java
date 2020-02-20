@@ -198,6 +198,19 @@ public class RobotContainer {
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
                 new ShootCommand(m_shooter, m_conveyor)
         );
+        
+        final Command m_physicalDiagnostic = new SequentialCommandGroup(
+                m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM).withTimeout(5),
+                new RunCommand(m_conveyor::raiseTop).withTimeout(1),
+                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED)).withTimeout(5),
+                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_INTAKE_SPEED)).withTimeout(5),
+                new RunCommand(m_conveyor::lowerTop).withTimeout(1),
+                new RunCommand(m_intake::extendIntake).withTimeout(1),
+                new RunCommand(() -> m_intake.intake(Constants.INTAKE_SPINSPEED)).withTimeout(5),
+                new RunCommand(m_intake::retractIntake).withTimeout(1));
+                
+
+                
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }
 
