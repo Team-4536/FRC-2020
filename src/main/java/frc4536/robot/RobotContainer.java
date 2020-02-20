@@ -157,6 +157,7 @@ public class RobotContainer {
         Pose2d shootingPosition = new Pose2d(3.3, -2.562, Rotation2d.fromDegrees(0));
         Pose2d endTrench = new Pose2d(7.341, -0.465, Rotation2d.fromDegrees(0));
         Pose2d twoBallPosition = new Pose2d(6.312, -2.903, Rotation2d.fromDegrees(-90));
+        Pose2d testPosition = new Pose2d(4,-3, Rotation2d.fromDegrees(0));
         // trajectory from shooting position to end of trench
         Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
                 startPosition,
@@ -213,6 +214,8 @@ public class RobotContainer {
                 new ShootCommand(m_shooter, m_conveyor)
 
         );
+
+        final Command m_testAuto = new SequentialCommandGroup( m_driveTrain.scurveTo(TrajectoryGenerator.generateTrajectory(startPosition, List.of(new Translation2d(m_xInitial.getDouble(0.0)+3,0)), testPosition, m_driveTrain.getConfig().setReversed(true))));
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }
 
