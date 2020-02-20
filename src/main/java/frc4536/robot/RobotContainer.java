@@ -164,6 +164,12 @@ public class RobotContainer {
                 endTrench,
                 m_driveTrain.getConfig().setReversed(false)
         );
+        Trajectory shotToEnd = TrajectoryGenerator.generateTrajectory(
+                shootingPosition,
+                List.of(new Translation2d(5.106, -0.465)),
+                endTrench,
+                m_driveTrain.getConfig().setReversed(false)
+        );
         // return trajectory
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(
                 endTrench,
@@ -200,7 +206,12 @@ public class RobotContainer {
         );
 
         final Command m_eightBallAuto = new SequentialCommandGroup(
-                m_driveTrain.scurveTo(TrajectoryGenerator.generateTrajectory(startPosition, List.of(new Translation2d(5.106, -0.465)), shootingPosition, m_driveTrain.getConfig().setReversed(false))).raceWith(new IntakeCommands(m_intake, m_conveyor))
+                m_driveTrain.scurveTo(TrajectoryGenerator.generateTrajectory(startPosition, List.of(new Translation2d(5.106, -0.465)), shootingPosition, m_driveTrain.getConfig().setReversed(false))).raceWith(new IntakeCommands(m_intake, m_conveyor), m_shooter.spinUp()),
+                new ShootCommand(m_shooter, m_conveyor),
+                m_driveTrain.scurveTo(shotToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)),
+                m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp()),
+                new ShootCommand(m_shooter, m_conveyor
+
         );
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }
