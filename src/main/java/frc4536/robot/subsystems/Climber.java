@@ -19,41 +19,40 @@ public class Climber extends SubsystemBase {
         m_topLimitSwitch = topLimitSwitch;
         m_bottomLimitSwitchCounter = new Counter(m_bottomLimitSwitch);
         m_topLimitSwitchCounter = new Counter(m_topLimitSwitch);
-    }
-    public boolean bottomLimitSwitchIsSet() {
-      return m_bottomLimitSwitchCounter.get() > 0;
-    }
-    public boolean topLimitSwitchIsSet(){
-      return m_topLimitSwitchCounter.get() > 0;
+        m_armMotor.setInverted(true);
+        m_bottomLimitSwitchCounter.reset();
+        m_topLimitSwitchCounter.reset();
     }
 
-    public void initializeCounters() {
-      m_bottomLimitSwitchCounter.reset();
-      m_topLimitSwitchCounter.reset();
+    public boolean bottomLimitSwitchIsSet() {
+        return m_bottomLimitSwitchCounter.get() > 0;
+    }
+
+    public boolean topLimitSwitchIsSet() {
+        return m_topLimitSwitchCounter.get() > 0;
+    }
+
+    public boolean climberIsUp(){
+        
     }
 
     public void setArm(double speed) {
-        
-        if (bottomLimitSwitchIsSet()){
-          if(speed>0){
-            m_armMotor.set(-speed);
-            m_bottomLimitSwitchCounter.reset();
-          }
-          else {
-            m_armMotor.set(0);
-          }
-        }
-        else if (topLimitSwitchIsSet()){
-          if(speed<0){
-            m_armMotor.set(-speed);
-            m_bottomLimitSwitchCounter.reset();
-          }
-          else {
-            m_armMotor.set(0);
-          }
-        }
-        else {
-          m_armMotor.set(-speed); //Negative voltage raises the arm.
+        if (bottomLimitSwitchIsSet()) {
+            if (speed > 0) {
+                m_armMotor.set(speed);
+                m_bottomLimitSwitchCounter.reset();
+            } else {
+                m_armMotor.set(0);
+            }
+        } else if (topLimitSwitchIsSet()) {
+            if (speed < 0) {
+                m_armMotor.set(speed);
+                m_bottomLimitSwitchCounter.reset();
+            } else {
+                m_armMotor.set(0);
+            }
+        } else {
+            m_armMotor.set(-speed); //Negative voltage raises the arm.
         }
     }
 
