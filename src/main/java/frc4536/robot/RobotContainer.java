@@ -154,7 +154,7 @@ public class RobotContainer {
 
     public void generateAutoCommands() {
         Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
-        Pose2d shootingPosition = new Pose2d(3.3, -2.562, Rotation2d.fromDegrees(0));
+        Pose2d shootingPosition = new Pose2d(7.3, -0.465, Rotation2d.fromDegrees(12));
         Pose2d endTrench = new Pose2d(7.341, -0.465, Rotation2d.fromDegrees(0));
         Pose2d twoBallPosition = new Pose2d(6.312, -2.903, Rotation2d.fromDegrees(-90));
         // trajectory from shooting position to end of trench
@@ -213,7 +213,10 @@ public class RobotContainer {
                 new ShootCommand(m_shooter, m_conveyor)
 
         );
+
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
+        m_chooser.addOption("Eight Ball Auto", m_eightBallAuto);
+        m_chooser.addOption("Test Auto", m_testAuto);
     }
 
     /**
