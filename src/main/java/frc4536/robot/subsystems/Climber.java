@@ -32,10 +32,6 @@ public class Climber extends SubsystemBase {
         return m_topLimitSwitchCounter.get() > 0;
     }
 
-    public boolean climberIsUp(){
-        
-    }
-
     public void setArm(double speed) {
         if (bottomLimitSwitchIsSet()) {
             if (speed > 0) {
