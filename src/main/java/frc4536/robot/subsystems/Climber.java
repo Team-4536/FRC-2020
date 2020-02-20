@@ -7,31 +7,50 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Climber extends SubsystemBase {
     private SpeedController m_armMotor, m_winchMotor;
+    private DigitalInput m_topLimitSwitch;
     private DigitalInput m_bottomLimitSwitch;
     private Counter m_bottomLimitSwitchCounter;
+    private Counter m_topLimitSwitchCounter;
 
-    public Climber(SpeedController armMotor, SpeedController winchMotor, DigitalInput bottomLimitSwitch) {
+    public Climber(SpeedController armMotor, SpeedController winchMotor, DigitalInput bottomLimitSwitch, DigitalInput topLimitSwitch) {
         m_winchMotor = winchMotor;
         m_armMotor = armMotor;
         m_bottomLimitSwitch = bottomLimitSwitch;
+        m_topLimitSwitch = topLimitSwitch;
         m_bottomLimitSwitchCounter = new Counter(m_bottomLimitSwitch);
+        m_topLimitSwitchCounter = new Counter(m_topLimitSwitch);
     }
     public boolean bottomLimitSwitchIsSet() {
       return m_bottomLimitSwitchCounter.get() > 0;
-  }
+    }
+    public boolean topLimitSwitchIsSet(){
+      return m_topLimitSwitchCounter.get() > 0;
+    }
 
     public void initializeCounters() {
       m_bottomLimitSwitchCounter.reset();
-  }
+      m_topLimitSwitchCounter.reset();
+    }
+
     public void setArm(double speed) {
         
         if (bottomLimitSwitchIsSet()){
-         if(speed>0){
-           m_armMotor.set(-speed);
-          m_bottomLimitSwitchCounter.reset();}
-           else {m_armMotor.set(0);
+          if(speed>0){
+            m_armMotor.set(-speed);
+            m_bottomLimitSwitchCounter.reset();
           }
-
+          else {
+            m_armMotor.set(0);
+          }
+        }
+        else if (topLimitSwitchIsSet()){
+          if(speed<0){
+            m_armMotor.set(-speed);
+            m_bottomLimitSwitchCounter.reset();
+          }
+          else {
+            m_armMotor.set(0);
+          }
         }
         else {
           m_armMotor.set(-speed); //Negative voltage raises the arm.
