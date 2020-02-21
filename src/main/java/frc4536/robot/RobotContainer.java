@@ -155,12 +155,19 @@ public class RobotContainer {
 
     public void generateAutoCommands() {
         Pose2d startPosition = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0));
-        Pose2d shootingPosition = new Pose2d(3.3, -2.562, Rotation2d.fromDegrees(0));
+        Pose2d shootingPosition = new Pose2d(7.3, -0.465, Rotation2d.fromDegrees(12));
         Pose2d endTrench = new Pose2d(7.341, -0.465, Rotation2d.fromDegrees(0));
         Pose2d twoBallPosition = new Pose2d(6.312, -2.903, Rotation2d.fromDegrees(-90));
+        Pose2d testPosition = new Pose2d(4,-3, Rotation2d.fromDegrees(0));
         // trajectory from shooting position to end of trench
         Trajectory initToEnd = TrajectoryGenerator.generateTrajectory(
                 startPosition,
+                List.of(new Translation2d(5.106, -0.465)),
+                endTrench,
+                m_driveTrain.getConfig().setReversed(false)
+        );
+        Trajectory shotToEnd = TrajectoryGenerator.generateTrajectory(
+                shootingPosition,
                 List.of(new Translation2d(5.106, -0.465)),
                 endTrench,
                 m_driveTrain.getConfig().setReversed(false)
@@ -199,7 +206,21 @@ public class RobotContainer {
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
                 new ShootCommand(m_shooter, m_conveyor, 0.0)
         );
+
+        final Command m_eightBallAuto = new SequentialCommandGroup(
+                m_driveTrain.scurveTo(TrajectoryGenerator.generateTrajectory(startPosition, List.of(new Translation2d(5.106, -0.465)), shootingPosition, m_driveTrain.getConfig().setReversed(false))).raceWith(new IntakeCommands(m_intake, m_conveyor), m_shooter.spinUp()),
+                new ShootCommand(m_shooter, m_conveyor),
+                m_driveTrain.scurveTo(shotToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)),
+                m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp()),
+                new ShootCommand(m_shooter, m_conveyor)
+
+        );
+
+        final Command m_testAuto = new SequentialCommandGroup( m_driveTrain.scurveTo(TrajectoryGenerator.generateTrajectory(startPosition, List.of(new Translation2d(m_xInitial.getDouble(0.0)+3,0)), testPosition, m_driveTrain.getConfig().setReversed(true))));
+
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
+        m_chooser.addOption("Eight Ball Auto", m_eightBallAuto);
+        m_chooser.addOption("Test Auto", m_testAuto);
     }
 
     /**

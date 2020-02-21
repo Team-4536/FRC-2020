@@ -81,5 +81,9 @@ public class Shooter extends SubsystemBase {
         }, this);
     }
 
+    public Command spinUp(){
+        return this.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM);
+    }
+
     
 }
