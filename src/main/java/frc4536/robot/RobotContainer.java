@@ -93,7 +93,7 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kB.value)          //Spin up conveyor
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
-                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+                .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
 
         //Operator Controller
         new JoystickButton(m_operatorJoystick, 2)   //Spinup shooter
@@ -131,9 +131,8 @@ public class RobotContainer {
             m_intake.retractIntake();
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {  //shooter
-                System.out.println(m_driveController.getTriggerAxis(Hand.kRight));
-            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.1) { //change to 0.5
-                m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
+            if (m_driveController.getTriggerAxis(Hand.kRight) > 0.5) { //change to 0.5
+                m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)).schedule();
             } else {
                 m_shooter.setTopPower(0);
                 m_shooter.setBottomPower(0);
@@ -192,13 +191,13 @@ public class RobotContainer {
                 m_driveTrain.scurveTo(initToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(endToShoot).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor),
+                new ShootCommand(m_shooter, m_conveyor, 0.0),
 
                 //time to attempt to pick up more balls.
                 m_driveTrain.scurveTo(shootTo2Ball).raceWith(new IntakeCommands(m_intake, m_conveyor)), //scurve to balls with the intake out
                 m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)), //scurve to the shooting position and preemptively spin up the shooter
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor)
+                new ShootCommand(m_shooter, m_conveyor, 0.0)
         );
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }

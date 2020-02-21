@@ -10,7 +10,8 @@ import frc4536.robot.subsystems.Conveyor;
 import frc4536.robot.subsystems.Shooter;
 
 public class ShootCommand extends ParallelCommandGroup {
-    public ShootCommand(Conveyor conveyor, Shooter shooter, DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
+    public ShootCommand(Shooter shooter, Conveyor conveyor, DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
+      addRequirements(conveyor);
       addCommands(
         shooter.spinUp(topRPS, bottomRPS),
         new WaitUntilCommand(shooter::ready).andThen(new ParallelCommandGroup(
@@ -21,6 +22,7 @@ public class ShootCommand extends ParallelCommandGroup {
     }
 
     public ShootCommand(Shooter shooter, Conveyor conveyor) {
+      addRequirements(conveyor);
       addCommands(
         shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM),
         new WaitUntilCommand(shooter::ready).andThen(new ParallelCommandGroup(
@@ -30,10 +32,11 @@ public class ShootCommand extends ParallelCommandGroup {
       );
     }
 
-    public ShootCommand(Shooter shooter, Conveyor conveyor, boolean unsafe) {
+    public ShootCommand(Shooter shooter, Conveyor conveyor, double shootTime) {
+      addRequirements(conveyor);
       addCommands(
         shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM),
-        new WaitCommand(Constants.SHOOT_TIME).andThen(new ParallelCommandGroup(
+        new WaitCommand(shootTime).andThen(new ParallelCommandGroup(
           new RunCommand(conveyor::lowerTop),
           new RunCommand(() -> conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED))
         ))

@@ -20,6 +20,7 @@ public class IntakeCommands extends CommandBase {
       m_intake.intake(Constants.INTAKE_SPINSPEED);
       m_intake.extendIntake();
       m_conveyor.moveConveyor(Constants.CONVEYOR_INTAKE_SPEED);
+      m_conveyor.raiseTop();
   }
 
   @Override

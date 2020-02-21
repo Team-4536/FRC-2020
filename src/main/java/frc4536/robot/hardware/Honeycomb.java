@@ -49,7 +49,7 @@ public class Honeycomb implements RobotFrame {
     IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
     DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
 
-    DoubleSolenoid m_conveyorBlocker = new DoubleSolenoid(0,1);
+    DoubleSolenoid m_conveyorBlocker = new DoubleSolenoid(1,0);
     DoubleSolenoid m_intakeExtender = new DoubleSolenoid(2,3);
 
     @Override
