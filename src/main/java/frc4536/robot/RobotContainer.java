@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
@@ -216,7 +217,11 @@ public class RobotContainer {
 
         );
 
-        final Command m_testAuto = new SequentialCommandGroup( m_driveTrain.scurveTo(TrajectoryGenerator.generateTrajectory(startPosition, List.of(new Translation2d(m_xInitial.getDouble(0.0)+3,0)), testPosition, m_driveTrain.getConfig().setReversed(true))));
+        final Command m_testAuto = new SequentialCommandGroup( m_driveTrain.scurveTo(
+                TrajectoryGenerator.generateTrajectory(
+                        startPosition, 
+                        List.of(new Translation2d(
+                                m_xInitial.getDouble(0.0)+3,0)), testPosition, m_driveTrain.getConfig().setReversed(true))));
 
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
         m_chooser.addOption("Eight Ball Auto", m_eightBallAuto);
@@ -229,7 +234,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
+        m_driveTrain.resetPose(new Pose2d(Units.inchesToMeters(m_xInitial.getDouble(0.0)), Units.inchesToMeters(m_yInitial.getDouble(0.0)), m_driveTrain.getHeading()));
         //TODO: tweak angles
         return m_chooser.getSelected();
 
