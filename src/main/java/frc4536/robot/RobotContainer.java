@@ -171,21 +171,10 @@ public class RobotContainer {
         final Command m_visionTest = new SequentialCommandGroup(
                 m_driveTrain.scurveTo(startToShoot),
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor, 0.0)
-        );
-
-        final Command m_physicalDiagnostic = new SequentialCommandGroup(
-                m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM).withTimeout(5),
-                new RunCommand(m_conveyor::raiseTop, m_conveyor).withTimeout(1),
-                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor).withTimeout(5),
-                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_INTAKE_SPEED), m_conveyor).withTimeout(5),
-                new RunCommand(m_conveyor::lowerTop, m_conveyor).withTimeout(1),
-                new RunCommand(m_intake::extendIntake, m_intake).withTimeout(1),
-                new RunCommand(() -> m_intake.intake(Constants.INTAKE_SPINSPEED), m_intake).withTimeout(5),
-                new RunCommand(m_intake::retractIntake, m_intake).withTimeout(1));
-
+                new ShootCommand(m_shooter, m_conveyor)
+        );      
+        m_chooser.addOption("Physical Diagnostic", new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake));
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
-        m_chooser.addOption("Physical Diagnostic", m_physicalDiagnostic);
         m_chooser.addOption("Vision Test", m_visionTest);
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
@@ -197,8 +186,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
-        //TODO: tweak angles
         return m_chooser.getSelected();
-
     }
 }
