@@ -201,16 +201,16 @@ public class RobotContainer {
         
         final Command m_physicalDiagnostic = new SequentialCommandGroup(
                 m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM).withTimeout(5),
-                new RunCommand(m_conveyor::raiseTop).withTimeout(1),
-                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED)).withTimeout(5),
-                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_INTAKE_SPEED)).withTimeout(5),
-                new RunCommand(m_conveyor::lowerTop).withTimeout(1),
-                new RunCommand(m_intake::extendIntake).withTimeout(1),
-                new RunCommand(() -> m_intake.intake(Constants.INTAKE_SPINSPEED)).withTimeout(5),
-                new RunCommand(m_intake::retractIntake).withTimeout(1));
+                new RunCommand(m_conveyor::raiseTop, m_conveyor).withTimeout(1),
+                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor).withTimeout(5),
+                new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_INTAKE_SPEED), m_conveyor).withTimeout(5),
+                new RunCommand(m_conveyor::lowerTop, m_conveyor).withTimeout(1),
+                new RunCommand(m_intake::extendIntake, m_intake).withTimeout(1),
+                new RunCommand(() -> m_intake.intake(Constants.INTAKE_SPINSPEED), m_intake).withTimeout(5),
+                new RunCommand(m_intake::retractIntake, m_intake).withTimeout(1));
                 
 
-                
+        m_chooser.    
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }
 
