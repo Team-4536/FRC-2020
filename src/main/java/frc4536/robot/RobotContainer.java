@@ -210,7 +210,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        m_driveTrain.resetPose(new Pose2d(Units.inchesToMeters(m_xInitial.getDouble(0.0)), Units.inchesToMeters(m_yInitial.getDouble(0.0)), m_driveTrain.getHeading()));
+        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), m_driveTrain.getHeading()));
         //TODO: tweak angles
         return m_chooser.getSelected();
 
