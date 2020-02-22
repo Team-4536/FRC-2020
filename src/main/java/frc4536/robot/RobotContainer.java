@@ -161,11 +161,11 @@ public class RobotContainer {
         final Command m_trenchAuto = new SequentialCommandGroup(
                 m_driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(m_intake, m_conveyor)),
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor, 0.0),
+                new ShootCommand(m_shooter, m_conveyor, 0.0).withTimeout(3),
                 m_driveTrain.scurveTo(shootToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)),
                 m_driveTrain.scurveTo(endToShoot),
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor, 0.0)
+                new ShootCommand(m_shooter, m_conveyor, 0.0).withTimeout(3)
         );
 
         final Command m_visionTest = new SequentialCommandGroup(

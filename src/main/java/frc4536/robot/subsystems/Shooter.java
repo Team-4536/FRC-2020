@@ -87,7 +87,7 @@ public class Shooter extends SubsystemBase {
         );
         m_shooterBottom.setVoltage(
                 m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
-                        + k_bottom_feedForwards.calculate(topRPS.getAsDouble())
+                        + k_bottom_feedForwards.calculate(bottomRPS.getAsDouble())
         );
     }
 
