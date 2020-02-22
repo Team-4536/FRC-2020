@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc4536.robot.commands.*;
@@ -22,7 +21,6 @@ import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -155,11 +153,10 @@ public class RobotContainer {
         m_shooter.setDefaultCommand(default_shooter);
     }
 
-
     public void generateAutoCommands() {
         
         Pose2d startPosition = new Pose2d(3.1,-0.75,new Rotation2d(0));
-        Pose2d shootPosition = new Pose2d(5.0,-0.75,new Rotation2d(4.8, 1.3)); //hypothetically, use angle
+        Pose2d shootPosition = new Pose2d(5.0,-0.75,new Rotation2d(4.8, 0.8)); //hypothetically, use angle
         Pose2d trenchEndPosition = new Pose2d(8,-1.0,new Rotation2d(1.4,-0.7));
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(false));
@@ -207,50 +204,5 @@ public class RobotContainer {
         //TODO: tweak angles
         return m_chooser.getSelected();
 
-
-        //Same thing as above, but worse
-        /*
-                    m_driveTrain.scurveTo(initToEnd)
-                    .raceWith(new IntakeCommands(m_intake, m_conveyor))
-                    .andThen(m_driveTrain.scurveTo(endToShoot)
-                            .raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)))
-                    .andThen(new RunCommand(m_conveyor::lowerTop).alongWith(new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SPEED))))
-                    .andThen(m_driveTrain.scurveTo(shootTo2Ball)
-                            .raceWith(new IntakeCommands(m_intake, m_conveyor)))
-                    .andThen(m_driveTrain.scurveTo(shootAgain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)))
-                    .andThen(new RunCommand(m_conveyor::lowerTop).alongWith(new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SPEED))));
-
-
-       //robot starts in the center of initiation line
-        //robot runs shoot command(shooter spin up, put down converyor, run conveyor)
-        //stop shooter, lift conveyor,
-        // put out intake
-        //spin up intake
-        //scurve from init to end of trench
-        //intake one ball
-        // scurve back to begining of trench
-        // run shoot command
-
-        return new ParallelCommandGroup(
-                //new RunCommand(m_intake::extendIntake).withTimeout(1),
-                //new RunCommand(() -> m_intake.intake(1)),
-                new SequentialCommandGroup(
-                        //new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
-                        //       .withTimeout(5)
-                        //       .andThen(m_conveyor::raiseTop),
-                        m_driveTrain.scurveTo(initToEnd),
-                        m_driveTrain.scurveTo(endToShoot),
-                        new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
-                                .withTimeout(5)
-                                .andThen(m_conveyor::raiseTop),
-                        m_driveTrain.scurveTo(shootTo2Ball),
-                        m_driveTrain.scurveTo(shootAgain),
-                        new ShootCommand(m_conveyor, m_shooter, () -> 70, () -> 70)
-                                .withTimeout(5)
-                                .andThen(m_conveyor::raiseTop)
-                )
-        );
-
-             */
     }
 }
