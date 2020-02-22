@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here.
-    public final RobotFrame m_robotHardware = new TestRobot();
+    public final RobotFrame m_robotHardware = new Honeycomb();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
@@ -112,16 +112,12 @@ public class RobotContainer {
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive( //driver train
-            Math.abs(m_driveController.getY(GenericHID.Hand.kLeft)) > Constants.DRIVE_DEADZONE ? -m_driveController.getY(GenericHID.Hand.kLeft) : 0,
-            Math.abs(m_driveController.getX(GenericHID.Hand.kRight)) > Constants.DRIVE_DEADZONE ? m_driveController.getX(GenericHID.Hand.kRight) : 0),
-            m_driveTrain);
+                Math.abs(m_driveController.getY(GenericHID.Hand.kLeft)) > Constants.DRIVE_DEADZONE ? -m_driveController.getY(GenericHID.Hand.kLeft) : 0,
+                Math.abs(m_driveController.getX(GenericHID.Hand.kRight)) > Constants.DRIVE_DEADZONE ? m_driveController.getX(GenericHID.Hand.kRight) : 0),
+                m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {  //climber
-                if(m_operatorJoystick.getRawButton(9)) m_climber.setWinch(-m_operatorJoystick.getY());
-                if(m_operatorJoystick.getRawButton(10)) m_climber.setArm(-m_operatorJoystick.getY());
-                else{
-            m_climber.setWinch(0);
-            m_climber.setArm(0);
-                }
+            m_climber.setWinch(m_operatorJoystick.getRawButton(9) ? -m_operatorJoystick.getY() : 0);
+            m_climber.setArm(m_operatorJoystick.getRawButton(10) ? -m_operatorJoystick.getY() : 0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> { //conveyor
             m_conveyor.raiseTop();
@@ -154,10 +150,10 @@ public class RobotContainer {
     }
 
     public void generateAutoCommands() {
-        
-        Pose2d startPosition = new Pose2d(3.1,-0.75,new Rotation2d(0));
-        Pose2d shootPosition = new Pose2d(5.0,-0.75,new Rotation2d(4.8, 0.8)); //hypothetically, use angle
-        Pose2d trenchEndPosition = new Pose2d(8,-1.0,new Rotation2d(1.4,-0.7));
+
+        Pose2d startPosition = new Pose2d(3.1, -0.75, new Rotation2d(0));
+        Pose2d shootPosition = new Pose2d(5.0, -0.75, new Rotation2d(4.8, 0.8)); //hypothetically, use angle
+        Pose2d trenchEndPosition = new Pose2d(8, -1.0, new Rotation2d(1.4, -0.7));
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(false));
         Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(shootPosition, new ArrayList<Translation2d>(), trenchEndPosition, m_driveTrain.getConfig().setReversed(false));
@@ -176,9 +172,9 @@ public class RobotContainer {
                 m_driveTrain.scurveTo(startToShoot),
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
                 new ShootCommand(m_shooter, m_conveyor, 0.0)
-                );
-       
-          final Command m_physicalDiagnostic = new SequentialCommandGroup(
+        );
+
+        final Command m_physicalDiagnostic = new SequentialCommandGroup(
                 m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM).withTimeout(5),
                 new RunCommand(m_conveyor::raiseTop, m_conveyor).withTimeout(1),
                 new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor).withTimeout(5),
@@ -189,7 +185,7 @@ public class RobotContainer {
                 new RunCommand(m_intake::retractIntake, m_intake).withTimeout(1));
 
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
-        m_chooser.addOption("Physical Diagnostic", m_physicalDiagnostic);    
+        m_chooser.addOption("Physical Diagnostic", m_physicalDiagnostic);
         m_chooser.addOption("Vision Test", m_visionTest);
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
