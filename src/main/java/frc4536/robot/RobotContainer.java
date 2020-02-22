@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    public final RobotFrame m_robotHardware = new Honeycomb();
+    public final RobotFrame m_robotHardware = new VirtualRobot();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
@@ -63,6 +63,7 @@ public class RobotContainer {
         subsystems.add(m_driveTrain);
         subsystems.add(m_intake);
         subsystems.add(m_shooter);
+        subsystems.add(CommandScheduler.getInstance());
 
         top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
         bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
