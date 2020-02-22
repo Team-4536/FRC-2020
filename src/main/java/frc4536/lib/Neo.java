@@ -16,6 +16,8 @@ public class Neo implements IEncoderMotor {
         if(motorIDs.length > 1) for(int i = 1; i < motorIDs.length; i++){
             new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushless).follow(m_master);
         }
+        m_master.restoreFactoryDefaults();
+        m_master.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     @Override

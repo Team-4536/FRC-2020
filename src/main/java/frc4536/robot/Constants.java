@@ -7,17 +7,17 @@ public class Constants {
             SHOOTER_TOP_KA = 0.0192,
 
     SHOOTER_P_BOTTOM = 0.92812 / 12,
-            SHOOTER_BOTTOM_KS = 0.454,
+            SHOOTER_BOTTOM_KS = 0.736,
             SHOOTER_BOTTOM_KV = 0.124,
             SHOOTER_BOTTOM_KA = 0.197,
 
     SHOOTER_RPS_TOP = 50,
             SHOOTER_RPS_BOTTOM = 60,
-            VISION_KP = 0.02,
+            VISION_KP = 0.013,
             VISION_KI = 0.013333333333333334,
             VISION_KD = 0,
             INTAKE_SPINSPEED = -0.6,
-            CONVEYOR_INTAKE_SPEED = 0.65,
+            CONVEYOR_INTAKE_SPEED = 0.75,
             CONVEYOR_SHOOT_SPEED = 0.5,
             SHOOT_TIME = 4, //seconds
             TURN_TOLERANCE_DEG = 5,
