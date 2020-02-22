@@ -9,12 +9,12 @@ public class Climber extends SubsystemBase {
     private SpeedController m_armMotor, m_winchMotor;
     private DigitalInput m_bottomLimitSwitch;
     private Counter m_bottomLimitSwitchCounter;
-
     public Climber(SpeedController armMotor, SpeedController winchMotor, DigitalInput bottomLimitSwitch) {
         m_winchMotor = winchMotor;
         m_armMotor = armMotor;
         m_bottomLimitSwitch = bottomLimitSwitch;
         m_bottomLimitSwitchCounter = new Counter(m_bottomLimitSwitch);
+        m_armMotor.setInverted(true);
     }
     public boolean bottomLimitSwitchIsSet() {
       return m_bottomLimitSwitchCounter.get() > 0;
@@ -27,14 +27,14 @@ public class Climber extends SubsystemBase {
         
         if (bottomLimitSwitchIsSet()){
          if(speed>0){
-           m_armMotor.set(-speed);
+           m_armMotor.set(speed);
           m_bottomLimitSwitchCounter.reset();}
            else {m_armMotor.set(0);
           }
 
         }
         else {
-          m_armMotor.set(-speed); //Negative voltage raises the arm.
+          m_armMotor.set(speed); //Negative voltage raises the arm.
         }
     }
 
