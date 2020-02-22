@@ -39,7 +39,7 @@ public class TestRobot implements RobotFrame {
     AHRS m_navx = new AHRS(){
         @Override
         public double getAngle(){
-            return -m_navx.getAngle();
+            return -super.getAngle();
         }
     };
     Encoder m_leftEncoder = new Encoder(0,1);
@@ -48,7 +48,7 @@ public class TestRobot implements RobotFrame {
     IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779);
     IEncoderMotor m_leftMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(0), new Spark(1)), m_leftEncoder, 2048);
     IEncoderMotor m_rightMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(2), new Spark(3)), m_rightEncoder, 2048);
-    DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
+    DigitalInput m_bottomLimitSwitch = new DigitalInput(13);
     @Override
     public RobotConstants getConstants() {
         return m_constants;

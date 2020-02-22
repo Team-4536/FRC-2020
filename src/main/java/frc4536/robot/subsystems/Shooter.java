@@ -73,21 +73,22 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
-        if (m_shooterTop instanceof IPIDMotor && m_shooterBottom instanceof IPIDMotor) { //I wish Java had elvis operators....
-            return new RunCommand(() -> {
-                ((IPIDMotor) m_shooterTop).setSetpoint(topRPS.getAsDouble()); //If this motor is smart we pass the RPM values directly.
-                ((IPIDMotor) m_shooterBottom).setSetpoint(bottomRPS.getAsDouble());
-            }, this);
-        } else return new RunCommand(() -> {
-            m_shooterTop.setVoltage(
-                    m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
-                            + k_top_feedForwards.calculate(topRPS.getAsDouble())
-            );
-            m_shooterBottom.setVoltage(
-                    m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
-                            + k_bottom_feedForwards.calculate(topRPS.getAsDouble())
-            );
-        }, this);
+        return new RunCommand(() -> setSetpoints(topRPS, bottomRPS), this);
+    }
+
+    public Command spinUp(){
+        return this.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM);
+    }
+
+    public void setSetpoints(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
+        m_shooterTop.setVoltage(
+                m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
+                        + k_top_feedForwards.calculate(topRPS.getAsDouble())
+        );
+        m_shooterBottom.setVoltage(
+                m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
+                        + k_bottom_feedForwards.calculate(topRPS.getAsDouble())
+        );
     }
 
     
