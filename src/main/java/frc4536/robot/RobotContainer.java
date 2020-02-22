@@ -210,7 +210,7 @@ public class RobotContainer {
                 new RunCommand(m_intake::retractIntake, m_intake).withTimeout(1));
                 
 
-        m_chooser.    
+        m_chooser.addObject("Physical Diagnostic", m_physicalDiagnostic);    
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
     }
 
