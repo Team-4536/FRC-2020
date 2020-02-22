@@ -8,7 +8,7 @@ public class Constants {
 
     SHOOTER_P_BOTTOM = 0.92812 / 12,
             SHOOTER_BOTTOM_KS = 0.454,
-            SHOOTER_BOTTOM_KV = 0.108,
+            SHOOTER_BOTTOM_KV = 0.124,
             SHOOTER_BOTTOM_KA = 0.197,
 
     SHOOTER_RPS_TOP = 50,
