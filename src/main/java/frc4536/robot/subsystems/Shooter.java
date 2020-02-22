@@ -51,6 +51,15 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom.setVoltage(power);
     }
 
+    public void stop(){
+        m_topPIDController.reset();
+        m_bottomPIDController.reset();
+        m_topPIDController.setSetpoint(0);
+        m_bottomPIDController.setSetpoint(0);
+        m_shooterTop.set(0);
+        m_shooterBottom.set(0);
+    }
+
     public double getTopRate() {
         return m_shooterTop.getSpeed();
     }
@@ -79,6 +88,10 @@ public class Shooter extends SubsystemBase {
                             + k_bottom_feedForwards.calculate(topRPS.getAsDouble())
             );
         }, this);
+    }
+
+    public Command spinUp(){
+        return this.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM);
     }
 
     

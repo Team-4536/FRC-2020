@@ -11,13 +11,13 @@ public class Constants {
             SHOOTER_BOTTOM_KV = 0.108,
             SHOOTER_BOTTOM_KA = 0.197,
 
-    SHOOTER_RPS_TOP = 70,
-            SHOOTER_RPS_BOTTOM = 70,
+    SHOOTER_RPS_TOP = 50,
+            SHOOTER_RPS_BOTTOM = 60,
             VISION_KP = 0.02,
             VISION_KI = 0.013333333333333334,
             VISION_KD = 0,
-            INTAKE_SPINSPEED = -1,
-            CONVEYOR_INTAKE_SPEED = 1.0,
+            INTAKE_SPINSPEED = -0.6,
+            CONVEYOR_INTAKE_SPEED = 0.65,
             CONVEYOR_SHOOT_SPEED = 0.5,
             SHOOT_TIME = 4, //seconds
             TURN_TOLERANCE_DEG = 5,
