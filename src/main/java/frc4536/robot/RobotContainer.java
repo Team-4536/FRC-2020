@@ -129,7 +129,7 @@ public class RobotContainer {
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {  //shooter
             if (m_driveController.getTriggerAxis(Hand.kRight) > 0.5) { //change to 0.5
-                m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)).schedule();
+                m_shooter.setSetpoints(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
             } else {
                 m_shooter.setTopPower(0);
                 m_shooter.setBottomPower(0);
