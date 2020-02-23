@@ -93,6 +93,8 @@ public class RobotContainer {
                 .whileHeld(new VisionToTargetCommand(m_driveTrain));    //vision
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));   //Intake
+        new JoystickButton(m_driveController, Button.kA.value)          //Cycle command
+                .whileHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)          //Spin up conveyor
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
