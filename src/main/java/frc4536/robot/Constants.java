@@ -13,7 +13,10 @@ public class Constants {
 
     SHOOTER_RPS_TOP = 40,
             SHOOTER_RPS_BOTTOM = 80,
-            VISION_KP = 0.007,
+            SHOOTER_TOLERANCE_BOTTOM = 2,
+            SHOOTER_TOLERANCE_TOP = 2,
+
+  VISION_KP = 0.007,
             VISION_KI = 0.007,
             VISION_KD = 0,
             INTAKE_SPINSPEED = -0.8,
