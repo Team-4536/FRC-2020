@@ -158,16 +158,7 @@ public class RobotContainer {
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(false));
         Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(shootPosition, new ArrayList<Translation2d>(), trenchEndPosition, m_driveTrain.getConfig().setReversed(false));
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(trenchEndPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(true));
-        final Command m_trenchAuto = new SequentialCommandGroup(
-                m_driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(m_intake, m_conveyor)),
-                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor, 0.0).withTimeout(3),
-                m_driveTrain.scurveTo(shootToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)),
-                m_driveTrain.scurveTo(endToShoot),
-                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor, 0.0).withTimeout(3)
-        );
-
+        final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake);
         final Command m_visionTest = new SequentialCommandGroup(
                 m_driveTrain.scurveTo(startToShoot),
                 new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
