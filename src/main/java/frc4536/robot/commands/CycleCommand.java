@@ -27,5 +27,5 @@ public class CycleCommand extends SequentialCommandGroup {
       new ShootCommand(shooter, conveyor, 0.0).withTimeout(3),
       driveTrain.scurveTo(toLoad)
       );
-  } // TODO: race with any controller input to cance
+  }
 }
