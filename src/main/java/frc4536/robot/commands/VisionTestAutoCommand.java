@@ -1,18 +1,12 @@
 package frc4536.robot.commands;
 
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc4536.robot.Constants;
 import frc4536.robot.subsystems.Conveyor;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.Intake;
 import frc4536.robot.subsystems.Shooter;
-
-import java.util.ArrayList;
 
 public class VisionTestAutoCommand extends SequentialCommandGroup {
 
