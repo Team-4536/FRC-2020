@@ -15,16 +15,7 @@ import frc4536.robot.subsystems.Shooter;
 import java.util.ArrayList;
 
 public class TrenchAutoCommand extends SequentialCommandGroup {
-  public TrenchAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Intake intake) {
-
-    Pose2d startPosition = new Pose2d(3.1, -0.75, new Rotation2d(0));
-    Pose2d shootPosition = new Pose2d(5.0, -0.75, new Rotation2d(4.8, 0.8)); //hypothetically, use angle
-    Pose2d trenchEndPosition = new Pose2d(8, -1.0, new Rotation2d(1.4, -0.7));
-
-    Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
-    Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(shootPosition, new ArrayList<Translation2d>(), trenchEndPosition, driveTrain.getConfig().setReversed(false));
-    Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(trenchEndPosition, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(true));
-
+  public TrenchAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Intake intake, Trajectory startToShoot, Trajectory shootToEnd, Trajectory endToShoot) {
     addRequirements(shooter, conveyor, driveTrain, intake);
     addCommands(
             driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(intake, conveyor)),
