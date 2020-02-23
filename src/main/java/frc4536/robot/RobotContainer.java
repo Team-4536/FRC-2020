@@ -152,7 +152,7 @@ public class RobotContainer {
     public void generateAutoCommands() {
 
         Pose2d startPosition = new Pose2d(3.1, -0.75, new Rotation2d(0));
-        Pose2d shootPosition = new Pose2d(5.0, -0.75, new Rotation2d(4.8, 0.8)); //hypothetically, use angle
+        Pose2d shootPosition = new Pose2d(5.0, -0.75, new Rotation2d(4.8, 0.8));
         Pose2d trenchEndPosition = new Pose2d(8, -1.0, new Rotation2d(1.4, -0.7));
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(false));
@@ -160,11 +160,14 @@ public class RobotContainer {
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(trenchEndPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(true));
 
         final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake);
-        final Command m_visionTest = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake);
+        final Command m_dynamicTrenchAuto = new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, shootToEnd, endToShoot);
+        final Command m_visionTestAuto = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake);
+
 
         m_chooser.addOption("Physical Diagnostic", new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake));
-        m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
-        m_chooser.addOption("Vision Test", m_visionTest);
+        m_chooser.setDefaultOption("Trench ", m_trenchAuto);
+        m_chooser.addOption("Dynamic Trench", m_dynamicTrenchAuto);
+        m_chooser.addOption("Vision Test", m_visionTestAuto);
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
 
