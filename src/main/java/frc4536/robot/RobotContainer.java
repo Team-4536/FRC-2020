@@ -47,6 +47,8 @@ public class RobotContainer {
     private final NetworkTableEntry m_xInitial, m_yInitial, top, bot;
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+    public final Pose2d loadingStationPose = new Pose2d(10.0, -3.00, new Rotation2d(1.0, 0)); // TODO: Update this made up point, needs to be square to wall
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -95,6 +97,8 @@ public class RobotContainer {
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
                 .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+        new JoystickButton(m_driveController, Button.kX.value)          //Example pose reset
+                .whileHeld(() -> m_driveTrain.resetPose(loadingStationPose));
 
         //Operator Controller
         new JoystickButton(m_operatorJoystick, 2)   //Spinup shooter
