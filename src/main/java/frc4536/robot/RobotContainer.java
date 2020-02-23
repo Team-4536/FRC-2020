@@ -158,12 +158,10 @@ public class RobotContainer {
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(false));
         Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(shootPosition, new ArrayList<Translation2d>(), trenchEndPosition, m_driveTrain.getConfig().setReversed(false));
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(trenchEndPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(true));
+
         final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake);
-        final Command m_visionTest = new SequentialCommandGroup(
-                m_driveTrain.scurveTo(startToShoot),
-                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor)
-        );      
+        final Command m_visionTest = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake);
+
         m_chooser.addOption("Physical Diagnostic", new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake));
         m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
         m_chooser.addOption("Vision Test", m_visionTest);
