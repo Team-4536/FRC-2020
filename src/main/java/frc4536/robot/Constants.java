@@ -8,13 +8,13 @@ public class Constants {
 
     SHOOTER_P_BOTTOM = 0.92812 / 12,
             SHOOTER_BOTTOM_KS = 0.454,
-            SHOOTER_BOTTOM_KV = 0.108,
+            SHOOTER_BOTTOM_KV = 0.118,
             SHOOTER_BOTTOM_KA = 0.197,
 
     SHOOTER_RPS_TOP = 40,
             SHOOTER_RPS_BOTTOM = 80,
-            SHOOTER_TOLERANCE_BOTTOM = 2,
-            SHOOTER_TOLERANCE_TOP = 2,
+            SHOOTER_TOLERANCE_BOTTOM = 4,
+            SHOOTER_TOLERANCE_TOP = 4,
 
   VISION_KP = 0.007,
             VISION_KI = 0.007,

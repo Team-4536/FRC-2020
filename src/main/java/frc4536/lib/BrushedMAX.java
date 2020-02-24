@@ -18,6 +18,8 @@ public class BrushedMAX implements IEncoderMotor {
         if(motorIDs.length > 1) for(int i = 1; i < motorIDs.length; i++){
             new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushed).follow(m_master);
         }
+        m_master.restoreFactoryDefaults();
+        m_master.setIdleMode(CANSparkMax.IdleMode.kCoast);
     }
 
     @Override
