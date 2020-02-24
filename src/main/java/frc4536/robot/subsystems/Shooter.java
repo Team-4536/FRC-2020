@@ -67,8 +67,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean ready() {
-        return (abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP) &&
-                (abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
+        return (Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP) &&
+                (Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
     }
 
     public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
