@@ -11,4 +11,11 @@ public class Utilities {
         }
         return (m_angle);
     }
+
+    public static double deadzone(double value, double limit) {
+        if(Math.abs(value)>limit) {
+            return value;
+        }
+        return 0;
+    }
 }
