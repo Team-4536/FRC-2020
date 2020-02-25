@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
+import frc4536.robot.Poses;
 import frc4536.robot.hardware.RobotConstants;
 
 public class DriveTrain extends SubsystemBase {
@@ -154,6 +157,11 @@ public class DriveTrain extends SubsystemBase {
 
     public double getVisionAngle() {
         return visionError.getDouble(0.0);
+    }
+
+    public double angleToTarget() {
+        Translation2d diff = getPose().minus(Poses.TARGET).getTranslation();
+        return Math.atan(diff.getY()/diff.getX());
     }
 }
 
