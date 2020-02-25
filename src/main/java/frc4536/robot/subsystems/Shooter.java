@@ -32,15 +32,13 @@ public class Shooter extends SubsystemBase {
     public Shooter(IEncoderMotor top, IEncoderMotor bottom) {
         m_shooterTop = top;
         m_shooterBottom = bottom;
-        m_topPIDController.setTolerance(1.6666);
-        m_bottomPIDController.setTolerance(1.6666);
-        //m_shooterBottom.setInverted(true);
-        //m_shooterTop.setInverted(true);
+        m_topPIDController.setTolerance(Constants.SHOOTER_TOLERANCE_TOP);
+        m_bottomPIDController.setTolerance(Constants.SHOOTER_TOLERANCE_BOTTOM);
         ShuffleboardTab shooter_data = Shuffleboard.getTab("Shooter Data");
         shooter_data.addNumber("Top RPS", () -> m_shooterTop.getSpeed());
         shooter_data.addNumber("Bottom RPS", () -> m_shooterBottom.getSpeed());
-        shooter_data.addBoolean("Top Target", () -> m_topPIDController.atSetpoint());
-        shooter_data.addBoolean("Bottom Target", () -> m_bottomPIDController.atSetpoint());
+        shooter_data.addBoolean("Top Target", () -> Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP);
+        shooter_data.addBoolean("Bottom Target", () -> Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
     }
 
     public void setTopPower(double power) {
@@ -69,7 +67,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean ready() {
-        return m_bottomPIDController.atSetpoint() && m_topPIDController.atSetpoint();
+        return (Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP) &&
+                (Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
     }
 
     public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {

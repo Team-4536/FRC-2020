@@ -47,6 +47,7 @@ public class RobotContainer {
     private final NetworkTableEntry m_xInitial, m_yInitial, top, bot;
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -91,10 +92,14 @@ public class RobotContainer {
                 .whileHeld(new VisionToTargetCommand(m_driveTrain));    //vision
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));   //Intake
+        new JoystickButton(m_driveController, Button.kA.value)          //Cycle command
+                .whileHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)          //Spin up conveyor
                 .whileHeld(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
                 .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+        new JoystickButton(m_driveController, Button.kX.value)          //Example pose reset
+                .whileHeld(() -> m_driveTrain.resetPose(Poses.HARD_RESET));
 
         //Operator Controller
         new JoystickButton(m_operatorJoystick, 2)   //Spinup shooter
@@ -151,31 +156,41 @@ public class RobotContainer {
 
     public void generateAutoCommands() {
 
-        Pose2d startPosition = new Pose2d(3.1, -0.75, new Rotation2d(0));
-        Pose2d shootPosition = new Pose2d(5.0, -0.75, new Rotation2d(4.8, 0.8)); //hypothetically, use angle
-        Pose2d trenchEndPosition = new Pose2d(8, -1.0, new Rotation2d(1.4, -0.7));
+        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
+                new ArrayList<Translation2d>(),
+                Poses.AUTO_TRENCH_SHOOT,
+                m_driveTrain.getConfig().setReversed(false));
+        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.AUTO_TRENCH_SHOOT,
+                new ArrayList<Translation2d>(),
+                Poses.TRENCH_END,
+                m_driveTrain.getConfig().setReversed(false));
+        Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
+                new ArrayList<Translation2d>(),
+                Poses.AUTO_TRENCH_SHOOT,
+                m_driveTrain.getConfig().setReversed(true));
+        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
+                new ArrayList<Translation2d>(),
+                Poses.RENDEZ_SHOOT,
+                m_driveTrain.getConfig().setReversed(false));
+        Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
+                new ArrayList<Translation2d>(),
+                Poses.RENDEZ_SWEEP,
+                m_driveTrain.getConfig().setReversed(false));
+        Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
+                new ArrayList<Translation2d>(),
+                Poses.RENDEZ_SHOOT,
+                m_driveTrain.getConfig().setReversed(true));
 
-        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(false));
-        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(shootPosition, new ArrayList<Translation2d>(), trenchEndPosition, m_driveTrain.getConfig().setReversed(false));
-        Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(trenchEndPosition, new ArrayList<Translation2d>(), shootPosition, m_driveTrain.getConfig().setReversed(true));
-        final Command m_trenchAuto = new SequentialCommandGroup(
-                m_driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(m_intake, m_conveyor)),
-                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor, 0.0).withTimeout(3),
-                m_driveTrain.scurveTo(shootToEnd).raceWith(new IntakeCommands(m_intake, m_conveyor)),
-                m_driveTrain.scurveTo(endToShoot),
-                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor, 0.0).withTimeout(3)
-        );
+        final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot, shootToEnd, endToShoot);
+        final Command m_dynamicTrenchAuto = new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, shootToEnd, endToShoot);
+        final Command m_visionTestAuto = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot);
+        final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
 
-        final Command m_visionTest = new SequentialCommandGroup(
-                m_driveTrain.scurveTo(startToShoot),
-                new VisionToTargetCommand(m_driveTrain).raceWith(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
-                new ShootCommand(m_shooter, m_conveyor)
-        );      
+
         m_chooser.addOption("Physical Diagnostic", new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake));
-        m_chooser.setDefaultOption("Trench Auto", m_trenchAuto);
-        m_chooser.addOption("Vision Test", m_visionTest);
+        m_chooser.setDefaultOption("Trench ", m_trenchAuto);
+        m_chooser.addOption("Dynamic Trench", m_dynamicTrenchAuto);
+        m_chooser.addOption("Vision Test", m_visionTestAuto);
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
 

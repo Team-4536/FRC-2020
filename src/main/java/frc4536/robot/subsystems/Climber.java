@@ -2,33 +2,27 @@ package frc4536.robot.subsystems;
 
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Climber extends SubsystemBase {
     private SpeedController m_armMotor, m_winchMotor;
     private DigitalInput m_bottomLimitSwitch;
-    private Counter m_bottomLimitSwitchCounter;
     public Climber(SpeedController armMotor, SpeedController winchMotor, DigitalInput bottomLimitSwitch) {
         m_winchMotor = winchMotor;
         m_armMotor = armMotor;
         m_bottomLimitSwitch = bottomLimitSwitch;
-        m_bottomLimitSwitchCounter = new Counter(m_bottomLimitSwitch);
         m_armMotor.setInverted(true);
     }
     public boolean bottomLimitSwitchIsSet() {
-      return m_bottomLimitSwitchCounter.get() > 0;
+      return !m_bottomLimitSwitch.get();
   }
 
-    public void initializeCounters() {
-      m_bottomLimitSwitchCounter.reset();
-  }
     public void setArm(double speed) {
         
         if (bottomLimitSwitchIsSet()){
          if(speed>0){
            m_armMotor.set(speed);
-          m_bottomLimitSwitchCounter.reset();}
+        }
            else {m_armMotor.set(0);
           }
 

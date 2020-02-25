@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.util.Units;
 import frc4536.lib.*;
 
 public class Honeycomb implements RobotFrame {
-      // TODO: tune these once the mechanisms are put on the robot
     public static final double ksVolts = 0.235;
     public static final double kvVoltSecondsPerMeter = 0.277;
     public static final double kaVoltSecondsSquaredPerMeter = 0.3;
