@@ -99,7 +99,7 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
                 .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
         new JoystickButton(m_driveController, Button.kX.value)          //Example pose reset
-                .whileHeld(() -> m_driveTrain.resetPose(loadingStationPosition));
+                .whileHeld(() -> m_driveTrain.resetPose(Poses.HARD_RESET));
 
         //Operator Controller
         new JoystickButton(m_operatorJoystick, 2)   //Spinup shooter
@@ -156,29 +156,29 @@ public class RobotContainer {
 
     public void generateAutoCommands() {
 
-        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition,
+        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
                 new ArrayList<Translation2d>(),
-                shootPosition,
+                Poses.TRENCH_SHOOT,
                 m_driveTrain.getConfig().setReversed(false));
-        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(shootPosition,
+        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_SHOOT,
                 new ArrayList<Translation2d>(),
-                trenchEndPosition,
+                Poses.TRENCH_END,
                 m_driveTrain.getConfig().setReversed(false));
-        Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(trenchEndPosition,
+        Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
                 new ArrayList<Translation2d>(),
-                shootPosition,
+                Poses.TRENCH_SHOOT,
                 m_driveTrain.getConfig().setReversed(true));
-        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(startPosition,
+        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
                 new ArrayList<Translation2d>(),
-                rendezShoot,
+                Poses.RENDEZ_SHOOT,
                 m_driveTrain.getConfig().setReversed(false));
-        Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(rendezShoot,
+        Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
                 new ArrayList<Translation2d>(),
-                rendezSweep,
+                Poses.RENDEZ_SWEEP,
                 m_driveTrain.getConfig().setReversed(false));
-        Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(rendezSweep,
+        Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
                 new ArrayList<Translation2d>(),
-                rendezShoot,
+                Poses.RENDEZ_SHOOT,
                 m_driveTrain.getConfig().setReversed(true));
 
         final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot, shootToEnd, endToShoot);
