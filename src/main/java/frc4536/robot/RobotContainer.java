@@ -95,15 +95,15 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));   //Intake
         new JoystickButton(m_driveController, Button.kA.value)          //Cycle command
-                .whileHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
-        new JoystickButton(m_driveController, Button.kB.value)          //Spin up conveyor
+                .whenHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
+        new JoystickButton(m_driveController, Button.kB.value)          //Initiate Shooting
                 .whileHeld(() -> {m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
                                 m_conveyor.lowerTop();
                 }, m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
                 .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
         new JoystickButton(m_driveController, Button.kX.value)          //reverse move conveyor 
-                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-0.5), m_conveyor));
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-Constants.CONVEYOR_SHOOT_SPEED), m_conveyor));
 
         //Operator Controller
         new JoystickButton(m_operatorJoystick, 12) //Intake extend
