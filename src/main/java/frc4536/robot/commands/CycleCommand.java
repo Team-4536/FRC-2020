@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class CycleCommand extends SequentialCommandGroup {
   public CycleCommand(DriveTrain driveTrain, Shooter shooter, Conveyor conveyor) {
-    Pose2d shootPosition = new Pose2d(6.0, -0.75, new Rotation2d(4.8, 0.8));
-    Pose2d loadingStationPosition = new Pose2d(10.0, -0.75, new Rotation2d(4.8, -0.8)); // I have *no* idea where this is, check in weaver
+    Pose2d shootPosition = new Pose2d(6.5, -0.75, new Rotation2d(6.9, 1.7));
+    Pose2d loadingStationPosition = new Pose2d(15.5, -2, new Rotation2d(1, 0));
     Trajectory toShoot = TrajectoryGenerator.generateTrajectory(driveTrain.getPose(), new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(true));
     Trajectory toLoad = TrajectoryGenerator.generateTrajectory(shootPosition, new ArrayList<Translation2d>(), loadingStationPosition, driveTrain.getConfig().setReversed(false));
     addRequirements(driveTrain, shooter, conveyor);
