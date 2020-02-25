@@ -158,15 +158,15 @@ public class RobotContainer {
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
                 new ArrayList<Translation2d>(),
-                Poses.TRENCH_SHOOT,
+                Poses.AUTO_TRENCH_SHOOT,
                 m_driveTrain.getConfig().setReversed(false));
-        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_SHOOT,
+        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.AUTO_TRENCH_SHOOT,
                 new ArrayList<Translation2d>(),
                 Poses.TRENCH_END,
                 m_driveTrain.getConfig().setReversed(false));
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
                 new ArrayList<Translation2d>(),
-                Poses.TRENCH_SHOOT,
+                Poses.AUTO_TRENCH_SHOOT,
                 m_driveTrain.getConfig().setReversed(true));
         Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
                 new ArrayList<Translation2d>(),
@@ -184,7 +184,7 @@ public class RobotContainer {
         final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot, shootToEnd, endToShoot);
         final Command m_dynamicTrenchAuto = new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, shootToEnd, endToShoot);
         final Command m_visionTestAuto = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot);
-        final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot)
+        final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
 
 
         m_chooser.addOption("Physical Diagnostic", new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake));
