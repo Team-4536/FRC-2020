@@ -47,7 +47,6 @@ public class RobotContainer {
     private final NetworkTableEntry m_xInitial, m_yInitial, top, bot;
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-    public final Pose2d loadingStationPosition = new Pose2d(15.5, -2, new Rotation2d(1, 0));
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -156,12 +155,6 @@ public class RobotContainer {
     }
 
     public void generateAutoCommands() {
-
-        Pose2d startPosition = new Pose2d(3.1, -0.75, new Rotation2d(0));
-        Pose2d shootPosition = new Pose2d(5.0, -0.75, new Rotation2d(4.8, 0.8));
-        Pose2d trenchEndPosition = new Pose2d(8, -1.0, new Rotation2d(1.4, -0.7));
-        Pose2d rendezShoot = new Pose2d(6, -2.5, new Rotation2d(1,0));
-        Pose2d rendezSweep = new Pose2d(6, -2.7, new Rotation2d(0.3, -0.9));
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(startPosition,
                 new ArrayList<Translation2d>(),
