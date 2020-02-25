@@ -106,19 +106,25 @@ public class RobotContainer {
                 .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-0.5), m_conveyor));
 
         //Operator Controller
-        new JoystickButton(m_operatorJoystick, 2)   //Spinup shooter
-                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
-        new JoystickButton(m_operatorJoystick, 7)   //Conveyor manual control
+        new JoystickButton(m_operatorJoystick, 12) //Intake extend
+                .whileHeld(new RunCommand(m_intake::extendIntake, m_intake));
+        new JoystickButton(m_operatorJoystick, 11) //Conveyor lower
+                .whileHeld(new RunCommand(m_conveyor::lowerTop, m_conveyor));
+        new JoystickButton(m_operatorJoystick, 9) //Winch manual control
+                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 10) //Climber manual control
+                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 7) //Conveyor manual control
                 .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
         new JoystickButton(m_operatorJoystick, 8)   //Intake manual control
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
-        new JoystickButton(m_operatorJoystick, 11)  //Conveyor lower
-                .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
-        new JoystickButton(m_operatorJoystick, 12)  //Intake extend
-                .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
-              //new JoystickButton(m_driveController, Button.kX.value)          //Example pose reset
-        //        .whileHeld(() -> m_driveTrain.resetPose(Poses.HARD_RESET));
-                
+        new JoystickButton(m_operatorJoystick, 2) //Spinup shooter
+                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+        new JoystickButton(m_operatorJoystick, 1)
+                .whileHeld(new RunCommand(() -> {
+                        m_conveyor.lowerTop();
+                        m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
+                }, m_intake, m_conveyor));
     }
 
     private void configureDefaultCommands() {
