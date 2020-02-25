@@ -67,7 +67,7 @@ public class VirtualEncoderMotor extends SubsystemBase implements IEncoderMotor 
 
     @Override
     public void pidWrite(double output) {
-        m_motor.pidWrite(output);
+        set(output);
     }
 
     @Override

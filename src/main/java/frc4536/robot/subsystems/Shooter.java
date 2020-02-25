@@ -32,15 +32,13 @@ public class Shooter extends SubsystemBase {
     public Shooter(IEncoderMotor top, IEncoderMotor bottom) {
         m_shooterTop = top;
         m_shooterBottom = bottom;
-        m_topPIDController.setTolerance(1.6666);
-        m_bottomPIDController.setTolerance(1.6666);
-        //m_shooterBottom.setInverted(true);
-        //m_shooterTop.setInverted(true);
+        m_topPIDController.setTolerance(Constants.SHOOTER_TOLERANCE_TOP);
+        m_bottomPIDController.setTolerance(Constants.SHOOTER_TOLERANCE_BOTTOM);
         ShuffleboardTab shooter_data = Shuffleboard.getTab("Shooter Data");
         shooter_data.addNumber("Top RPS", () -> m_shooterTop.getSpeed());
         shooter_data.addNumber("Bottom RPS", () -> m_shooterBottom.getSpeed());
-        shooter_data.addBoolean("Top Target", () -> m_topPIDController.atSetpoint());
-        shooter_data.addBoolean("Bottom Target", () -> m_bottomPIDController.atSetpoint());
+        shooter_data.addBoolean("Top Target", () -> Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP);
+        shooter_data.addBoolean("Bottom Target", () -> Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
     }
 
     public void setTopPower(double power) {
@@ -49,6 +47,15 @@ public class Shooter extends SubsystemBase {
 
     public void setBottomPower(double power) {
         m_shooterBottom.setVoltage(power);
+    }
+
+    public void stop(){
+        m_topPIDController.reset();
+        m_bottomPIDController.reset();
+        m_topPIDController.setSetpoint(0);
+        m_bottomPIDController.setSetpoint(0);
+        m_shooterTop.set(0);
+        m_shooterBottom.set(0);
     }
 
     public double getTopRate() {
@@ -60,29 +67,27 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean ready() {
-        return m_bottomPIDController.atSetpoint() && m_topPIDController.atSetpoint();
+        return (Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP) &&
+                (Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
     }
 
     public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
-        if (m_shooterTop instanceof IPIDMotor && m_shooterBottom instanceof IPIDMotor) { //I wish Java had elvis operators....
-            return new RunCommand(() -> {
-                ((IPIDMotor) m_shooterTop).setSetpoint(topRPS.getAsDouble()); //If this motor is smart we pass the RPM values directly.
-                ((IPIDMotor) m_shooterBottom).setSetpoint(bottomRPS.getAsDouble());
-            }, this);
-        } else return new RunCommand(() -> {
-            m_shooterTop.setVoltage(
-                    m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
-                            + k_top_feedForwards.calculate(topRPS.getAsDouble())
-            );
-            m_shooterBottom.setVoltage(
-                    m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
-                            + k_bottom_feedForwards.calculate(topRPS.getAsDouble())
-            );
-        }, this);
+        return new RunCommand(() -> setSetpoints(topRPS, bottomRPS), this);
     }
 
     public Command spinUp(){
         return this.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM);
+    }
+
+    public void setSetpoints(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
+        m_shooterTop.setVoltage(
+                m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
+                        + k_top_feedForwards.calculate(topRPS.getAsDouble())
+        );
+        m_shooterBottom.setVoltage(
+                m_bottomPIDController.calculate(getBottomRate(), bottomRPS.getAsDouble())
+                        + k_bottom_feedForwards.calculate(bottomRPS.getAsDouble())
+        );
     }
 
     
