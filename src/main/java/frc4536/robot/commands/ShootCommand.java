@@ -30,11 +30,11 @@ public class ShootCommand extends ParallelCommandGroup {
     this(shooter, conveyor, topRPS, bottomRPS, -1);
   }
 
-  public ShootCommand(Shooter shooter, Conveyor conveyor) {
-      this(shooter, conveyor, () -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM, -1);
-    }
-
     public ShootCommand(Shooter shooter, Conveyor conveyor, double shootTime) {
       this(shooter, conveyor, () -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM, shootTime);
+    }
+
+    public ShootCommand(Shooter shooter, Conveyor conveyor) {
+      this(shooter, conveyor, -1);
     }
 }

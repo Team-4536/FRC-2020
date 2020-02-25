@@ -95,41 +95,47 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kBumperRight.value)
                 .whileHeld(new IntakeCommands(m_intake, m_conveyor));   //Intake
         new JoystickButton(m_driveController, Button.kA.value)          //Cycle command
-                .whileHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
-        new JoystickButton(m_driveController, Button.kB.value)          //Spin up conveyor
+                .whenHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
+        new JoystickButton(m_driveController, Button.kB.value)          //Initiate Shooting
                 .whileHeld(() -> {m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
                                 m_conveyor.lowerTop();
                 }, m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
                 .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
         new JoystickButton(m_driveController, Button.kX.value)          //reverse move conveyor 
-                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-0.5), m_conveyor));
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-Constants.CONVEYOR_SHOOT_SPEED), m_conveyor));
 
         //Operator Controller
-        new JoystickButton(m_operatorJoystick, 2)   //Spinup shooter
-                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
-        new JoystickButton(m_operatorJoystick, 7)   //Conveyor manual control
+        new JoystickButton(m_operatorJoystick, 12) //Intake extend
+                .whileHeld(new RunCommand(m_intake::extendIntake, m_intake));
+        new JoystickButton(m_operatorJoystick, 11) //Conveyor lower
+                .whileHeld(new RunCommand(m_conveyor::lowerTop, m_conveyor));
+        new JoystickButton(m_operatorJoystick, 9) //Winch manual control
+                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 10) //Climber manual control
+                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
+        new JoystickButton(m_operatorJoystick, 7) //Conveyor manual control
                 .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
         new JoystickButton(m_operatorJoystick, 8)   //Intake manual control
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
-        new JoystickButton(m_operatorJoystick, 11)  //Conveyor lower
-                .whileHeld(new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor));
-        new JoystickButton(m_operatorJoystick, 12)  //Intake extend
-                .whileHeld(new RunCommand(() -> m_intake.extendIntake(), m_intake));
-              //new JoystickButton(m_driveController, Button.kX.value)          //Example pose reset
-        //        .whileHeld(() -> m_driveTrain.resetPose(Poses.HARD_RESET));
-                
+        new JoystickButton(m_operatorJoystick, 2) //Spinup shooter
+                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+        new JoystickButton(m_operatorJoystick, 1)
+                .whileHeld(new RunCommand(() -> {
+                        m_conveyor.lowerTop();
+                        m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
+                }, m_intake, m_conveyor));
     }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive( //driver train
-                m_operatorJoystick.getRawButton(10) ? 0.2 * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE):deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
-                m_operatorJoystick.getRawButton(10) ? 0.2 * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE):deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE)),
+                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE):deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
+                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE):deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE)),
                 m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {  //climber
-            m_climber.setWinch(m_operatorJoystick.getRawButton(9) ? -m_operatorJoystick.getY() : 0);
-            m_climber.setArm(m_operatorJoystick.getRawButton(10) ? -m_operatorJoystick.getY() : 0);
+            m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -m_operatorJoystick.getY() : 0);
+            m_climber.setArm(m_operatorJoystick.getRawButton(5) ? -m_operatorJoystick.getY() : 0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> { //conveyor
             m_conveyor.raiseTop();
@@ -179,19 +185,19 @@ public class RobotContainer {
                 new ArrayList<Translation2d>(),
                 Poses.RENDEZ_SHOOT,
                 m_driveTrain.getConfig().setReversed(false));
-        Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
-                new ArrayList<Translation2d>(),
-                Poses.RENDEZ_SWEEP,
-                m_driveTrain.getConfig().setReversed(false));
-        Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
-                new ArrayList<Translation2d>(),
-                Poses.RENDEZ_SHOOT,
-                m_driveTrain.getConfig().setReversed(true));
+        //Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
+        //        new ArrayList<Translation2d>(),
+         //       Poses.RENDEZ_SWEEP,
+          //      m_driveTrain.getConfig().setReversed(false));
+        //Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
+        //        new ArrayList<Translation2d>(),
+        //        Poses.RENDEZ_SHOOT,
+        //        m_driveTrain.getConfig().setReversed(true));
 
         final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot, shootToEnd, endToShoot);
         final Command m_dynamicTrenchAuto = new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, shootToEnd, endToShoot);
         final Command m_visionTestAuto = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot);
-        final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
+        //final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
 
 
         m_chooser.addOption("Physical Diagnostic", new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake));
