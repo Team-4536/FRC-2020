@@ -49,6 +49,7 @@ public class TestRobot implements RobotFrame {
     IEncoderMotor m_leftMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(0), new Spark(1)), m_leftEncoder, 2048);
     IEncoderMotor m_rightMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(2), new Spark(3)), m_rightEncoder, 2048);
     DigitalInput m_bottomLimitSwitch = new DigitalInput(13);
+    DigitalInput m_beamBreak = new DigitalInput(12);
     @Override
     public RobotConstants getConstants() {
         return m_constants;
@@ -111,5 +112,10 @@ public class TestRobot implements RobotFrame {
     @Override
     public DigitalInput getBottomLimitSwitch(){
         return m_bottomLimitSwitch;
+    }
+
+    @Override
+    public DigitalInput getConveyorBeam() {
+        return m_beamBreak;
     }
 }

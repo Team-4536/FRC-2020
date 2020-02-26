@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc4536.lib.*;
@@ -60,6 +59,7 @@ public class VirtualRobot extends SubsystemBase implements RobotFrame {
     IEncoderMotor m_topFlywheel = new VirtualEncoderMotor(new Talon(3),90);
     IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor(new Talon(4),100);
     DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
+    DigitalInput m_beamBreak = new DigitalInput(1);
 
 
     AHRS m_navx = new AHRS(){
@@ -153,4 +153,9 @@ public class VirtualRobot extends SubsystemBase implements RobotFrame {
     @Override
     public DigitalInput getBottomLimitSwitch(){
         return m_bottomLimitSwitch;}
+
+    @Override
+    public DigitalInput getConveyorBeam() {
+        return m_beamBreak;
+    }
 }

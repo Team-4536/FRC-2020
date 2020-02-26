@@ -39,7 +39,7 @@ public class RobotContainer {
             m_robotHardware.getDrivetrainNavX(),
             m_robotHardware.getConstants());
     public final Shooter m_shooter = new Shooter(m_robotHardware.getTopShooterFlywheelMotor(), m_robotHardware.getBottomShooterFlywheelMotor());
-    public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker());
+    public final Conveyor m_conveyor = new Conveyor(m_robotHardware.getBeltMotor(), m_robotHardware.getConveyorBlocker(), m_robotHardware.getConveyorBeam());
     public final Intake m_intake = new Intake(m_robotHardware.getIntakeMotor(), m_robotHardware.getIntakeExtender());
     public final Climber m_climber = new Climber(m_robotHardware.getClimberArmMotor(), m_robotHardware.getLiftMotor(), m_robotHardware.getBottomLimitSwitch());
 
@@ -97,13 +97,13 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kA.value)          //Cycle command
                 .whenHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)          //Initiate Shooting
-                .whileHeld(() -> {m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
+                .whileHeld(() -> {m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
                                 m_conveyor.lowerTop();
                 }, m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
                 .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
         new JoystickButton(m_driveController, Button.kX.value)          //reverse move conveyor 
-                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-Constants.CONVEYOR_INTAKE_SPEED), m_conveyor));
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-Constants.CONVEYOR_INTAKE_SPEED, true), m_conveyor));
 
         //Operator Controller
         new JoystickButton(m_operatorJoystick, 12) //Intake extend
@@ -111,7 +111,7 @@ public class RobotContainer {
         new JoystickButton(m_operatorJoystick, 11) //Conveyor lower
                 .whileHeld(new RunCommand(m_conveyor::lowerTop, m_conveyor));
         new JoystickButton(m_operatorJoystick, 7) //Conveyor manual control
-                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
+                .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY(), true), m_conveyor));
         new JoystickButton(m_operatorJoystick, 8)   //Intake manual control
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
         new JoystickButton(m_operatorJoystick, 2) //Spinup shooter
@@ -119,7 +119,7 @@ public class RobotContainer {
         new JoystickButton(m_operatorJoystick, 1)
                 .whileHeld(new RunCommand(() -> {
                         m_conveyor.lowerTop();
-                        m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
+                        m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
                 }, m_intake, m_conveyor));
     }
 
@@ -135,7 +135,7 @@ public class RobotContainer {
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> { //conveyor
             m_conveyor.raiseTop();
-            m_conveyor.moveConveyor(0);
+            m_conveyor.moveConveyor(0, true);
         }, m_conveyor);
         CommandBase default_intake = new RunCommand(() -> {   //intake
             m_intake.intake(0);
