@@ -10,13 +10,10 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
@@ -41,17 +38,6 @@ public class DriveTrain extends SubsystemBase {
         rightMotor.setInverted(true);
         kDriveKinematics = driveConstants.kDriveKinematics;
         wheelCircumference = driveConstants.kWheelDiameterInches * Math.PI;
-
-        ShuffleboardTab drivetrain_data = Shuffleboard.getTab("Drivetrain Data");
-        drivetrain_data.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
-        drivetrain_data.addNumber("Right Distance", () -> m_rightMotor.getDistance() * wheelCircumference);
-        drivetrain_data.addNumber("Left Velocity", () -> m_leftMotor.getSpeed() * wheelCircumference);
-        drivetrain_data.addNumber("Right Velocity", () -> m_rightMotor.getSpeed() * wheelCircumference);
-        drivetrain_data.addString("Pose", () -> getPose().toString());
-        drivetrain_data.addString("Heading", () -> getHeading().toString());
-        drivetrain_data.add("Reset Encoders", new InstantCommand(this::resetEncoders));
-        drivetrain_data.add("Reset Pose", new InstantCommand(this::resetPose));
-        drivetrain_data.add("Reset Gyro", new InstantCommand(this::resetGyro));
 
         resetEncoders();
         m_odometry = new DifferentialDriveOdometry(getHeading());
