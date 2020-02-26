@@ -57,8 +57,7 @@ public class RobotContainer {
         configureButtonBindings();
         configureDefaultCommands();
 
-        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data"),
-                subsystems = Shuffleboard.getTab("Subsystems"),
+        ShuffleboardTab subsystems = Shuffleboard.getTab("Subsystems"),
                 auto = Shuffleboard.getTab("Autonomous");
 
         subsystems.add(m_climber);
