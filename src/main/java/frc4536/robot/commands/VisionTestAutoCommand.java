@@ -14,7 +14,7 @@ public class VisionTestAutoCommand extends SequentialCommandGroup {
     addRequirements(shooter, conveyor, driveTrain, intake);
     addCommands(
       driveTrain.scurveTo(startToShoot),
-      new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
+      new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp()),
       new ShootCommand(shooter, conveyor)
     );
   }

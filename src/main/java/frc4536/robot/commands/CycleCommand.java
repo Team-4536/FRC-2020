@@ -22,7 +22,7 @@ public class CycleCommand extends SequentialCommandGroup {
     addRequirements(driveTrain, shooter, conveyor);
     addCommands(
       driveTrain.scurveTo(toShoot),
-      new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM)),
+      new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp()),
       new ShootCommand(shooter, conveyor, 0.0).withTimeout(3),
       driveTrain.scurveTo(toLoad)
       );
