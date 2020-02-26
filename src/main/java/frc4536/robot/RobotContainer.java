@@ -110,10 +110,6 @@ public class RobotContainer {
                 .whileHeld(new RunCommand(m_intake::extendIntake, m_intake));
         new JoystickButton(m_operatorJoystick, 11) //Conveyor lower
                 .whileHeld(new RunCommand(m_conveyor::lowerTop, m_conveyor));
-        new JoystickButton(m_operatorJoystick, 9) //Winch manual control
-                .whileHeld(new RunCommand(() -> m_climber.setWinch(-m_operatorJoystick.getY()), m_climber));
-        new JoystickButton(m_operatorJoystick, 10) //Climber manual control
-                .whileHeld(new RunCommand(() -> m_climber.setArm(-m_operatorJoystick.getY()), m_climber));
         new JoystickButton(m_operatorJoystick, 7) //Conveyor manual control
                 .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-m_operatorJoystick.getY()), m_conveyor));
         new JoystickButton(m_operatorJoystick, 8)   //Intake manual control
@@ -130,7 +126,7 @@ public class RobotContainer {
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive( //driver train
-                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE):deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
+                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE):deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
                 m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE):deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE)),
                 m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {  //climber
