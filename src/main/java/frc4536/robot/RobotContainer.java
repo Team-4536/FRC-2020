@@ -3,11 +3,11 @@ package frc4536.robot;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -33,7 +33,7 @@ import static frc4536.lib.Utilities.deadzone;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here.
-    public final RobotFrame m_robotHardware = new Honeycomb();
+    public final RobotFrame m_robotHardware = new VirtualRobot();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
@@ -57,25 +57,13 @@ public class RobotContainer {
         configureButtonBindings();
         configureDefaultCommands();
 
-        ShuffleboardTab subsystems = Shuffleboard.getTab("Subsystems"),
-                auto = Shuffleboard.getTab("Autonomous");
+        ShuffleboardTab auto = Shuffleboard.getTab("Autonomous");
 
-        subsystems.add(m_climber);
-        subsystems.add(m_conveyor);
-        subsystems.add(m_driveTrain);
-        subsystems.add(m_intake);
-        subsystems.add(m_shooter);
-        subsystems.add(CommandScheduler.getInstance());
 
         m_xInitial = auto.add("Initial X", 3.3).getEntry();
         m_yInitial = auto.add("Initial Y", -1.0).getEntry();
         generateAutoCommands();
         auto.add(m_chooser);
-
-        subsystems.add("Conv L", new RunCommand(() -> m_conveyor.lowerTop(), m_conveyor).withTimeout(3));
-        subsystems.add("Conv R", new RunCommand(() -> m_conveyor.raiseTop(), m_conveyor).withTimeout(3));
-        subsystems.add("Int Retract", new RunCommand(() -> m_intake.retractIntake(), m_intake).withTimeout(3));
-        subsystems.add("Int Extemd", new RunCommand(() -> m_intake.extendIntake(), m_intake).withTimeout(3));
     }
 
     /**
