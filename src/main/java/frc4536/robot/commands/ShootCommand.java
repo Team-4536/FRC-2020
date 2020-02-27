@@ -21,7 +21,7 @@ public class ShootCommand extends ParallelCommandGroup {
         shooter.spinUp(topRPS, bottomRPS),
         condition.andThen(new ParallelCommandGroup(
           new RunCommand(conveyor::lowerTop),
-          new RunCommand(() -> conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED))
+          new RunCommand(() -> conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true))
         ))
       );
     }

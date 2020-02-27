@@ -21,5 +21,6 @@ public interface RobotFrame {
     DoubleSolenoid getConveyorBlocker();
     DoubleSolenoid getIntakeExtender();
     DigitalInput getBottomLimitSwitch();
+    DigitalInput getConveyorBeam();
 }
 
