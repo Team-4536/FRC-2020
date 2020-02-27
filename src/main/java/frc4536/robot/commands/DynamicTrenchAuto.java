@@ -20,6 +20,7 @@ public class DynamicTrenchAuto extends SequentialCommandGroup {
 
     Pose2d shootPosition = Poses.AUTO_TRENCH_SHOOT; //hypothetically, use angle
     Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(driveTrain.getPose(), new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
+    System.out.println("Starting Dynamic Trench Auto");
     addRequirements(shooter, conveyor, driveTrain, intake);
     addCommands(
             driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(intake, conveyor)),

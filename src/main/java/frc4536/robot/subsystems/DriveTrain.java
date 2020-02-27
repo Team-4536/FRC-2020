@@ -113,7 +113,6 @@ public class DriveTrain extends SubsystemBase {
 
     public void resetGyro(){
         m_navx.reset();
-        resetPose();
     }
 
     public Command scurveTo(Trajectory trajectory) {
