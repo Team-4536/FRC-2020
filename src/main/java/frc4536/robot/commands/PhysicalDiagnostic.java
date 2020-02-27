@@ -9,7 +9,7 @@ import frc4536.robot.subsystems.Shooter;
 
 public class PhysicalDiagnostic extends SequentialCommandGroup{
     public PhysicalDiagnostic(Shooter m_shooter, Conveyor m_conveyor, Intake m_intake ){
-        super(m_shooter.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM).withTimeout(5),
+        super(m_shooter.spinUp().withTimeout(5),
         new RunCommand(m_conveyor::raiseTop, m_conveyor).withTimeout(1),
         new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED), m_conveyor).withTimeout(5),
         new RunCommand(() -> m_conveyor.moveConveyor(Constants.CONVEYOR_INTAKE_SPEED), m_conveyor).withTimeout(5),

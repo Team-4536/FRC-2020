@@ -7,6 +7,7 @@
 
 package frc4536.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -25,6 +26,7 @@ public class Shooter extends SubsystemBase {
     private PIDController m_bottomPIDController = new PIDController(Constants.SHOOTER_P_BOTTOM, 0, 0);
     private SimpleMotorFeedforward k_top_feedForwards = new SimpleMotorFeedforward(Constants.SHOOTER_TOP_KS, Constants.SHOOTER_TOP_KV);
     private SimpleMotorFeedforward k_bottom_feedForwards = new SimpleMotorFeedforward(Constants.SHOOTER_BOTTOM_KS, Constants.SHOOTER_BOTTOM_KV);
+    private NetworkTableEntry topSetpoint, bottomSetpoint;
 
     /**
      * Creates a new Shooter.
@@ -39,6 +41,8 @@ public class Shooter extends SubsystemBase {
         shooter_data.addNumber("Bottom RPS", () -> m_shooterBottom.getSpeed());
         shooter_data.addBoolean("Top Target", () -> Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP);
         shooter_data.addBoolean("Bottom Target", () -> Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
+        topSetpoint = shooter_data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
+        bottomSetpoint = shooter_data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
     }
 
     public void setTopPower(double power) {
@@ -49,7 +53,7 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom.setVoltage(power);
     }
 
-    public void stop(){
+    public void stop() {
         m_topPIDController.reset();
         m_bottomPIDController.reset();
         m_topPIDController.setSetpoint(0);
@@ -71,15 +75,30 @@ public class Shooter extends SubsystemBase {
                 (Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
     }
 
+    /**
+     * This returns a command that sets the setpoint of the two shooter wheels. THIS SHOULD ONLY BE USED IN AUTO!!!
+     *
+     * @param topRPS    desired rotation speed of the top shooter wheel, in rotations per second.
+     * @param bottomRPS desired rotation speed of the bottom shooter wheel, in rotations per second.
+     * @return A command that runs the shooter wheels
+     */
     public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
         return new RunCommand(() -> setSetpoints(topRPS, bottomRPS), this);
     }
 
-    public Command spinUp(){
-        return this.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM);
+    /**
+     * This returns a command that sets the setpoint of the two shooter wheels to the values specified on the Shuffleboard. THIS SHOULD BE USED FOR BUTTON BINDINGS IN TELEOP!!!
+     *
+     * @return A command that runs the shooter wheels
+     */
+    public Command spinUp() {
+        return this.spinUp(() -> topSetpoint.getDouble(Constants.SHOOTER_RPS_TOP), () -> bottomSetpoint.getDouble(Constants.SHOOTER_RPS_BOTTOM));
     }
 
-    public void setSetpoints(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
+    /**
+     * This method runs the PID controller code and sets the voltages of the wheels in order to reach a desired speed. This should be called every 20ms, which is why you should only use the commands to run them.
+     */
+    public void setSetpoints(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
         m_shooterTop.setVoltage(
                 m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
                         + k_top_feedForwards.calculate(topRPS.getAsDouble())
@@ -90,5 +109,12 @@ public class Shooter extends SubsystemBase {
         );
     }
 
-    
+    /**
+     * This method should only be used by the trigger binding in RobotContainer.
+     */
+    public void setSetpoints() {
+        setSetpoints(() -> topSetpoint.getDouble(Constants.SHOOTER_RPS_TOP), () -> bottomSetpoint.getDouble(Constants.SHOOTER_RPS_BOTTOM));
+    }
+
+
 }

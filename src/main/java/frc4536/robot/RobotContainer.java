@@ -46,7 +46,7 @@ public class RobotContainer {
     private final XboxController m_driveController = new XboxController(0);
     private final Joystick m_operatorJoystick = new Joystick(1);
 
-    private final NetworkTableEntry m_xInitial, m_yInitial, top, bot;
+    private final NetworkTableEntry m_xInitial, m_yInitial;
     private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
@@ -57,8 +57,7 @@ public class RobotContainer {
         configureButtonBindings();
         configureDefaultCommands();
 
-        ShuffleboardTab data = Shuffleboard.getTab("Shooter Data"),
-                subsystems = Shuffleboard.getTab("Subsystems"),
+        ShuffleboardTab subsystems = Shuffleboard.getTab("Subsystems"),
                 auto = Shuffleboard.getTab("Autonomous");
 
         subsystems.add(m_climber);
@@ -67,9 +66,6 @@ public class RobotContainer {
         subsystems.add(m_intake);
         subsystems.add(m_shooter);
         subsystems.add(CommandScheduler.getInstance());
-
-        top = data.add("Top Setpoint", Constants.SHOOTER_RPS_TOP).getEntry();
-        bot = data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM).getEntry();
 
         m_xInitial = auto.add("Initial X", 3.3).getEntry();
         m_yInitial = auto.add("Initial Y", -1.0).getEntry();
@@ -100,8 +96,8 @@ public class RobotContainer {
                 .whileHeld(() -> {m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED);
                                 m_conveyor.lowerTop();
                 }, m_conveyor);
-        new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter
-                .whileHeld(new ShootCommand(m_shooter, m_conveyor, () -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+        new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter and automatically fires when shooter reaches a speed.
+                .whileHeld(new ShootCommand(m_shooter, m_conveyor));
         new JoystickButton(m_driveController, Button.kX.value)          //reverse move conveyor 
                 .whileHeld(new RunCommand(() -> m_conveyor.moveConveyor(-Constants.CONVEYOR_INTAKE_SPEED), m_conveyor));
 
@@ -115,7 +111,7 @@ public class RobotContainer {
         new JoystickButton(m_operatorJoystick, 8)   //Intake manual control
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
         new JoystickButton(m_operatorJoystick, 2) //Spinup shooter
-                .whileHeld(m_shooter.spinUp(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM)));
+                .whileHeld(m_shooter.spinUp());
         new JoystickButton(m_operatorJoystick, 1)
                 .whileHeld(new RunCommand(() -> {
                         m_conveyor.lowerTop();
@@ -143,7 +139,7 @@ public class RobotContainer {
         }, m_intake);
         CommandBase default_shooter = new RunCommand(() -> {  //shooter
             if (m_driveController.getTriggerAxis(Hand.kRight) > 0.5) { //change to 0.5
-                m_shooter.setSetpoints(() -> top.getDouble(Constants.SHOOTER_RPS_TOP), () -> bot.getDouble(Constants.SHOOTER_RPS_BOTTOM));
+                m_shooter.setSetpoints();
             } else {
                 m_shooter.setTopPower(0);
                 m_shooter.setBottomPower(0);
