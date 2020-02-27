@@ -142,7 +142,11 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public double getVisionAngle() {
-        return visionError.getDouble(0.0);
+        double visionAngle = visionError.getDouble(0.0);
+        if (visionAngle == 0.0) {
+            return angleToTarget();
+        }
+        return visionAngle;
     }
 
     public double angleToTarget() {

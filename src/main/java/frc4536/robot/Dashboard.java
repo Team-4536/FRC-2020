@@ -44,6 +44,7 @@ public class Dashboard {
         drivetrain_data.add("Reset Encoders", new InstantCommand(driveTrain::resetEncoders));
         drivetrain_data.add("Reset Pose", new InstantCommand(driveTrain::resetPose));
         drivetrain_data.add("Reset Gyro", new InstantCommand(driveTrain::resetGyro));
+        drivetrain_data.addNumber("Vision Angle", () -> driveTrain.getVisionAngle());
         drivetrain_data.addString("Pose", () -> {
             Pose2d pose = driveTrain.getPose();
             return String.format("X: %.2f, Y: %.2f, R:%.2f, D: %.2f", pose.getTranslation().getX(), pose.getTranslation().getY(), pose.getRotation().getRadians(), pose.getRotation().getDegrees());
