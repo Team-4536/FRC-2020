@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -156,28 +155,28 @@ public class RobotContainer {
     public Command generateAutoCommands(Autonomous chose) {
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
-                new ArrayList<Translation2d>(),
+                new ArrayList<>(),
                 Poses.AUTO_TRENCH_SHOOT,
                 m_driveTrain.getConfig().setReversed(false));
         Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.AUTO_TRENCH_SHOOT,
-                new ArrayList<Translation2d>(),
+                new ArrayList<>(),
                 Poses.TRENCH_END,
                 m_driveTrain.getConfig().setReversed(false));
         Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
-                new ArrayList<Translation2d>(),
+                new ArrayList<>(),
                 Poses.AUTO_TRENCH_SHOOT,
                 m_driveTrain.getConfig().setReversed(true));
 
         Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
-                new ArrayList<Translation2d>(),
+                new ArrayList<>(),
                 Poses.RENDEZ_SHOOT,
                 m_driveTrain.getConfig().setReversed(false));
         Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
-                new ArrayList<Translation2d>(),
+                new ArrayList<>(),
                 Poses.RENDEZ_SWEEP,
                 m_driveTrain.getConfig().setReversed(false));
         Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
-                new ArrayList<Translation2d>(),
+                new ArrayList<>(),
                 Poses.RENDEZ_SHOOT,
                 m_driveTrain.getConfig().setReversed(true));
 
