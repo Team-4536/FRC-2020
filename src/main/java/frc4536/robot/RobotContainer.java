@@ -48,7 +48,7 @@ public class RobotContainer {
     private final Joystick m_operatorJoystick = new Joystick(1);
 
     private final NetworkTableEntry m_xInitial, m_yInitial;
-    private final SendableChooser<String> m_chooser = new SendableChooser<>();
+    private final SendableChooser<Autonomous> m_chooser = new SendableChooser<>();
 
 
     /**
@@ -63,12 +63,12 @@ public class RobotContainer {
 
         m_xInitial = auto.add("Initial X", 3.3).getEntry();
         m_yInitial = auto.add("Initial Y", -1.0).getEntry();
-        m_chooser.addOption("Physical Diagnostic", "Physical Diagnostic");
-        m_chooser.addOption("Trench", "Trench");
-        m_chooser.addOption("Dynamic Trench", "Dynamic Trench");
-        m_chooser.addOption("Vision Test", "Vision Test");
-        m_chooser.addOption("Rendezvous", "Rendezvous");
-        m_chooser.setDefaultOption("Baseline", "odsnovnonworvionryionnoiyeoivnoyiiynoi");
+        m_chooser.addOption("Physical Diagnostic", Autonomous.PHYSICAL_DIAGNOSTIC);
+        m_chooser.addOption("Trench", Autonomous.TRENCH);
+        m_chooser.addOption("Dynamic Trench", Autonomous.DYNAMIC_TRENCH);
+        m_chooser.addOption("Vision Test", Autonomous.VISION_TEST);
+        m_chooser.addOption("Rendezvous", Autonomous.RENDEVOUS);
+        m_chooser.setDefaultOption("Baseline", Autonomous.BASELINE);
         auto.add(m_chooser);
     }
 
@@ -154,7 +154,7 @@ public class RobotContainer {
         m_shooter.setDefaultCommand(default_shooter);
     }
 
-    public Command generateAutoCommands(String chose) {
+    public Command generateAutoCommands(Autonomous chose) {
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
                 new ArrayList<Translation2d>(),
@@ -189,15 +189,15 @@ public class RobotContainer {
         final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
 
         switch (chose) {
-            case "Physical Diagnostic":
+            case PHYSICAL_DIAGNOSTIC:
                 return m_diagnostic;
-            case "Trench":
+            case TRENCH:
                 return m_trenchAuto;
-            case "Dynamic Trench":
+            case DYNAMIC_TRENCH:
                 return m_dynamicTrenchAuto;
-            case "Vision Test":
+            case VISION_TEST:
                 return m_visionTestAuto;
-            case "Rendezvous":
+            case RENDEVOUS:
                 return m_rendezvousAuto;
             default:
                 return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.4, 0), m_driveTrain).withTimeout(2).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
@@ -214,5 +214,14 @@ public class RobotContainer {
         m_driveTrain.resetGyro();
         m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0.0)));
         return generateAutoCommands(m_chooser.getSelected());
+    }
+
+    private enum Autonomous {
+        PHYSICAL_DIAGNOSTIC,
+        TRENCH,
+        DYNAMIC_TRENCH,
+        VISION_TEST,
+        RENDEVOUS,
+        BASELINE
     }
 }
