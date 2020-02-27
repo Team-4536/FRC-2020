@@ -32,7 +32,7 @@ import static frc4536.lib.Utilities.deadzone;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here.
-    public final RobotFrame m_robotHardware = new Honeycomb();
+    public final RobotFrame m_robotHardware = new VirtualRobot();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
@@ -57,8 +57,6 @@ public class RobotContainer {
         configureDefaultCommands();
 
         ShuffleboardTab auto = Shuffleboard.getTab("Autonomous");
-
-
         m_xInitial = auto.add("Initial X", 3.3).getEntry();
         m_yInitial = auto.add("Initial Y", -1.0).getEntry();
         m_chooser.addOption("Physical Diagnostic", Autonomous.PHYSICAL_DIAGNOSTIC);
@@ -153,54 +151,55 @@ public class RobotContainer {
     }
 
     public Command generateAutoCommands(Autonomous chose) {
-
-        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
-                new ArrayList<>(),
-                Poses.AUTO_TRENCH_SHOOT,
-                m_driveTrain.getConfig().setReversed(false));
-        Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.AUTO_TRENCH_SHOOT,
-                new ArrayList<>(),
-                Poses.TRENCH_END,
-                m_driveTrain.getConfig().setReversed(false));
-        Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
-                new ArrayList<>(),
-                Poses.AUTO_TRENCH_SHOOT,
-                m_driveTrain.getConfig().setReversed(true));
-
-        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
-                new ArrayList<>(),
-                Poses.RENDEZ_SHOOT,
-                m_driveTrain.getConfig().setReversed(false));
-        Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
-                new ArrayList<>(),
-                Poses.RENDEZ_SWEEP,
-                m_driveTrain.getConfig().setReversed(false));
-        Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
-                new ArrayList<>(),
-                Poses.RENDEZ_SHOOT,
-                m_driveTrain.getConfig().setReversed(true));
-
-        final Command m_diagnostic = new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake);
-        final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot, shootToEnd, endToShoot);
-        final Command m_dynamicTrenchAuto = new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, shootToEnd, endToShoot);
-        final Command m_visionTestAuto = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot);
-        final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
-
-        switch (chose) {
-            case PHYSICAL_DIAGNOSTIC:
-                return m_diagnostic;
-            case TRENCH:
-                return m_trenchAuto;
-            case DYNAMIC_TRENCH:
-                return m_dynamicTrenchAuto;
-            case VISION_TEST:
-                return m_visionTestAuto;
-            case RENDEVOUS:
-                return m_rendezvousAuto;
-            default:
-                return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.4, 0), m_driveTrain).withTimeout(2).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
+        if (chose == Autonomous.PHYSICAL_DIAGNOSTIC) {
+            return new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake);
+        } else if (chose == Autonomous.TRENCH) {
+            Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
+                    new ArrayList<>(),
+                    Poses.AUTO_TRENCH_SHOOT,
+                    m_driveTrain.getConfig().setReversed(false));
+            Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.AUTO_TRENCH_SHOOT,
+                    new ArrayList<>(),
+                    Poses.TRENCH_END,
+                    m_driveTrain.getConfig().setReversed(false));
+            Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
+                    new ArrayList<>(),
+                    Poses.AUTO_TRENCH_SHOOT,
+                    m_driveTrain.getConfig().setReversed(true));
+            return new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot, shootToEnd, endToShoot);
+        } else if (chose == Autonomous.DYNAMIC_TRENCH) {
+            Trajectory shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.AUTO_TRENCH_SHOOT,
+                    new ArrayList<>(),
+                    Poses.TRENCH_END,
+                    m_driveTrain.getConfig().setReversed(false));
+            Trajectory endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
+                    new ArrayList<>(),
+                    Poses.AUTO_TRENCH_SHOOT,
+                    m_driveTrain.getConfig().setReversed(true));
+            return new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, shootToEnd, endToShoot);
+        } else if (chose == Autonomous.VISION_TEST) {
+            Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
+                    new ArrayList<>(),
+                    Poses.AUTO_TRENCH_SHOOT,
+                    m_driveTrain.getConfig().setReversed(false));
+            return new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot);
+        } else if (chose == Autonomous.RENDEVOUS) {
+            Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
+                    new ArrayList<>(),
+                    Poses.RENDEZ_SHOOT,
+                    m_driveTrain.getConfig().setReversed(false));
+            Trajectory shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
+                    new ArrayList<>(),
+                    Poses.RENDEZ_SWEEP,
+                    m_driveTrain.getConfig().setReversed(false));
+            Trajectory rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
+                    new ArrayList<>(),
+                    Poses.RENDEZ_SHOOT,
+                    m_driveTrain.getConfig().setReversed(true));
+            return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
         }
-        //m_chooser.addOption("Test Auto", m_testAuto);
+        return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.4, 0), m_driveTrain).withTimeout(2).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
+//m_chooser.addOption("Test Auto", m_testAuto);
     }
 
     /**
