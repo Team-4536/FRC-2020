@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -91,7 +90,8 @@ public class RobotContainer {
         m_chooser.addOption("Trench", Autonomous.TRENCH);
         m_chooser.addOption("Dynamic Trench", Autonomous.DYNAMIC_TRENCH);
         m_chooser.addOption("Vision Test", Autonomous.VISION_TEST);
-        m_chooser.addOption("Rendezvous", Autonomous.RENDEVOUS);
+        m_chooser.addOption("Rendezvous", Autonomous.RENDEZVOUS);
+        m_chooser.addOption("Dynamic Rendezvous", Autonomous.DYNAMIC_RENDEZVOUS);
         m_chooser.setDefaultOption("Baseline", Autonomous.BASELINE);
         auto.add(m_chooser);
     }
@@ -140,10 +140,12 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
-        CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive( //driver train
-                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE) : deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
-                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE) : deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE)),
-                m_driveTrain);
+        CommandBase default_driveTrain = new RunCommand(() -> {
+            boolean slow = m_operatorJoystick.getRawButton(5) || m_driveController.getTriggerAxis(Hand.kLeft) > 0.5;
+            m_driveTrain.arcadeDrive( //driver train
+                    (slow ? 0.2 : 1) * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
+                    (slow ? 0.2 : 1) * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE));
+        }, m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {  //climber
             m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -m_operatorJoystick.getY() : 0);
             m_climber.setArm(m_operatorJoystick.getRawButton(5) ? -m_operatorJoystick.getY() : 0);
@@ -185,11 +187,13 @@ public class RobotContainer {
             case TRENCH:
                 return new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot, t_shootToEnd, t_endToShoot);
             case DYNAMIC_TRENCH:
-                return new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToEnd, t_endToShoot);
+                return new DynamicTrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToEnd, t_endToShoot);
             case VISION_TEST:
                 return new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot);
-            case RENDEVOUS:
+            case RENDEZVOUS:
                 return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_toRendezShoot, t_shootToRendez, t_rendezToShoot);
+            case DYNAMIC_RENDEZVOUS:
+                return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToRendez, t_rendezToShoot);
             default:
                 return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.4, 0), m_driveTrain).withTimeout(2).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
         }
@@ -212,7 +216,8 @@ public class RobotContainer {
         TRENCH,
         DYNAMIC_TRENCH,
         VISION_TEST,
-        RENDEVOUS,
+        RENDEZVOUS,
+        DYNAMIC_RENDEZVOUS,
         BASELINE
     }
 }
