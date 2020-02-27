@@ -48,7 +48,7 @@ public class RobotContainer {
     private final Joystick m_operatorJoystick = new Joystick(1);
 
     private final NetworkTableEntry m_xInitial, m_yInitial;
-    private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
 
     /**
@@ -63,7 +63,12 @@ public class RobotContainer {
 
         m_xInitial = auto.add("Initial X", 3.3).getEntry();
         m_yInitial = auto.add("Initial Y", -1.0).getEntry();
-        generateAutoCommands();
+        m_chooser.addOption("Physical Diagnostic", "Physical Diagnostic");
+        m_chooser.addOption("Trench", "Trench");
+        m_chooser.addOption("Dynamic Trench", "Dynamic Trench");
+        m_chooser.addOption("Vision Test", "Vision Test");
+        m_chooser.addOption("Rendezvous", "Rendezvous");
+        m_chooser.setDefaultOption("Baseline", "odsnovnonworvionryionnoiyeoivnoyiiynoi");
         auto.add(m_chooser);
     }
 
@@ -82,8 +87,9 @@ public class RobotContainer {
         new JoystickButton(m_driveController, Button.kA.value)          //Cycle command
                 .whenHeld(new CycleCommand(m_driveTrain, m_shooter, m_conveyor));
         new JoystickButton(m_driveController, Button.kB.value)          //Initiate Shooting
-                .whileHeld(() -> {m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
-                                m_conveyor.lowerTop();
+                .whileHeld(() -> {
+                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
+                    m_conveyor.lowerTop();
                 }, m_conveyor);
         new JoystickButton(m_driveController, Button.kY.value)          //Spin up shooter and automatically fires when shooter reaches a speed.
                 .whileHeld(new ShootCommand(m_shooter, m_conveyor));
@@ -103,16 +109,16 @@ public class RobotContainer {
                 .whileHeld(m_shooter.spinUp());
         new JoystickButton(m_operatorJoystick, 1)
                 .whileHeld(new RunCommand(() -> {
-                        m_conveyor.lowerTop();
-                        m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
+                    m_conveyor.lowerTop();
+                    m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
                 }, m_intake, m_conveyor));
     }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> m_driveTrain.arcadeDrive( //driver train
-                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE):deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
-                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE):deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE)),
+                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE) : deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
+                m_operatorJoystick.getRawButton(5) ? 0.2 * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE) : deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE)),
                 m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {  //climber
             m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -m_operatorJoystick.getY() : 0);
@@ -148,7 +154,7 @@ public class RobotContainer {
         m_shooter.setDefaultCommand(default_shooter);
     }
 
-    public void generateAutoCommands() {
+    public Command generateAutoCommands(String chose) {
 
         Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
                 new ArrayList<Translation2d>(),
@@ -176,16 +182,26 @@ public class RobotContainer {
                 Poses.RENDEZ_SHOOT,
                 m_driveTrain.getConfig().setReversed(true));
 
+        final Command m_diagnostic = new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake);
         final Command m_trenchAuto = new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot, shootToEnd, endToShoot);
         final Command m_dynamicTrenchAuto = new DynamicTrenchAuto(m_shooter, m_conveyor, m_driveTrain, m_intake, shootToEnd, endToShoot);
         final Command m_visionTestAuto = new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, startToShoot);
         final Command m_rendezvousAuto = new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, toRendezShoot, shootToRendez, rendezToShoot);
 
-
-        m_chooser.addOption("Physical Diagnostic", new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake));
-        m_chooser.setDefaultOption("Trench ", m_trenchAuto);
-        m_chooser.addOption("Dynamic Trench", m_dynamicTrenchAuto);
-        m_chooser.addOption("Vision Test", m_visionTestAuto);
+        switch (chose) {
+            case "Physical Diagnostic":
+                return m_diagnostic;
+            case "Trench":
+                return m_trenchAuto;
+            case "Dynamic Trench":
+                return m_dynamicTrenchAuto;
+            case "Vision Test":
+                return m_visionTestAuto;
+            case "Rendezvous":
+                return m_rendezvousAuto;
+            default:
+                return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.4, 0), m_driveTrain).withTimeout(2).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
+        }
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
 
@@ -196,6 +212,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0.0)));
-        return m_chooser.getSelected();
+        return generateAutoCommands(m_chooser.getSelected());
     }
 }

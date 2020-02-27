@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc4536.robot.Constants;
+import frc4536.robot.Poses;
 import frc4536.robot.subsystems.Conveyor;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.Intake;
@@ -17,9 +18,8 @@ import java.util.ArrayList;
 public class DynamicTrenchAuto extends SequentialCommandGroup {
   public DynamicTrenchAuto(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Intake intake, Trajectory shootToEnd, Trajectory endToShoot) {
 
-    Pose2d shootPosition = new Pose2d(5.0, -0.75, new Rotation2d(4.8, 0.8)); //hypothetically, use angle
+    Pose2d shootPosition = Poses.AUTO_TRENCH_SHOOT; //hypothetically, use angle
     Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(driveTrain.getPose(), new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
-
     addRequirements(shooter, conveyor, driveTrain, intake);
     addCommands(
             driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(intake, conveyor)),

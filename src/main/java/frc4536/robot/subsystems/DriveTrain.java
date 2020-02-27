@@ -40,9 +40,9 @@ public class DriveTrain extends SubsystemBase {
         wheelCircumference = driveConstants.kWheelDiameterInches * Math.PI;
 
         resetEncoders();
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0.0));
         resetGyro();
 
-        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0.0));
 
         DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
                 m_driveConstants.kvVoltSecondsPerMeter,
@@ -156,7 +156,7 @@ public class DriveTrain extends SubsystemBase {
 
     public double angleToTarget() {
         Translation2d diff = getPose().minus(Poses.TARGET).getTranslation();
-        return Math.atan2(diff.getY(),diff.getX());
+        return Math.atan2(diff.getY(),diff.getX()) - this.getBearing() - 180;
     }
 }
 
