@@ -33,7 +33,6 @@ public class Dashboard {
                 .getEntry();
         bottomSetpoint = shooter_data.add("Bottom Setpoint", Constants.SHOOTER_RPS_BOTTOM)
                 .getEntry();
-        shooter_data.add(robotContainer.m_shooter);
 
         ShuffleboardLayout drivetrain_data = driver_display
                 .getLayout("Drivetrain", BuiltInLayouts.kList)
@@ -49,7 +48,8 @@ public class Dashboard {
             Pose2d pose = driveTrain.getPose();
             return String.format("X: %.2f, Y: %.2f, R:%.2f, D: %.2f", pose.getTranslation().getX(), pose.getTranslation().getY(), pose.getRotation().getRadians(), pose.getRotation().getDegrees());
         });
-        drivetrain_data.add(driveTrain);
+
+        driver_display.addBoolean("Conveyor Blocked", robotContainer.m_conveyor::isBlocked).withSize(1,1);
 
         ShuffleboardTab debug_display = Shuffleboard.getTab("Debug Display");
         debug_display.add(driveTrain)

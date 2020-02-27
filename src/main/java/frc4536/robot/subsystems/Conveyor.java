@@ -33,7 +33,11 @@ public class Conveyor extends SubsystemBase {
     }
 
     public void moveConveyor(double speed, boolean isShooting) {
-        if(!m_beamBreak.get() || isShooting) m_motor.set(speed);
+        if(isBlocked() || isShooting) m_motor.set(speed);
         else m_motor.set(0);
+    }
+
+    public boolean isBlocked(){
+        return !m_beamBreak.get();
     }
 }
