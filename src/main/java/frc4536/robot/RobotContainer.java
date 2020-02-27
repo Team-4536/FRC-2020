@@ -195,7 +195,7 @@ public class RobotContainer {
             case DYNAMIC_RENDEZVOUS:
                 return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToRendez, t_rendezToShoot);
             default:
-                return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.4, 0), m_driveTrain).withTimeout(2).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
+                return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.3, 0), m_driveTrain).withTimeout(1).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
         }
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
