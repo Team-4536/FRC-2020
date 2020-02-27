@@ -1,4 +1,4 @@
-package frc4536.lib;
+package frc4536.lib.battery;
 
 import java.util.Arrays;
 /**
@@ -104,7 +104,7 @@ public class BatteryEstimator {
         // From the ESR, calculate the open-circuit voltage
         VocEst = meanV + ESREst * meanI;
 
-        return; // nothing to return, params are gotten with other "getter" functions
+        // nothing to return, params are gotten with other "getter" functions
 
     }
 
@@ -207,10 +207,10 @@ public class BatteryEstimator {
     private double findStdDev(final double[] input) {
         final double avg_input = findSum(input) / input.length;
 		double sum = 0;
-		
-		for(int i = 0; i < input.length; i++){
-			sum += Math.pow((input[i] - avg_input), 2);
-		}
+
+        for (double v : input) {
+            sum += Math.pow((v - avg_input), 2);
+        }
 		return Math.sqrt(sum/input.length);
 	}
 }

@@ -1,22 +1,26 @@
 package frc4536.robot.hardware;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.util.Units;
 import frc4536.lib.*;
 
-public class TestRobot implements RobotFrame {
-    private final double ksVolts = 2;
-    private final double kvVoltSecondsPerMeter = 0.353;
-    private final double kaVoltSecondsSquaredPerMeter = 0.00864;
-    private final double kPDriveVel = 1.4;
-    private final double kTrackWidthMeters = 0.7112;
-    private final double kMaxSpeedMetersPerSecond = 2.3;
-    private final double kMaxAccelerationMetersPerSecondSquared = 3;
-    private final double kRamseteB = 8;
-    private final double kRamseteZeta = 0.7;
-    private final double kWheelDiameterInches = Units.inchesToMeters(6);
+public class Honeycomb implements RobotFrame {
+    public static final double ksVolts = 0.235;
+    public static final double kvVoltSecondsPerMeter = 0.277;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.3;
+    public static final double kPDriveVel = 11.5 / 12;
+    public static final double kTrackWidthMeters = Units.inchesToMeters(21.8685);
+    public static final double kMaxSpeedMetersPerSecond = 1;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kRamseteB = 16;
+    public static final double kRamseteZeta = 0.7;
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(6);
+
     public RobotConstants m_constants = new RobotConstants(ksVolts, 
                                                            kvVoltSecondsPerMeter, 
                                                            kaVoltSecondsSquaredPerMeter, 
@@ -26,29 +30,27 @@ public class TestRobot implements RobotFrame {
                                                            kMaxAccelerationMetersPerSecondSquared, 
                                                            kRamseteB, 
                                                            kRamseteZeta,
-                                                           kWheelDiameterInches);
+            kWheelDiameterMeters);
 
-   
-    VirtualMotor m_intakeMotor = new VirtualMotor("Intake Motor");
-    VirtualMotor m_beltMotor = new VirtualMotor("Belt Motor");
-    VirtualMotor m_climberArmMotor = new VirtualMotor("Climber Motor");
-    VirtualMotor m_liftMotor = new VirtualMotor("Lift Motor");
-    VirtualSolenoid m_conveyorBlocker = new VirtualSolenoid(0,1);
-    VirtualSolenoid m_intakeExtender = new VirtualSolenoid(2,3);
+    IEncoderMotor m_topFlywheel = new BrushedMAX(1, false, 8192, 21);
+    //new PIDBrushedMax(1, false, 8192, new PIDConstants(10.2/12,0,0), 21);
+    IEncoderMotor m_bottomFlywheel = new BrushedMAX(1, true, 8192, 20);
+    //new PIDBrushedMax(1, true, 8192, new PIDConstants(10.3/12,0,0), 20);
 
-    AHRS m_navx = new AHRS(){
-        @Override
-        public double getAngle(){
-            return -super.getAngle();
-        }
-    };
-    Encoder m_leftEncoder = new Encoder(0,1);
-    Encoder m_rightEncoder = new Encoder(2,3);
-    IEncoderMotor m_topFlywheel = new VirtualEncoderMotor("Top Flywheel",8.0*0.478779);
-    IEncoderMotor m_bottomFlywheel = new VirtualEncoderMotor("Bottom Flywheel",8.0*0.478779);
-    IEncoderMotor m_leftMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(0), new Spark(1)), m_leftEncoder, 2048);
-    IEncoderMotor m_rightMotors = new PWMEncoderMotor(new SpeedControllerGroup(new Spark(2), new Spark(3)), m_rightEncoder, 2048);
-    DigitalInput m_bottomLimitSwitch = new DigitalInput(13);
+    SpeedController m_intakeMotor = new WPI_VictorSPX(1);
+    SpeedController m_beltMotor = new WPI_VictorSPX(4);
+    SpeedController m_climberArmMotor = new WPI_VictorSPX(2);
+    SpeedController m_liftMotor = new WPI_VictorSPX(3);
+
+    AHRS m_navx = new AHRS();
+
+    IEncoderMotor m_leftMotors = new Neo(10.75, 47, 48);
+    IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
+    DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
+
+    DoubleSolenoid m_conveyorBlocker = new DoubleSolenoid(1,0);
+    DoubleSolenoid m_intakeExtender = new DoubleSolenoid(2,3);
+
     @Override
     public RobotConstants getConstants() {
         return m_constants;
@@ -93,11 +95,12 @@ public class TestRobot implements RobotFrame {
     public SpeedController getBeltMotor() {
         return m_beltMotor;
     }
-
+  
     @Override
     public AHRS getDrivetrainNavX() {
         return m_navx;
     }
+  
     @Override
     public IEncoderMotor getTopShooterFlywheelMotor() {
         return m_topFlywheel;
@@ -107,9 +110,7 @@ public class TestRobot implements RobotFrame {
     public IEncoderMotor getBottomShooterFlywheelMotor() {
         return m_bottomFlywheel;
     }
-
     @Override
     public DigitalInput getBottomLimitSwitch(){
-        return m_bottomLimitSwitch;
-    }
+        return m_bottomLimitSwitch;}
 }

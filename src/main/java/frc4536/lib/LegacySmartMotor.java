@@ -1,24 +1,27 @@
 package frc4536.lib;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.controller.PIDController;
-
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class SmartMotor implements ISmartMotor {
-    //private final ArrayList<SpeedController> motors = new ArrayList<>();
+@SuppressWarnings("removal")
+public class LegacySmartMotor implements IEncoderMotor {
     private final SpeedControllerGroup m_motors;
     private final Encoder m_encoder;
-    private final PIDController m_controller;
+    private final PIDController m_pid;
 
-    public SmartMotor(Encoder encoder, PIDController controller, SpeedControllerGroup motors) {
+    public LegacySmartMotor(Encoder encoder, PIDConstants pidConstants, SpeedControllerGroup motors, int ticks, double maxSpeed) {
         m_motors = motors;
         m_encoder = encoder;
-        m_controller = controller;
-
+        m_encoder.setDistancePerPulse(1.0 / ticks);
+        m_encoder.setPIDSourceType(PIDSourceType.kRate);
+        m_pid = new PIDController(pidConstants.kP, pidConstants.kI, pidConstants.kD, 1.0/maxSpeed, m_encoder, m_motors);
+    
+        SmartDashboard.putData(m_pid);
     }
-
+    
     @Override
     public void setInverted(boolean inverted) {
         m_motors.setInverted(inverted);
@@ -55,16 +58,12 @@ public class SmartMotor implements ISmartMotor {
        m_motors.pidWrite(output);
     }
 
-    @Override
     public void setVolt(double i) {
         m_motors.setVoltage(i);
-
     }
 
-    @Override
     public void setSpeed(double i) {
-        setVolt(m_controller.calculate(m_encoder.getRate(), i));
-
+        m_pid.setSetpoint(i);
     }
 
     @Override
@@ -77,16 +76,12 @@ public class SmartMotor implements ISmartMotor {
         return m_encoder.getDistance();
     }
 
-    @Override
     public double getSetpoint() {
-        return m_controller.getSetpoint();
+        return m_pid.getSetpoint();
     }
 
     @Override
     public void resetEncoder() {
        m_encoder.reset();
-
     }
-
-
 }
