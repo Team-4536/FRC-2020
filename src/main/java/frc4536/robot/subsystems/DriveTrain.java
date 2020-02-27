@@ -40,8 +40,10 @@ public class DriveTrain extends SubsystemBase {
         wheelCircumference = driveConstants.kWheelDiameterInches * Math.PI;
 
         resetEncoders();
-        m_odometry = new DifferentialDriveOdometry(getHeading());
         resetGyro();
+
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0.0));
+
         DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
                 m_driveConstants.kvVoltSecondsPerMeter,
                 m_driveConstants.kaVoltSecondsSquaredPerMeter),
@@ -66,6 +68,9 @@ public class DriveTrain extends SubsystemBase {
 
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(m_navx.getAngle());
+    }
+    public double getBearing() {
+        return -m_navx.getAngle();
     }
 
     private RobotConstants m_driveConstants;
