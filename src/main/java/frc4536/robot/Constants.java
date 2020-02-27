@@ -21,7 +21,7 @@ public class Constants {
     VISION_KI = 0.003,
     VISION_KD = 0.001,
     INTAKE_SPINSPEED = -0.8,
-    CONVEYOR_INTAKE_SPEED = 0.65,
+    CONVEYOR_INTAKE_SPEED = 0.78,
     CONVEYOR_SHOOT_SPEED = 0.3,
     SHOOT_TIME = 4, //seconds
     TURN_TOLERANCE_DEG = 5,
