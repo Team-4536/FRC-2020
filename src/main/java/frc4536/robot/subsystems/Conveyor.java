@@ -11,12 +11,15 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc4536.robot.Constants;
 
 public class Conveyor extends SubsystemBase {
     private SpeedController m_motor;
     private DoubleSolenoid m_piston;
     private DigitalInput m_beamBreak;
+    private Timer m_timer;
 
     public Conveyor(SpeedController motor, DoubleSolenoid piston, DigitalInput beamBreak) {
         m_motor = motor;
@@ -33,8 +36,21 @@ public class Conveyor extends SubsystemBase {
     }
 
     public void moveConveyor(double speed, boolean isShooting) {
-        if(isBlocked() || isShooting) m_motor.set(speed);
-        else m_motor.set(0);
+        if(isShooting) {
+            m_motor.set(speed);
+        }
+        else if (isBlocked() && m_timer.get()==0) {
+            m_timer.start();
+            m_motor.set(speed);
+        }
+        else if(isBlocked() && m_timer.get()< Constants.CONVEYOR_DELAY) {
+            m_motor.set(speed);
+        }
+        else {
+            m_motor.set(0);
+            m_timer.stop();
+            m_timer.reset();
+        }
     }
 
     public boolean isBlocked(){

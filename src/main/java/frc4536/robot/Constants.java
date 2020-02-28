@@ -29,5 +29,7 @@ public class Constants {
     DRIVE_DEADZONE = 0.15,
 
     ROBOT_WIDTH = 0.6, //meters, counting bumpers
-    ROBOT_HEIGHT =0.4;
+    ROBOT_HEIGHT =0.4,
+
+    CONVEYOR_DELAY = 0.1;
 }
