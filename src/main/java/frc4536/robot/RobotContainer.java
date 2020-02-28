@@ -84,8 +84,8 @@ public class RobotContainer {
         ShuffleboardTab auto = Shuffleboard.getTab("Autonomous");
 
 
-        m_xInitial = auto.add("Initial X", 3.3).getEntry();
-        m_yInitial = auto.add("Initial Y", -1.0).getEntry();
+        m_xInitial = auto.add("Initial X", 3.1).getEntry();
+        m_yInitial = auto.add("Initial Y", -0.75).getEntry();
         m_chooser.addOption("Physical Diagnostic", Autonomous.PHYSICAL_DIAGNOSTIC);
         m_chooser.addOption("Trench", Autonomous.TRENCH);
         m_chooser.addOption("Dynamic Trench", Autonomous.DYNAMIC_TRENCH);
@@ -130,23 +130,25 @@ public class RobotContainer {
         new JoystickButton(m_operatorJoystick, 8)   //Intake manual control
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
         new JoystickButton(m_operatorJoystick, 2) //Spinup shooter
-                .whileHeld(m_shooter.spinUp());
-        new JoystickButton(m_operatorJoystick, 1)
+                .whileHeld(new ManualShooter(m_operatorJoystick::getX, m_driveTrain, m_shooter));
+        new JoystickButton(m_operatorJoystick, 1) //manual shoot
                 .whileHeld(new RunCommand(() -> {
                     m_conveyor.lowerTop();
                     m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
-                }, m_intake, m_conveyor));
+                }, m_conveyor));
     }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> {
-            boolean slow = m_operatorJoystick.getRawButton(5) || m_driveController.getTriggerAxis(Hand.kLeft) > 0.5;
-            m_driveTrain.arcadeDrive( //driver train
-                    (slow ? 0.2 : 1) * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
-                    (slow ? 0.2 : 1) * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE));
+            boolean trigger = m_driveController.getTriggerAxis(Hand.kLeft) > 0.5;
+            boolean button = m_operatorJoystick.getRawButton(5);
+            m_driveTrain.arcadeDrive(
+                    (button ? 0.4 : (trigger ? 0.6 : 1.0)) * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
+                    (button ? 0.4 : (trigger ? 0.6 : 0.9)) * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE),
+                    true);
         }, m_driveTrain);
-        CommandBase default_climber = new RunCommand(() -> {  //climber
+         CommandBase default_climber = new RunCommand(() -> {  //climber
             m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -m_operatorJoystick.getY() : 0);
             m_climber.setArm(m_operatorJoystick.getRawButton(5) ? -m_operatorJoystick.getY() : 0);
         }, m_climber);

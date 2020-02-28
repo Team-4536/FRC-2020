@@ -30,4 +30,5 @@ public class Constants {
 
     ROBOT_WIDTH = 0.6, //meters, counting bumpers
     ROBOT_HEIGHT =0.4;
+    public static final double MANUAL_SHOOT_TURN = 0.3;
 }

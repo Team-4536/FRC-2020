@@ -12,28 +12,33 @@ public class VisionToTargetCommand extends PIDCommand {
 
     public VisionToTargetCommand(DriveTrain driveTrain) {
         super(new PIDController(Constants.VISION_KP, Constants.VISION_KI, Constants.VISION_KD),
-        driveTrain::getVisionAngle,
-        0,
-        o -> driveTrain.arcadeDrive(0, -o),
-        driveTrain);
-    
+                driveTrain::getVisionAngle,
+                0,
+                o -> driveTrain.arcadeDrive(0, -o),
+                driveTrain);
+
         getController().enableContinuousInput(-180, 180);
         getController().setTolerance(Constants.TURN_TOLERANCE_DEG, Constants.TURN_TOLERANCE_DEG_PER_SEC);
         m_driveTrain = driveTrain;
     }
 
-  @Override
-  public boolean isFinished() {
-    return getController().atSetpoint();
-  }
+    @Override
+    public void initialize() {
+        m_driveTrain.toggleDriverVision(false);
+    }
 
-  @Override
-    public void end(boolean interrupted){
-      System.out.println("Vision to Target Command Finished");
-  }
+    @Override
+    public boolean isFinished() {
+        return getController().atSetpoint();
+    }
 
-  @Override
-    public String getName(){
-      return "Vision to Target Command";
-  }
+    @Override
+    public void end(boolean interrupted) {
+        m_driveTrain.toggleDriverVision(true);
+    }
+
+    @Override
+    public String getName() {
+        return "Vision to Target Command";
+    }
 }
