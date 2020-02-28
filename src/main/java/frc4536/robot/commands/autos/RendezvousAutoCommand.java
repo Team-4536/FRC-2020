@@ -1,8 +1,11 @@
-package frc4536.robot.commands;
+package frc4536.robot.commands.autos;
 
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc4536.robot.Constants;
+import frc4536.robot.commands.IntakeCommands;
+import frc4536.robot.commands.ShootCommand;
+import frc4536.robot.commands.VisionToTargetCommand;
 import frc4536.robot.subsystems.Conveyor;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.Intake;

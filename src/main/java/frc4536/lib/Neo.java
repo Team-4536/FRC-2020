@@ -13,11 +13,13 @@ public class Neo implements IEncoderMotor {
         k_gearRatio = gearRatio;
         m_master = new CANSparkMax(motorIDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
         m_encoder = m_master.getEncoder();
-        if(motorIDs.length > 1) for(int i = 1; i < motorIDs.length; i++){
-            new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushless).follow(m_master);
-        }
         m_master.restoreFactoryDefaults();
         m_master.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        if(motorIDs.length > 1) for(int i = 1; i < motorIDs.length; i++){
+            CANSparkMax slave = new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushless);
+            slave.setIdleMode(CANSparkMax.IdleMode.kBrake);
+            slave.follow(m_master);
+        }
     }
 
     @Override

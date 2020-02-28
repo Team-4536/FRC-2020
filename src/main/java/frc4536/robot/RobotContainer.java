@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc4536.robot.commands.autos.*;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
@@ -84,8 +85,8 @@ public class RobotContainer {
         ShuffleboardTab auto = Shuffleboard.getTab("Autonomous");
 
 
-        m_xInitial = auto.add("Initial X", 3.3).getEntry();
-        m_yInitial = auto.add("Initial Y", -1.0).getEntry();
+        m_xInitial = auto.add("Initial X", 3.1).getEntry();
+        m_yInitial = auto.add("Initial Y", -0.75).getEntry();
         m_chooser.addOption("Physical Diagnostic", Autonomous.PHYSICAL_DIAGNOSTIC);
         m_chooser.addOption("Trench", Autonomous.TRENCH);
         m_chooser.addOption("Dynamic Trench", Autonomous.DYNAMIC_TRENCH);
@@ -130,23 +131,25 @@ public class RobotContainer {
         new JoystickButton(m_operatorJoystick, 8)   //Intake manual control
                 .whileHeld(new RunCommand(() -> m_intake.intake(-m_operatorJoystick.getY()), m_intake));
         new JoystickButton(m_operatorJoystick, 2) //Spinup shooter
-                .whileHeld(m_shooter.spinUp());
-        new JoystickButton(m_operatorJoystick, 1)
+                .whileHeld(new ManualShooter(m_operatorJoystick::getX, m_driveTrain, m_shooter));
+        new JoystickButton(m_operatorJoystick, 1) //manual shoot
                 .whileHeld(new RunCommand(() -> {
                     m_conveyor.lowerTop();
                     m_conveyor.moveConveyor(Constants.CONVEYOR_SHOOT_SPEED, true);
-                }, m_intake, m_conveyor));
+                }, m_conveyor));
     }
 
     private void configureDefaultCommands() {
         //Default behaviour for all subsystems lives here.
         CommandBase default_driveTrain = new RunCommand(() -> {
-            boolean slow = m_operatorJoystick.getRawButton(5) || m_driveController.getTriggerAxis(Hand.kLeft) > 0.5;
-            m_driveTrain.arcadeDrive( //driver train
-                    (slow ? 0.2 : 1) * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
-                    (slow ? 0.2 : 1) * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE));
+            boolean trigger = m_driveController.getTriggerAxis(Hand.kLeft) > 0.5;
+            boolean button = m_operatorJoystick.getRawButton(5);
+            m_driveTrain.arcadeDrive(
+                    (button ? 0.4 : (trigger ? 0.6 : 1.0)) * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
+                    (button ? 0.4 : (trigger ? 0.6 : 0.9)) * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE),
+                    true);
         }, m_driveTrain);
-        CommandBase default_climber = new RunCommand(() -> {  //climber
+         CommandBase default_climber = new RunCommand(() -> {  //climber
             m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -m_operatorJoystick.getY() : 0);
             m_climber.setArm(m_operatorJoystick.getRawButton(5) ? -m_operatorJoystick.getY() : 0);
         }, m_climber);
@@ -180,20 +183,20 @@ public class RobotContainer {
         m_shooter.setDefaultCommand(default_shooter);
     }
 
-    public Command generateAutoCommands(Autonomous chose) {
+    public Command generateAutoCommands(Autonomous chose, Pose2d initialPose) {
         switch (chose) {
             case PHYSICAL_DIAGNOSTIC:
                 return new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake);
             case TRENCH:
                 return new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot, t_shootToEnd, t_endToShoot);
             case DYNAMIC_TRENCH:
-                return new DynamicTrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToEnd, t_endToShoot);
+                return new DynamicTrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToEnd, t_endToShoot);
             case VISION_TEST:
                 return new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot);
             case RENDEZVOUS:
                 return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_toRendezShoot, t_shootToRendez, t_rendezToShoot);
             case DYNAMIC_RENDEZVOUS:
-                return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToRendez, t_rendezToShoot);
+                return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToRendez, t_rendezToShoot);
             default:
                 return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.3, 0), m_driveTrain).withTimeout(1).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
         }
@@ -207,8 +210,9 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         m_driveTrain.resetGyro();
-        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0.0)));
-        return generateAutoCommands(m_chooser.getSelected());
+        Pose2d initialPose = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0.0));
+        m_driveTrain.resetPose(initialPose);
+        return generateAutoCommands(m_chooser.getSelected(), initialPose);
     }
 
     private enum Autonomous {
