@@ -19,12 +19,13 @@ public class Conveyor extends SubsystemBase {
     private SpeedController m_motor;
     private DoubleSolenoid m_piston;
     private DigitalInput m_beamBreak;
-    private Timer m_timer;
+    private Timer m_timer = new Timer();
 
     public Conveyor(SpeedController motor, DoubleSolenoid piston, DigitalInput beamBreak) {
         m_motor = motor;
         m_piston = piston;
         m_beamBreak = beamBreak;
+        m_timer.start();
     }
 
     public void raiseTop() {
@@ -40,7 +41,7 @@ public class Conveyor extends SubsystemBase {
             m_motor.set(speed);
         }
         else if (isBlocked() && m_timer.get()==0) {
-            m_timer.start();
+            m_timer.reset();
             m_motor.set(speed);
         }
         else if(isBlocked() && m_timer.get()< Constants.CONVEYOR_DELAY) {
