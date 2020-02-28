@@ -168,7 +168,7 @@ public class DriveTrain extends SubsystemBase {
 
     public double angleToTarget() {
         Translation2d diff = getPose().minus(Poses.TARGET).getTranslation();
-        return Math.atan2(diff.getY(), diff.getX());
+        return Math.atan2(diff.getY(), diff.getX()) - getBearing();
     }
 }
 
