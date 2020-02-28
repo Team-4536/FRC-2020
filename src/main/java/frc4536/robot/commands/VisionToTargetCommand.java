@@ -24,7 +24,6 @@ public class VisionToTargetCommand extends PIDCommand {
 
     @Override
     public void initialize() {
-        m_driveTrain.toggleDriverVision(false);
     }
 
     @Override
@@ -34,7 +33,6 @@ public class VisionToTargetCommand extends PIDCommand {
 
     @Override
     public void end(boolean interrupted) {
-        m_driveTrain.toggleDriverVision(true);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class Honeycomb implements RobotFrame {
     public static final double kaVoltSecondsSquaredPerMeter = 0.3;
     public static final double kPDriveVel = 11.5 / 12;
     public static final double kTrackWidthMeters = Units.inchesToMeters(21.8685);
-    public static final double kMaxSpeedMetersPerSecond = 2;
+    public static final double kMaxSpeedMetersPerSecond = 1.2;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kRamseteB = 16;
     public static final double kRamseteZeta = 0.7;
