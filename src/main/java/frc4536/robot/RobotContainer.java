@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc4536.robot.commands.autos.*;
 import frc4536.robot.commands.*;
 import frc4536.robot.hardware.*;
 import frc4536.robot.subsystems.*;
@@ -32,7 +33,7 @@ import static frc4536.lib.Utilities.deadzone;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here.
-    public final RobotFrame m_robotHardware = new Honeycomb();
+    public final RobotFrame m_robotHardware = new TestRobot();
     public final DriveTrain m_driveTrain = new DriveTrain(m_robotHardware.getDrivetrainLeftMotor(),
             m_robotHardware.getDrivetrainRightMotor(),
             m_robotHardware.getDrivetrainNavX(),
@@ -182,20 +183,20 @@ public class RobotContainer {
         m_shooter.setDefaultCommand(default_shooter);
     }
 
-    public Command generateAutoCommands(Autonomous chose) {
+    public Command generateAutoCommands(Autonomous chose, Pose2d initialPose) {
         switch (chose) {
             case PHYSICAL_DIAGNOSTIC:
                 return new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake);
             case TRENCH:
                 return new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot, t_shootToEnd, t_endToShoot);
             case DYNAMIC_TRENCH:
-                return new DynamicTrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToEnd, t_endToShoot);
+                return new DynamicTrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToEnd, t_endToShoot);
             case VISION_TEST:
                 return new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot);
             case RENDEZVOUS:
                 return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_toRendezShoot, t_shootToRendez, t_rendezToShoot);
             case DYNAMIC_RENDEZVOUS:
-                return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_shootToRendez, t_rendezToShoot);
+                return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToRendez, t_rendezToShoot);
             default:
                 return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.3, 0), m_driveTrain).withTimeout(1).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
         }
@@ -209,8 +210,9 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         m_driveTrain.resetGyro();
-        m_driveTrain.resetPose(new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0.0)));
-        return generateAutoCommands(m_chooser.getSelected());
+        Pose2d initialPose = new Pose2d(m_xInitial.getDouble(0.0), m_yInitial.getDouble(0.0), Rotation2d.fromDegrees(0.0));
+        m_driveTrain.resetPose(initialPose);
+        return generateAutoCommands(m_chooser.getSelected(), initialPose);
     }
 
     private enum Autonomous {

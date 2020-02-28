@@ -128,7 +128,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public Command scurveTo(Trajectory trajectory) {
-        System.out.println("Pathing to: " + trajectory.sample(trajectory.getTotalTimeSeconds()).poseMeters.toString());
+        System.out.println("Pathing to: " + trajectory.sample(trajectory.getTotalTimeSeconds()).poseMeters.toString() + " from " + trajectory.getInitialPose().toString());
         return new RamseteCommand(
                 trajectory,
                 this::getPose,
