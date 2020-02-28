@@ -39,7 +39,7 @@ public class Honeycomb implements RobotFrame {
 
     SpeedController m_intakeMotor = new WPI_VictorSPX(1);
     SpeedController m_beltMotor = new WPI_VictorSPX(4);
-    SpeedController m_climberArmMotor = new Neo(40, 46);
+    SpeedController m_climberArmMotor = new WPI_VictorSPX(2);
     SpeedController m_liftMotor = new WPI_VictorSPX(3);
 
     AHRS m_navx = new AHRS();
