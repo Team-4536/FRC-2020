@@ -17,11 +17,11 @@ public class TrenchAutoCommand extends SequentialCommandGroup {
     addRequirements(shooter, conveyor, driveTrain, intake);
     addCommands(
             driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(intake, conveyor)),
-            new TurnToAngleCommand(driveTrain, -24).raceWith(shooter.spinUp()),
+            new TurnToAngleCommand(driveTrain, 17).raceWith(shooter.spinUp()),
             new ShootCommand(shooter, conveyor, 0.0).withTimeout(3),
             driveTrain.scurveTo(shootToEnd).raceWith(new IntakeCommands(intake, conveyor)),
             driveTrain.scurveTo(endToShoot),
-            new TurnToAngleCommand(driveTrain, -24).raceWith(shooter.spinUp()),
+            new TurnToAngleCommand(driveTrain, 17).raceWith(shooter.spinUp()),
             new ShootCommand(shooter, conveyor, 0.0).withTimeout(3)
     );
   }

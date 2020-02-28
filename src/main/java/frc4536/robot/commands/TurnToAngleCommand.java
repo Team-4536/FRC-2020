@@ -9,7 +9,7 @@ import frc4536.robot.subsystems.DriveTrain;
 public class TurnToAngleCommand extends PIDCommand {
     public TurnToAngleCommand(DriveTrain driveTrain, double angleSetpoint) {
         super(new PIDController(Constants.VISION_KP, Constants.VISION_KI, Constants.VISION_KD),
-                () -> driveTrain.getBearing(),
+                () -> -driveTrain.getBearing(),
                 () -> angleSetpoint,
                 o -> driveTrain.arcadeDrive(0, -o),
                 driveTrain);
