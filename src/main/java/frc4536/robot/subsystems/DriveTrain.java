@@ -40,9 +40,9 @@ public class DriveTrain extends SubsystemBase {
         wheelCircumference = driveConstants.kWheelDiameterInches * Math.PI;
 
         resetEncoders();
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0.0));
         resetGyro();
 
-        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0.0));
 
         DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
                 m_driveConstants.kvVoltSecondsPerMeter,
@@ -113,7 +113,6 @@ public class DriveTrain extends SubsystemBase {
 
     public void resetGyro(){
         m_navx.reset();
-        resetPose();
     }
 
     public Command scurveTo(Trajectory trajectory) {
@@ -148,8 +147,9 @@ public class DriveTrain extends SubsystemBase {
 
     public double getVisionAngle() {
         double visionAngle = visionError.getDouble(0.0);
+
         if (visionAngle == 0.0) {
-            return angleToTarget();
+            return 0;//angleToTarget();
         }
         return visionAngle;
     }
