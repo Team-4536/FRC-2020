@@ -13,11 +13,11 @@ public class BrushedMAX implements IEncoderMotor {
     public BrushedMAX(double gearRatio, boolean encoderInverted, int ticks, int... motorIDs) {
         k_gearRatio = gearRatio;
         m_master = new CANSparkMax(motorIDs[0], CANSparkMaxLowLevel.MotorType.kBrushed);
+        m_master.restoreFactoryDefaults();
+        m_master.setIdleMode(CANSparkMax.IdleMode.kCoast);
         if(motorIDs.length > 1) for(int i = 1; i < motorIDs.length; i++){
             new CANSparkMax(motorIDs[i], CANSparkMaxLowLevel.MotorType.kBrushed).follow(m_master);
         }
-        m_master.restoreFactoryDefaults();
-        m_master.setIdleMode(CANSparkMax.IdleMode.kCoast);
         m_encoder = m_master.getEncoder(EncoderType.kQuadrature, ticks);
         m_encoder.setInverted(encoderInverted);
     }
