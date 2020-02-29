@@ -142,7 +142,7 @@ public class DriveTrain extends SubsystemBase {
                 new PIDController(m_driveConstants.kPDriveVel, 0, 0),
                 this::setOutput,
                 this
-        );
+        ).andThen(new InstantCommand(() -> setOutput(0,0)));
     }
 
     //Vision

@@ -17,6 +17,6 @@ public class Poses {
             HARD_RESET = new Pose2d(15.6, -2.1, new Rotation2d(1.0, 0.0)),
             TARGET = new Pose2d(0.0, -2.45, new Rotation2d(1.0, 0.0)),
             CENTER_AUTO_START = new Pose2d(3.1, -2.45, new Rotation2d(1.0, 0.0)),
-            CENTER_AUTO_END = new Pose2d(5, -2.45, new Rotation2d(1.0, 0.0)); //TODO: TWEAK THIS
+            CENTER_AUTO_END = new Pose2d(6, -2.45, new Rotation2d(1.0, 0.0)); //TODO: TWEAK THIS
 
 }

@@ -11,7 +11,7 @@ public class CenterAutoCommand extends SequentialCommandGroup {
     public CenterAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Trajectory trajectory) {
         addRequirements(shooter, conveyor, driveTrain);
         addCommands(
-                driveTrain.scurveTo(trajectory).raceWith(shooter.spinUp()),
+                driveTrain.scurveTo(trajectory).raceWith(shooter.spinUp(() -> 90, () -> 50)),
                 new ShootCommand(shooter, conveyor, 0.0).withTimeout(5)
         );
     }
