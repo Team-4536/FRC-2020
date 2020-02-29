@@ -15,7 +15,7 @@ public class Honeycomb implements RobotFrame {
     public static final double kaVoltSecondsSquaredPerMeter = 0.3;
     public static final double kPDriveVel = 11.5 / 12;
     public static final double kTrackWidthMeters = Units.inchesToMeters(21.8685);
-    public static final double kMaxSpeedMetersPerSecond = 1;
+    public static final double kMaxSpeedMetersPerSecond = 1.2;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kRamseteB = 16;
     public static final double kRamseteZeta = 0.7;
@@ -47,6 +47,7 @@ public class Honeycomb implements RobotFrame {
     IEncoderMotor m_leftMotors = new Neo(10.75, 47, 48);
     IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
     DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
+    DigitalInput m_conveyorBeam = new DigitalInput(1);
 
     DoubleSolenoid m_conveyorBlocker = new DoubleSolenoid(1,0);
     DoubleSolenoid m_intakeExtender = new DoubleSolenoid(2,3);
@@ -113,4 +114,9 @@ public class Honeycomb implements RobotFrame {
     @Override
     public DigitalInput getBottomLimitSwitch(){
         return m_bottomLimitSwitch;}
+
+    @Override
+    public DigitalInput getConveyorBeam() {
+        return m_conveyorBeam;
+    }
 }

@@ -7,18 +7,25 @@
 
 package frc4536.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc4536.robot.Constants;
 
 public class Conveyor extends SubsystemBase {
     private SpeedController m_motor;
     private DoubleSolenoid m_piston;
+    private DigitalInput m_beamBreak;
+    private Timer m_timer = new Timer();
 
-    public Conveyor(SpeedController motor, DoubleSolenoid piston) {
+    public Conveyor(SpeedController motor, DoubleSolenoid piston, DigitalInput beamBreak) {
         m_motor = motor;
         m_piston = piston;
+        m_beamBreak = beamBreak;
+        m_timer.start();
     }
 
     public void raiseTop() {
@@ -29,7 +36,25 @@ public class Conveyor extends SubsystemBase {
         m_piston.set(Value.kReverse);
     }
 
-    public void moveConveyor(double speed) {
-        m_motor.set(speed);
+    public void moveConveyor(double speed, boolean isShooting) {
+        if(isShooting) {
+            m_motor.set(speed);
+        }
+        else if (isBlocked() && m_timer.get()==0) {
+            m_timer.reset();
+            m_motor.set(speed);
+        }
+        else if(isBlocked() && m_timer.get()< Constants.CONVEYOR_DELAY) {
+            m_motor.set(speed);
+        }
+        else {
+            m_motor.set(0);
+            m_timer.stop();
+            m_timer.reset();
+        }
+    }
+
+    public boolean isBlocked(){
+        return !m_beamBreak.get();
     }
 }

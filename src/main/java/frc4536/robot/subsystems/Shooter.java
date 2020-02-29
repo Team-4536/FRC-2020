@@ -9,12 +9,11 @@ package frc4536.robot.subsystems;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.*;
 import frc4536.lib.IEncoderMotor;
-import frc4536.lib.IPIDMotor;
 import frc4536.robot.Constants;
+import frc4536.robot.Dashboard;
+import frc4536.robot.Robot;
 
 import java.util.function.DoubleSupplier;
 
@@ -34,11 +33,6 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom = bottom;
         m_topPIDController.setTolerance(Constants.SHOOTER_TOLERANCE_TOP);
         m_bottomPIDController.setTolerance(Constants.SHOOTER_TOLERANCE_BOTTOM);
-        ShuffleboardTab shooter_data = Shuffleboard.getTab("Shooter Data");
-        shooter_data.addNumber("Top RPS", () -> m_shooterTop.getSpeed());
-        shooter_data.addNumber("Bottom RPS", () -> m_shooterBottom.getSpeed());
-        shooter_data.addBoolean("Top Target", () -> Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP);
-        shooter_data.addBoolean("Bottom Target", () -> Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
     }
 
     public void setTopPower(double power) {
@@ -49,7 +43,7 @@ public class Shooter extends SubsystemBase {
         m_shooterBottom.setVoltage(power);
     }
 
-    public void stop(){
+    public void stop() {
         m_topPIDController.reset();
         m_bottomPIDController.reset();
         m_topPIDController.setSetpoint(0);
@@ -66,20 +60,42 @@ public class Shooter extends SubsystemBase {
         return m_shooterBottom.getSpeed();
     }
 
-    public boolean ready() {
-        return (Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_TOP) &&
-                (Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM);
+    public boolean topReady() {
+        return Math.abs(m_topPIDController.getSetpoint() - getTopRate()) < Constants.SHOOTER_TOLERANCE_TOP;
     }
 
+    public boolean bottomReady() {
+        return Math.abs(m_bottomPIDController.getSetpoint() - getBottomRate()) < Constants.SHOOTER_TOLERANCE_BOTTOM;
+    }
+
+    public boolean ready() {
+        return topReady() && bottomReady();
+    }
+
+    /**
+     * This returns a command that sets the setpoint of the two shooter wheels. THIS SHOULD ONLY BE USED IN AUTO!!!
+     *
+     * @param topRPS    desired rotation speed of the top shooter wheel, in rotations per second.
+     * @param bottomRPS desired rotation speed of the bottom shooter wheel, in rotations per second.
+     * @return A command that runs the shooter wheels
+     */
     public Command spinUp(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
         return new RunCommand(() -> setSetpoints(topRPS, bottomRPS), this);
     }
 
-    public Command spinUp(){
-        return this.spinUp(() -> Constants.SHOOTER_RPS_TOP, () -> Constants.SHOOTER_RPS_BOTTOM);
+    /**
+     * This returns a command that sets the setpoint of the two shooter wheels to the values specified on the Shuffleboard. THIS SHOULD BE USED FOR BUTTON BINDINGS IN TELEOP!!!
+     *
+     * @return A command that runs the shooter wheels
+     */
+    public Command spinUp() {
+        return this.spinUp(Dashboard::getShooterTopSetpoint, Dashboard::getShooterBottomSetpoint);
     }
 
-    public void setSetpoints(DoubleSupplier topRPS, DoubleSupplier bottomRPS){
+    /**
+     * This method runs the PID controller code and sets the voltages of the wheels in order to reach a desired speed. This should be called every 20ms, which is why you should only use the commands to run them.
+     */
+    public void setSetpoints(DoubleSupplier topRPS, DoubleSupplier bottomRPS) {
         m_shooterTop.setVoltage(
                 m_topPIDController.calculate(getTopRate(), topRPS.getAsDouble())
                         + k_top_feedForwards.calculate(topRPS.getAsDouble())
@@ -90,5 +106,12 @@ public class Shooter extends SubsystemBase {
         );
     }
 
-    
+    /**
+     * This method should only be used by the trigger binding in RobotContainer.
+     */
+    public void setSetpoints() {
+        setSetpoints(Dashboard::getShooterTopSetpoint, Dashboard::getShooterBottomSetpoint);
+    }
+
+
 }

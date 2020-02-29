@@ -6,20 +6,16 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc4536.robot.Constants;
 import frc4536.robot.subsystems.DriveTrain;
 
-public class VisionToTargetCommand extends PIDCommand {
-
-    private final DriveTrain m_driveTrain;
-
-    public VisionToTargetCommand(DriveTrain driveTrain) {
+public class TurnToAngleCommand extends PIDCommand {
+    public TurnToAngleCommand(DriveTrain driveTrain, double angleSetpoint) {
         super(new PIDController(Constants.VISION_KP, Constants.VISION_KI, Constants.VISION_KD),
-                driveTrain::getVisionAngle,
-                0,
+                () -> -driveTrain.getBearing(),
+                () -> angleSetpoint,
                 o -> driveTrain.arcadeDrive(0, -o),
                 driveTrain);
 
         getController().enableContinuousInput(-180, 180);
         getController().setTolerance(Constants.TURN_TOLERANCE_DEG, Constants.TURN_TOLERANCE_DEG_PER_SEC);
-        m_driveTrain = driveTrain;
     }
 
     @Override

@@ -8,15 +8,13 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
@@ -42,20 +40,11 @@ public class DriveTrain extends SubsystemBase {
         kDriveKinematics = driveConstants.kDriveKinematics;
         wheelCircumference = driveConstants.kWheelDiameterInches * Math.PI;
 
-        ShuffleboardTab drivetrain_data = Shuffleboard.getTab("Drivetrain Data");
-        drivetrain_data.addNumber("Left Distance", () -> m_leftMotor.getDistance() * wheelCircumference);
-        drivetrain_data.addNumber("Right Distance", () -> m_rightMotor.getDistance() * wheelCircumference);
-        drivetrain_data.addNumber("Left Velocity", () -> m_leftMotor.getSpeed() * wheelCircumference);
-        drivetrain_data.addNumber("Right Velocity", () -> m_rightMotor.getSpeed() * wheelCircumference);
-        drivetrain_data.addString("Pose", () -> getPose().toString());
-        drivetrain_data.addString("Heading", () -> getHeading().toString());
-        drivetrain_data.add("Reset Encoders", new InstantCommand(this::resetEncoders));
-        drivetrain_data.add("Reset Pose", new InstantCommand(this::resetPose));
-        drivetrain_data.add("Reset Gyro", new InstantCommand(this::resetGyro));
-
         resetEncoders();
-        m_odometry = new DifferentialDriveOdometry(getHeading());
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0.0));
         resetGyro();
+
+
         DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_driveConstants.ksVolts,
                 m_driveConstants.kvVoltSecondsPerMeter,
                 m_driveConstants.kaVoltSecondsSquaredPerMeter),
@@ -78,21 +67,35 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor.set(s2 - r2);
     }
 
+    public void arcadeDrive(double forward, double rotation, boolean squared) {
+        if (squared) {
+            forward = Math.copySign(forward * forward, forward);
+            rotation = Math.copySign(rotation * rotation, rotation);
+            ;
+        }
+        arcadeDrive(forward, rotation);
+
+    }
+
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(m_navx.getAngle());
+    }
+
+    public double getBearing() {
+        return -m_navx.getAngle();
     }
 
     private RobotConstants m_driveConstants;
     private DifferentialDriveOdometry m_odometry;
 
-    public DifferentialDriveWheelSpeeds getSpeeds(){
+    public DifferentialDriveWheelSpeeds getSpeeds() {
         return new DifferentialDriveWheelSpeeds(
                 m_leftMotor.getSpeed() * wheelCircumference,
                 m_rightMotor.getSpeed() * wheelCircumference
         );
     }
 
-    public Pose2d getPose(){
+    public Pose2d getPose() {
         return m_pose;
     }
 
@@ -105,63 +108,67 @@ public class DriveTrain extends SubsystemBase {
         m_rightMotor.setVoltage(rightVolts);
     }
 
-    public void resetEncoders(){
+    public void resetEncoders() {
         m_leftMotor.resetEncoder();
         m_rightMotor.resetEncoder();
     }
 
-    public void resetPose(){
+    public void resetPose() {
         resetEncoders();
         m_odometry.resetPosition(new Pose2d(), getHeading());
     }
 
-    public void resetPose(Pose2d pos){
+    public void resetPose(Pose2d pos) {
         resetEncoders();
         m_odometry.resetPosition(pos, getHeading());
     }
 
-    public void resetGyro(){
+    public void resetGyro() {
         m_navx.reset();
-        resetPose();
     }
 
     public Command scurveTo(Trajectory trajectory) {
+        System.out.println("Pathing to: " + trajectory.sample(trajectory.getTotalTimeSeconds()).poseMeters.toString() + " from " + trajectory.getInitialPose().toString());
         return new RamseteCommand(
-            trajectory,
-            this::getPose,
-            new RamseteController(m_driveConstants.kRamseteB, m_driveConstants.kRamseteZeta),
-            new SimpleMotorFeedforward(m_driveConstants.ksVolts,
-                    m_driveConstants.kvVoltSecondsPerMeter,
-                    m_driveConstants.kaVoltSecondsSquaredPerMeter),
-            kDriveKinematics,
-            this::getSpeeds,
-            new PIDController(m_driveConstants.kPDriveVel, 0, 0),
-            new PIDController(m_driveConstants.kPDriveVel, 0, 0),
-            this::setOutput,
-            this
-        );
+                trajectory,
+                this::getPose,
+                new RamseteController(m_driveConstants.kRamseteB, m_driveConstants.kRamseteZeta),
+                new SimpleMotorFeedforward(m_driveConstants.ksVolts,
+                        m_driveConstants.kvVoltSecondsPerMeter,
+                        m_driveConstants.kaVoltSecondsSquaredPerMeter),
+                kDriveKinematics,
+                this::getSpeeds,
+                new PIDController(m_driveConstants.kPDriveVel, 0, 0),
+                new PIDController(m_driveConstants.kPDriveVel, 0, 0),
+                this::setOutput,
+                this
+        ).andThen(new InstantCommand(() -> setOutput(0,0)));
     }
 
     //Vision
-     
+
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     private NetworkTableEntry visionError = table.getEntry("tx");
     private NetworkTableEntry pipeline = table.getEntry("pipeline");
 
-    public void toggleDriverVision(boolean on){
+    public void toggleDriverVision(boolean on) {
         if (on)
             pipeline.setDouble(1);
-        else 
+        else
             pipeline.setDouble(0);
     }
 
     public double getVisionAngle() {
-        return visionError.getDouble(0.0);
+        double visionAngle = visionError.getDouble(0.0);
+        if (visionAngle == 0.0) {
+            return 0.0; //angleToTarget();
+        }
+        return visionAngle;
     }
 
     public double angleToTarget() {
         Translation2d diff = getPose().minus(Poses.TARGET).getTranslation();
-        return Math.atan2(diff.getY(),diff.getX());
+        return Math.tan(diff.getY() / diff.getX());
     }
 }
 

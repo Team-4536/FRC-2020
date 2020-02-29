@@ -11,7 +11,7 @@ public class Climber extends SubsystemBase {
         m_winchMotor = winchMotor;
         m_armMotor = armMotor;
         m_bottomLimitSwitch = bottomLimitSwitch;
-        m_armMotor.setInverted(true);
+        m_armMotor.setInverted(false);
     }
     public boolean bottomLimitSwitchIsSet() {
       return !m_bottomLimitSwitch.get();
