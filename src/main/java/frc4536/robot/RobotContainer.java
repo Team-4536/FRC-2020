@@ -91,7 +91,7 @@ public class RobotContainer {
 
 
         m_xInitial = auto.add("Initial X", 3.1).getEntry();
-        m_yInitial = auto.add("Initial Y", -0.75).getEntry();
+        m_yInitial = auto.add("Initial Y", -2.45).getEntry();
         m_chooser.addOption("Physical Diagnostic", Autonomous.PHYSICAL_DIAGNOSTIC);
         m_chooser.addOption("Trench", Autonomous.TRENCH);
         m_chooser.addOption("Dynamic Trench", Autonomous.DYNAMIC_TRENCH);
