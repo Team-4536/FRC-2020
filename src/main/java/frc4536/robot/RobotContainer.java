@@ -74,6 +74,11 @@ public class RobotContainer {
             new ArrayList<>(),
             Poses.RENDEZ_SHOOT,
             m_driveTrain.getConfig().setReversed(true));
+    Trajectory t_centerAuto = TrajectoryGenerator.generateTrajectory(Poses.CENTER_AUTO_START,
+            new ArrayList<>(),
+            Poses.CENTER_AUTO_END,
+            m_driveTrain.getConfig().setReversed(false));
+
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -93,7 +98,8 @@ public class RobotContainer {
         m_chooser.addOption("Vision Test", Autonomous.VISION_TEST);
         m_chooser.addOption("Rendezvous", Autonomous.RENDEZVOUS);
         m_chooser.addOption("Dynamic Rendezvous", Autonomous.DYNAMIC_RENDEZVOUS);
-        m_chooser.setDefaultOption("Baseline", Autonomous.BASELINE);
+        m_chooser.setDefaultOption("Center Auto", Autonomous.CENTER_AUTO);
+        m_chooser.addOption("Baseline", Autonomous.BASELINE);
         auto.add(m_chooser);
     }
 
@@ -149,7 +155,7 @@ public class RobotContainer {
                     (button ? 0.4 : (trigger ? 0.6 : 0.9)) * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE),
                     true);
         }, m_driveTrain);
-         CommandBase default_climber = new RunCommand(() -> {  //climber
+        CommandBase default_climber = new RunCommand(() -> {  //climber
             m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -m_operatorJoystick.getY() : 0);
             m_climber.setArm(m_operatorJoystick.getRawButton(5) ? -m_operatorJoystick.getY() : 0);
         }, m_climber);
@@ -197,8 +203,12 @@ public class RobotContainer {
                 return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_toRendezShoot, t_shootToRendez, t_rendezToShoot);
             case DYNAMIC_RENDEZVOUS:
                 return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToRendez, t_rendezToShoot);
-            default:
+            case CENTER_AUTO:
+                return new CenterAutoCommand(m_shooter, m_conveyor, m_driveTrain, t_centerAuto);
+            case BASELINE:
                 return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.3, 0), m_driveTrain).withTimeout(1).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
+            default:
+                return new CenterAutoCommand(m_shooter, m_conveyor, m_driveTrain, t_centerAuto); //safety purposes lol
         }
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
@@ -222,6 +232,7 @@ public class RobotContainer {
         VISION_TEST,
         RENDEZVOUS,
         DYNAMIC_RENDEZVOUS,
-        BASELINE
+        BASELINE,
+        CENTER_AUTO;
     }
 }
