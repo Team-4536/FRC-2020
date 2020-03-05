@@ -191,14 +191,10 @@ public class RobotContainer {
         switch (chose) {
             case PHYSICAL_DIAGNOSTIC:
                 return new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake);
-            case TRENCH:
-                return new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot, t_shootToEnd, t_endToShoot);
             case DYNAMIC_TRENCH:
                 return new DynamicTrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToEnd, t_endToShoot);
             case VISION_TEST:
                 return new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot);
-            case RENDEZVOUS:
-                return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_toRendezShoot, t_shootToRendez, t_rendezToShoot);
             case DYNAMIC_RENDEZVOUS:
                 return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToRendez, t_rendezToShoot);
             case CENTER_AUTO:
