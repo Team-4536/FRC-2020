@@ -154,7 +154,7 @@ public class RobotContainer {
                     true);
         }, m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {  //climber
-            m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -1 : m_operatorJoystick.getRawButton(69) ? -1 : 0);
+            m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -1 :(m_operatorJoystick.getRawButton(4) ? -m_operatorJoystick.getY() : 0));
             m_climber.setArm(m_operatorJoystick.getRawButton(5) ? -m_operatorJoystick.getY() : 0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> { //conveyor
