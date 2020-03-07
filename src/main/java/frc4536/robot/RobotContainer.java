@@ -94,12 +94,11 @@ public class RobotContainer {
         m_yInitial = auto.add("Initial Y", -2.45).getEntry();
         m_chooser.addOption("Physical Diagnostic", Autonomous.PHYSICAL_DIAGNOSTIC);
         m_chooser.addOption("Trench", Autonomous.TRENCH);
-        m_chooser.addOption("Dynamic Trench", Autonomous.DYNAMIC_TRENCH);
         m_chooser.addOption("Vision Test", Autonomous.VISION_TEST);
         m_chooser.addOption("Rendezvous", Autonomous.RENDEZVOUS);
-        m_chooser.addOption("Dynamic Rendezvous", Autonomous.DYNAMIC_RENDEZVOUS);
         m_chooser.setDefaultOption("Center Auto", Autonomous.CENTER_AUTO);
         m_chooser.addOption("Baseline", Autonomous.BASELINE);
+        m_chooser.addOption("Opposite Trench", Autonomous.TRENCH_STEAL);
         auto.add(m_chooser);
     }
 
@@ -154,7 +153,7 @@ public class RobotContainer {
                     true);
         }, m_driveTrain);
         CommandBase default_climber = new RunCommand(() -> {  //climber
-            m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -m_operatorJoystick.getY() : 0);
+            m_climber.setWinch(m_operatorJoystick.getRawButton(3) ? -1 :(m_operatorJoystick.getRawButton(4) ? -m_operatorJoystick.getY() : 0));
             m_climber.setArm(m_operatorJoystick.getRawButton(5) ? -m_operatorJoystick.getY() : 0);
         }, m_climber);
         CommandBase default_conveyor = new RunCommand(() -> { //conveyor
@@ -192,21 +191,17 @@ public class RobotContainer {
             case PHYSICAL_DIAGNOSTIC:
                 return new PhysicalDiagnostic(m_shooter, m_conveyor, m_intake);
             case TRENCH:
-                return new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot, t_shootToEnd, t_endToShoot);
-            case DYNAMIC_TRENCH:
-                return new DynamicTrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToEnd, t_endToShoot);
+                return new TrenchAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToEnd, t_endToShoot);
             case VISION_TEST:
                 return new VisionTestAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_startToShoot);
             case RENDEZVOUS:
-                return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, t_toRendezShoot, t_shootToRendez, t_rendezToShoot);
-            case DYNAMIC_RENDEZVOUS:
-                return new DynamicRendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToRendez, t_rendezToShoot);
+                return new RendezvousAutoCommand(m_shooter, m_conveyor, m_driveTrain, m_intake, initialPose, t_shootToRendez, t_rendezToShoot);
             case CENTER_AUTO:
-                return new CenterAutoCommand(m_shooter, m_conveyor, m_driveTrain, t_centerAuto);
+                return new CenterAutoCommand(m_shooter, m_conveyor, m_driveTrain, initialPose);
             case BASELINE:
                 return new RunCommand(() -> m_driveTrain.arcadeDrive(-0.3, 0), m_driveTrain).withTimeout(1).andThen(new RunCommand(() -> m_driveTrain.arcadeDrive(0, 0), m_driveTrain));
             default:
-                return new CenterAutoCommand(m_shooter, m_conveyor, m_driveTrain, t_centerAuto); //safety purposes lol
+                return new CenterAutoCommand(m_shooter, m_conveyor, m_driveTrain, initialPose); //safety purposes lol
         }
         //m_chooser.addOption("Test Auto", m_testAuto);
     }
@@ -226,11 +221,10 @@ public class RobotContainer {
     private enum Autonomous {
         PHYSICAL_DIAGNOSTIC,
         TRENCH,
-        DYNAMIC_TRENCH,
         VISION_TEST,
         RENDEZVOUS,
-        DYNAMIC_RENDEZVOUS,
         BASELINE,
-        CENTER_AUTO;
+        CENTER_AUTO,
+        TRENCH_STEAL;
     }
 }
