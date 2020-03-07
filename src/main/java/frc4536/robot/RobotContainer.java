@@ -148,7 +148,7 @@ public class RobotContainer {
             boolean trigger = m_driveController.getTriggerAxis(Hand.kLeft) > 0.5;
             boolean button = m_operatorJoystick.getRawButton(5);
             m_driveTrain.arcadeDrive(
-                    (button ? 0.4 : (trigger ? 0.6 : 1.0)) * deadzone(m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
+                    (button ? 0.4 : (trigger ? 0.6 : 1.0)) * deadzone(-m_driveController.getY(GenericHID.Hand.kLeft), Constants.DRIVE_DEADZONE),
                     (button ? 0.4 : (trigger ? 0.6 : 0.9)) * deadzone(m_driveController.getX(GenericHID.Hand.kRight), Constants.DRIVE_DEADZONE),
                     true);
         }, m_driveTrain);
