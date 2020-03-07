@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 public class CycleCommand extends SequentialCommandGroup {
   public CycleCommand(DriveTrain driveTrain, Shooter shooter, Conveyor conveyor) {
-    Trajectory toShoot = TrajectoryGenerator.generateTrajectory(driveTrain.getPose(), new ArrayList<Translation2d>(), Poses.TRENCH_SHOOT, driveTrain.getConfig().setReversed(true));
-    Trajectory toLoad = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_SHOOT, new ArrayList<Translation2d>(), Poses.LOADING_STATION, driveTrain.getConfig().setReversed(false));
+    Trajectory toShoot = TrajectoryGenerator.generateTrajectory(driveTrain.getPose(), new ArrayList<Translation2d>(), Poses.TRENCH_SHOOT, driveTrain.getConfig().setReversed(false)); //done
+    Trajectory toLoad = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_SHOOT, new ArrayList<Translation2d>(), Poses.LOADING_STATION, driveTrain.getConfig().setReversed(true));
     addRequirements(driveTrain, shooter, conveyor);
     addCommands(
       driveTrain.scurveTo(toShoot),

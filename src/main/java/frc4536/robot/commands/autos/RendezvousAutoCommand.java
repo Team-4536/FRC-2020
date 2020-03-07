@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class RendezvousAutoCommand extends SequentialCommandGroup {
     public RendezvousAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Intake intake, Pose2d initialPose, Trajectory shootToRendez, Trajectory RendezToShoot) {
         Pose2d shootPosition = Poses.RENDEZ_SHOOT;
-        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(initialPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
+        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(initialPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(true)); //done
         addRequirements(shooter, conveyor, driveTrain, intake);
         addCommands(
                 driveTrain.scurveTo(toRendezShoot).raceWith(new IntakeCommands(intake, conveyor)),
