@@ -15,27 +15,32 @@ import frc4536.robot.subsystems.Conveyor;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.Intake;
 import frc4536.robot.subsystems.Shooter;
-
 import java.util.ArrayList;
 
 public class TrenchAutoCommand extends SequentialCommandGroup {
-    public TrenchAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Intake intake, Pose2d initalPose, Trajectory shootToEnd, Trajectory endToShoot) {
-        Pose2d shootPosition = Poses.AUTO_TRENCH_SHOOT; //hypothetically, use angle
-        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(initalPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
-        addRequirements(shooter, conveyor, driveTrain, intake);
-        addCommands(
-                driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(intake, conveyor)),
-                new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp()),
-                new ShootCommand(shooter, conveyor, 0.0).withTimeout(3),
-                driveTrain.scurveTo(shootToEnd).raceWith(new IntakeCommands(intake, conveyor)),
-                driveTrain.scurveTo(endToShoot),
-                new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp()),
-                new ShootCommand(shooter, conveyor, 0.0).withTimeout(3)
-        );
-    }
+  public TrenchAutoCommand(Shooter shooter, Conveyor conveyor,
+                           DriveTrain driveTrain, Intake intake,
+                           Pose2d initalPose, Trajectory shootToEnd,
+                           Trajectory endToShoot) {
+    Pose2d shootPosition = Poses.AUTO_TRENCH_SHOOT; // hypothetically, use angle
+    Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(
+        initalPose, new ArrayList<Translation2d>(), shootPosition,
+        driveTrain.getConfig().setReversed(false));
+    addRequirements(shooter, conveyor, driveTrain, intake);
+    addCommands(
+        driveTrain.scurveTo(startToShoot)
+            .raceWith(new IntakeCommands(intake, conveyor)),
+        new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp()),
+        new ShootCommand(shooter, conveyor, 0.0).withTimeout(3),
+        driveTrain.scurveTo(shootToEnd)
+            .raceWith(new IntakeCommands(intake, conveyor)),
+        driveTrain.scurveTo(endToShoot),
+        new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp()),
+        new ShootCommand(shooter, conveyor, 0.0).withTimeout(3));
+  }
 
-    @Override
-    public String getName() {
-        return "Dynamic Trench Auton";
-    }
+  @Override
+  public String getName() {
+    return "Dynamic Trench Auton";
+  }
 }

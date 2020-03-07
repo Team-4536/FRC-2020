@@ -10,17 +10,18 @@ import frc4536.robot.commands.ShootCommand;
 import frc4536.robot.subsystems.Conveyor;
 import frc4536.robot.subsystems.DriveTrain;
 import frc4536.robot.subsystems.Shooter;
-
 import java.util.ArrayList;
 
 public class CenterAutoCommand extends SequentialCommandGroup {
-    public CenterAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Pose2d initialPose) {
-        Pose2d shootPosition = Poses.CENTER_AUTO_END;
-        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(initialPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
-        addRequirements(shooter, conveyor, driveTrain);
-        addCommands(
-                driveTrain.scurveTo(toRendezShoot).raceWith(shooter.spinUp(() -> 90, () -> 50)),
-                new ShootCommand(shooter, conveyor, 0.0).withTimeout(5)
-        );
-    }
+  public CenterAutoCommand(Shooter shooter, Conveyor conveyor,
+                           DriveTrain driveTrain, Pose2d initialPose) {
+    Pose2d shootPosition = Poses.CENTER_AUTO_END;
+    Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(
+        initialPose, new ArrayList<Translation2d>(), shootPosition,
+        driveTrain.getConfig().setReversed(false));
+    addRequirements(shooter, conveyor, driveTrain);
+    addCommands(driveTrain.scurveTo(toRendezShoot)
+                    .raceWith(shooter.spinUp(() -> 90, () -> 50)),
+                new ShootCommand(shooter, conveyor, 0.0).withTimeout(5));
+  }
 }
