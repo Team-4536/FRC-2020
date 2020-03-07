@@ -8,6 +8,7 @@
 package frc4536.robot.commands;
 
 import frc4536.lib.Utilities;
+import frc4536.robot.Constants;
 import frc4536.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -18,7 +19,7 @@ public class SnapToAngle extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain m_driveTrain;
   private final DoubleSupplier m_goalAngle;
-  private final PIDController m_controller = new PIDController(0.0135, 0.01296, 0.001);
+  private final PIDController m_controller = new PIDController(Constants.VISION_KP, Constants.VISION_KI, Constants.VISION_KD);
 
   public SnapToAngle(final DriveTrain driveTrain, DoubleSupplier goalAngle) {
     m_driveTrain = driveTrain;
