@@ -52,32 +52,32 @@ public class RobotContainer {
     Trajectory t_startToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
             new ArrayList<>(),
             Poses.AUTO_TRENCH_SHOOT,
-            m_driveTrain.getConfig().setReversed(false));
+            m_driveTrain.getConfig().setReversed(true)); //done
     Trajectory t_shootToEnd = TrajectoryGenerator.generateTrajectory(Poses.AUTO_TRENCH_SHOOT,
             new ArrayList<>(),
             Poses.TRENCH_END,
-            m_driveTrain.getConfig().setReversed(false));
+            m_driveTrain.getConfig().setReversed(true)); //done
     Trajectory t_endToShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_END,
             new ArrayList<>(),
             Poses.AUTO_TRENCH_SHOOT,
-            m_driveTrain.getConfig().setReversed(true));
+            m_driveTrain.getConfig().setReversed(false)); //done
 
     Trajectory t_toRendezShoot = TrajectoryGenerator.generateTrajectory(Poses.TRENCH_START,
             new ArrayList<>(),
             Poses.RENDEZ_SHOOT,
-            m_driveTrain.getConfig().setReversed(false));
+            m_driveTrain.getConfig().setReversed(true)); //done
     Trajectory t_shootToRendez = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SHOOT,
             new ArrayList<>(),
             Poses.RENDEZ_SWEEP,
-            m_driveTrain.getConfig().setReversed(false));
+            m_driveTrain.getConfig().setReversed(true)); //done
     Trajectory t_rendezToShoot = TrajectoryGenerator.generateTrajectory(Poses.RENDEZ_SWEEP,
             new ArrayList<>(),
             Poses.RENDEZ_SHOOT,
-            m_driveTrain.getConfig().setReversed(true));
+            m_driveTrain.getConfig().setReversed(false)); //done
     Trajectory t_centerAuto = TrajectoryGenerator.generateTrajectory(Poses.CENTER_AUTO_START,
             new ArrayList<>(),
             Poses.CENTER_AUTO_END,
-            m_driveTrain.getConfig().setReversed(false));
+            m_driveTrain.getConfig().setReversed(true)); //done
 
 
     /**

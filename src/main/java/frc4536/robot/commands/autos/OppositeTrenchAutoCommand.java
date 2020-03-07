@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class OppositeTrenchAutoCommand extends SequentialCommandGroup {
         public OppositeTrenchAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Intake intake, Pose2d initialPose, Trajectory oppositeEndToShoot) {
             Pose2d shootPosition = Poses.RENDEZ_SHOOT; //TODO: GET POSES FOR OPPOSITE TRENCH RUN
-            Trajectory oppositeTrenchRun = TrajectoryGenerator.generateTrajectory(initialPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
+            Trajectory oppositeTrenchRun = TrajectoryGenerator.generateTrajectory(initialPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(true)); //done
             addRequirements(shooter, conveyor, driveTrain, intake);
             addCommands(
                     new VisionToTargetCommand(driveTrain).raceWith(shooter.spinUp()),

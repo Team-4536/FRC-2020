@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class TrenchAutoCommand extends SequentialCommandGroup {
     public TrenchAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Intake intake, Pose2d initalPose, Trajectory shootToEnd, Trajectory endToShoot) {
         Pose2d shootPosition = Poses.AUTO_TRENCH_SHOOT; //hypothetically, use angle
-        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(initalPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
+        Trajectory startToShoot = TrajectoryGenerator.generateTrajectory(initalPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(true)); //done
         addRequirements(shooter, conveyor, driveTrain, intake);
         addCommands(
                 driveTrain.scurveTo(startToShoot).raceWith(new IntakeCommands(intake, conveyor)),

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class CenterAutoCommand extends SequentialCommandGroup {
     public CenterAutoCommand(Shooter shooter, Conveyor conveyor, DriveTrain driveTrain, Pose2d initialPose) {
         Pose2d shootPosition = Poses.CENTER_AUTO_END;
-        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(initialPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(false));
+        Trajectory toRendezShoot = TrajectoryGenerator.generateTrajectory(initialPose, new ArrayList<Translation2d>(), shootPosition, driveTrain.getConfig().setReversed(true)); //done
         addRequirements(shooter, conveyor, driveTrain);
         addCommands(
                 driveTrain.scurveTo(toRendezShoot).raceWith(shooter.spinUp(() -> 90, () -> 50)),
