@@ -44,8 +44,8 @@ public class Honeycomb implements RobotFrame {
 
     AHRS m_navx = new AHRS();
 
-    IEncoderMotor m_leftMotors = new Neo(10.75, 47, 48);
-    IEncoderMotor m_rightMotors = new Neo(10.75, 49, 50);
+    IEncoderMotor m_rightMotors = new Neo(10.75, 47, 48);
+    IEncoderMotor m_leftMotors = new Neo(10.75, 49, 50);
     DigitalInput m_bottomLimitSwitch = new DigitalInput(0);
     DigitalInput m_conveyorBeam = new DigitalInput(1);
 
